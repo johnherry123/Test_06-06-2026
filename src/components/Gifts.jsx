@@ -1,127 +1,96 @@
-import React, { useState, useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-gsap.registerPlugin(ScrollTrigger);
+import React, { useState } from 'react';
+
+const ACCOUNTS = [
+  { bank:'VIETCOMBANK', name:'NGUYỄN ĐẠI NGHĨA', number:'1234567890', qr:'https://img.vietqr.io/image/VCB-1234567890-print.png?amount=0&addInfo=Dam%20cuoi&accountName=NGUYEN%20DAI%20NGHIA' },
+  { bank:'TECHCOMBANK',  name:'LÊ THỊ NHUNG',     number:'0987654321', qr:'https://img.vietqr.io/image/TCB-0987654321-print.png?amount=0&addInfo=Dam%20cuoi&accountName=LE%20THI%20NHUNG' },
+];
 
 export default function Gifts() {
-  const ref = useRef(null);
   const [flipped, setFlipped] = useState(false);
+  const [active,  setActive]  = useState(0);
+  const [copied,  setCopied]  = useState(false);
 
-  useEffect(() => {
-    gsap.from('.gift-container', {
-      scrollTrigger: { trigger: ref.current, start: 'top 70%' },
-      y: 60, opacity: 0, duration: 1.8, ease: 'power3.out',
-    });
-  }, []);
+  const copy = txt => {
+    navigator.clipboard.writeText(txt).then(()=>{ setCopied(true); setTimeout(()=>setCopied(false),2000); });
+  };
+
+  const acc = ACCOUNTS[active];
 
   return (
-    <section ref={ref} className="section-padding" style={{ background: 'var(--bg-cream)', perspective: '1500px' }}>
-      <div style={{ maxWidth: '480px', margin: '0 auto', textAlign: 'center' }}>
+    <section className="section section--warm" id="gifts" style={{ textAlign:'center' }}>
+      <div className="fade-up" style={{ maxWidth:'520px', margin:'0 auto' }}>
+        <span className="eyebrow" style={{ marginBottom:'1rem' }}>Phúc Bảo</span>
+        <h2 className="f-script" style={{ fontSize:'clamp(3rem,7vw,5rem)', color:'var(--ruby)', lineHeight:1 }}>Gửi Lời Chúc Phúc</h2>
+        <p className="f-sans" style={{ fontSize:'11px', color:'var(--muted)', letterSpacing:'.04em', margin:'1.5rem 0 3rem' }}>
+          Chạm thẻ để xem thông tin chuyển khoản
+        </p>
+        <div className="rule-gold" style={{ width:'80px', margin:'0 auto 3rem' }} />
 
-        <div className="fade-up" style={{ marginBottom: '3rem' }}>
-          <p className="font-sans" style={{ fontSize:'11px', letterSpacing:'.4em', color:'var(--cherry-primary)', textTransform:'uppercase', marginBottom:'.8rem', fontWeight:600 }}>Phúc Báo</p>
-          <h2 className="font-script" style={{ fontSize:'4rem', color:'var(--cherry-dark)', margin:'0 0 .5rem' }}>Gửi Lời Chúc Phúc</h2>
-          <div className="divider-gold" style={{ margin:'.8rem auto' }}/>
-          <p className="font-sans" style={{ fontSize:'12px', color:'var(--text-light)', letterSpacing:'.15em' }}>
-            {flipped ? '← Chạm để quay lại' : 'Chạm thẻ để xem số tài khoản →'}
-          </p>
-        </div>
-
-        {/* 3-D flip card */}
-        <div
-          className="gift-container"
-          onClick={() => setFlipped(f => !f)}
-          style={{
-            width:'100%', height:'560px',
-            position:'relative', cursor:'pointer',
+        {/* Flip card */}
+        <div style={{ perspective:'1200px', cursor:'pointer', marginBottom:'2rem' }} onClick={()=>setFlipped(f=>!f)}>
+          <div style={{
+            position:'relative', width:'100%', maxWidth:'380px', height:'480px', margin:'0 auto',
             transformStyle:'preserve-3d',
             transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-            transition:'transform 1.1s cubic-bezier(.23,1,.32,1)',
-          }}
-        >
-
-          {/* ── FRONT: Red card with QR visible ── */}
-          <div style={{
-            position:'absolute', inset:0, backfaceVisibility:'hidden', WebkitBackfaceVisibility:'hidden',
-            background:'linear-gradient(145deg, #8B1A28 0%, #B22222 40%, #8B1A28 70%, #5A0F19 100%)',
-            borderRadius:'16px',
-            boxShadow:'0 30px 70px rgba(128,0,0,.35), 0 10px 20px rgba(0,0,0,.2)',
-            border:'2px solid rgba(212,175,55,.3)',
-            display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'space-between',
-            padding:'1.8rem 1.5rem',
-            overflow:'hidden',
+            transition:'transform .7s cubic-bezier(.4,0,.2,1)',
           }}>
-            {/* Inner frames */}
-            <div style={{ position:'absolute', inset:'12px', border:'1px solid rgba(212,175,55,.5)', borderRadius:'8px', pointerEvents:'none' }}/>
-            <div style={{ position:'absolute', inset:'20px', border:'1px solid rgba(212,175,55,.2)', borderRadius:'4px', pointerEvents:'none' }}/>
 
-            {/* Corners */}
-            {[['tl',0,0],['tr',0,'auto'],['bl','auto',0],['br','auto','auto']].map(([k,t,r])=>(
-              <svg key={k} style={{ position:'absolute', top: t===0?'18px':'auto', bottom: t==='auto'?'18px':'auto', left: r===0?'18px':'auto', right: r==='auto'?'18px':'auto', width:'22px', height:'22px', transform: k==='tr'?'scaleX(-1)': k==='bl'?'scaleY(-1)': k==='br'?'scale(-1)':'none' }} viewBox="0 0 40 40" fill="none" stroke="rgba(212,175,55,.8)" strokeWidth="1.5">
-                <path d="M0,0 L15,0 A25 25 0 0 1 40 25 L40,40"/>
-              </svg>
-            ))}
-
-            {/* Top seal */}
-            <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'.4rem' }}>
-              <div style={{ width:'52px', height:'52px', borderRadius:'50%', background:'radial-gradient(circle at 30% 30%, #FFF8E1, #D4AF37 50%, #8B6508)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 8px 20px rgba(0,0,0,.5), inset 0 2px 4px rgba(255,255,255,.6)' }}>
-                <span className="font-serif" style={{ fontSize:'1.6rem', color:'#4A0A10', fontWeight:700 }}>囍</span>
+            {/* FRONT — red hồng bao */}
+            <div style={{
+              position:'absolute', inset:0, backfaceVisibility:'hidden',
+              background:'linear-gradient(160deg,#B52525 0%,#7B0E0E 60%,#5C0808 100%)',
+              border:'2px solid rgba(201,169,110,.4)',
+              display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
+              padding:'2rem', boxShadow:'0 30px 80px rgba(0,0,0,.2)',
+            }}>
+              <div style={{ width:'70px', height:'70px', borderRadius:'50%', border:'2px solid rgba(201,169,110,.5)', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'2rem' }}>
+                <span style={{ fontSize:'2.2rem' }}>🌸</span>
               </div>
-              <h3 className="font-script" style={{ fontSize:'2.4rem', color:'#F3E5AB', margin:0, textShadow:'0 2px 8px rgba(0,0,0,.6)' }}>Hồng Bao</h3>
-              <p className="font-sans" style={{ fontSize:'10px', letterSpacing:'.3em', color:'rgba(243,229,171,.7)', textTransform:'uppercase', margin:0 }}>Đại Nghĩa & Thị Nhung</p>
+              <h3 className="f-script" style={{ fontSize:'3rem', color:'#F8EDD5', marginBottom:'1rem' }}>Hồng Bao</h3>
+              <p className="eyebrow" style={{ color:'rgba(201,169,110,.7)', marginBottom:'2rem' }}>Đại Nghĩa &amp; Thị Nhung</p>
+              <p className="f-cormorant" style={{ fontStyle:'italic', color:'rgba(248,237,213,.6)', fontSize:'1rem' }}>Chạm để lật →</p>
             </div>
 
-            {/* QR Code — visible on front */}
-            <div style={{ background:'#fff', padding:'14px', borderRadius:'10px', boxShadow:'0 15px 35px rgba(0,0,0,.4)' }}>
-              <img
-                src="https://api.vietqr.io/image/970436-123456789-n5Q3mPQ.jpg?accountName=NGUYEN%20DAI%20NGHIA&amount=0&addInfo=Chuc%20Mung%20Dam%20Cuoi"
-                alt="QR Code"
-                style={{ width:'200px', height:'200px', display:'block' }}
-              />
-            </div>
+            {/* BACK — banking info */}
+            <div style={{
+              position:'absolute', inset:0, backfaceVisibility:'hidden',
+              transform:'rotateY(180deg)',
+              background:'#fff', border:'1px solid rgba(201,169,110,.2)',
+              display:'flex', flexDirection:'column', alignItems:'center',
+              padding:'2.5rem 2rem', boxShadow:'0 30px 80px rgba(0,0,0,.12)',
+            }}>
 
-            {/* Bottom bank info */}
-            <div style={{ textAlign:'center' }}>
-              <p className="font-sans" style={{ fontSize:'11px', letterSpacing:'.25em', color:'rgba(243,229,171,.8)', textTransform:'uppercase', marginBottom:'.3rem' }}>Vietcombank</p>
-              <p className="font-script" style={{ fontSize:'1.5rem', color:'#F3E5AB', margin:0, textShadow:'0 1px 4px rgba(0,0,0,.5)' }}>Nguyễn Đại Nghĩa</p>
-            </div>
-          </div>
+              {/* Tab switch */}
+              <div style={{ display:'flex', gap:'.5rem', marginBottom:'2rem', width:'100%' }}>
+                {ACCOUNTS.map((a,i)=>(
+                  <button key={i} onClick={e=>{e.stopPropagation();setActive(i);}} style={{
+                    flex:1, padding:'.5rem', fontFamily:'Montserrat', fontSize:'8px', letterSpacing:'.25em', textTransform:'uppercase',
+                    border:`1px solid ${active===i?'var(--ruby)':'rgba(201,169,110,.25)'}`,
+                    background: active===i?'var(--ruby)':'transparent',
+                    color: active===i?'#fff':'var(--muted)', cursor:'pointer', transition:'all .2s',
+                  }}>{a.bank}</button>
+                ))}
+              </div>
 
-          {/* ── BACK: envelope_back_qr.png ── */}
-          <div style={{
-            position:'absolute', inset:0, backfaceVisibility:'hidden', WebkitBackfaceVisibility:'hidden',
-            transform:'rotateY(180deg)',
-            backgroundImage:`url("${import.meta.env.BASE_URL}envelope_back_qr.png")`,
-            backgroundSize:'cover', backgroundPosition:'center',
-            borderRadius:'16px',
-            boxShadow:'0 30px 70px rgba(0,0,0,.15)',
-            border:'1px solid rgba(212,175,55,.35)',
-            display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
-            padding:'2rem',
-            gap:'1.5rem',
-            overflow:'hidden',
-          }}>
-            {/* Overlay so content stays readable over the patterned background */}
-            <div style={{ position:'absolute', inset:0, background:'rgba(253,251,240,0.78)', pointerEvents:'none' }}/>
+              {/* QR */}
+              <img src={acc.qr} alt="QR" style={{ width:'160px', height:'160px', objectFit:'contain', border:'1px solid rgba(0,0,0,.08)', marginBottom:'1.5rem' }}
+                onError={e=>{e.target.style.display='none';}}/>
 
-            <h3 className="font-script" style={{ fontSize:'2.5rem', color:'var(--cherry-dark)', margin:0, position:'relative', zIndex:1 }}>Thông Tin Chuyển Khoản</h3>
-            <div className="divider-gold" style={{ position:'relative', zIndex:1 }}/>
+              <p className="f-serif" style={{ fontWeight:600, color:'var(--charcoal)', marginBottom:'.3rem' }}>{acc.name}</p>
+              <p className="eyebrow" style={{ marginBottom:'.3rem' }}>{acc.bank}</p>
+              <p className="f-cormorant" style={{ fontSize:'1.2rem', color:'var(--charcoal)', marginBottom:'1.5rem', letterSpacing:'.05em' }}>{acc.number}</p>
 
-            <div style={{ width:'100%', display:'flex', flexDirection:'column', gap:'1rem', position:'relative', zIndex:1 }}>
-              {[
-                { label:'Chủ tài khoản', value:'Nguyễn Đại Nghĩa' },
-                { label:'Số tài khoản',  value:'123 456 789' },
-                { label:'Ngân hàng',     value:'Vietcombank' },
-                { label:'Nội dung',      value:'Chúc mừng đám cưới' },
-              ].map(row => (
-                <div key={row.label} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', borderBottom:'1px solid rgba(212,175,55,.2)', paddingBottom:'.8rem' }}>
-                  <span className="font-sans" style={{ fontSize:'11px', letterSpacing:'.1em', color:'var(--text-light)', textTransform:'uppercase' }}>{row.label}</span>
-                  <span className="font-serif" style={{ fontSize:'1.1rem', color:'var(--cherry-dark)', fontWeight:500 }}>{row.value}</span>
-                </div>
-              ))}
+              <button onClick={e=>{e.stopPropagation();copy(acc.number);}} style={{
+                padding:'.7rem 2rem', border:'1px solid rgba(201,169,110,.4)',
+                background: copied?'var(--ruby)':'transparent',
+                color: copied?'#fff':'var(--gold)',
+                fontFamily:'Montserrat', fontSize:'8px', letterSpacing:'.3em', textTransform:'uppercase',
+                cursor:'pointer', transition:'all .25s',
+              }}>
+                {copied ? '✓ Đã Sao Chép' : 'Sao Chép STK'}
+              </button>
             </div>
           </div>
-
         </div>
       </div>
     </section>

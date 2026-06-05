@@ -1,94 +1,144 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-gsap.registerPlugin(ScrollTrigger);
+
+/* ── Gold dust particles ── */
+function GoldDust() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const c = ref.current, ctx = c.getContext('2d');
+    let W, H, raf;
+    const resize = () => { W = c.width = window.innerWidth; H = c.height = window.innerHeight; };
+    resize();
+    window.addEventListener('resize', resize);
+    const pts = Array.from({ length: 60 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 1.4 + .3,
+      vy: -(Math.random() * .3 + .08),
+      vx: (Math.random() - .5) * .15,
+      a: Math.random() * Math.PI * 2,
+    }));
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      pts.forEach(p => {
+        p.x += p.vx; p.y += p.vy; p.a += .006;
+        if (p.y < -4) p.y = H + 4;
+        if (p.x < -4) p.x = W + 4;
+        if (p.x > W + 4) p.x = -4;
+        const op = Math.sin(p.a) * .4 + .55;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(201,169,110,${op * .75})`;
+        ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+  }, []);
+  return <canvas ref={ref} style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none' }} />;
+}
 
 export default function Hero() {
-  const sectionRef = useRef(null);
-  const bgRef      = useRef(null);
-  const contentRef = useRef(null);
+  const ref = useRef(null);
 
   useEffect(() => {
-    // Scroll parallax
-    gsap.to(bgRef.current, {
-      yPercent: 28, ease:'none',
-      scrollTrigger: { trigger: sectionRef.current, start:'top top', end:'bottom top', scrub:true },
-    });
-
-    // Stagger entrance
-    gsap.fromTo(
-      contentRef.current.querySelectorAll('.hl'),
-      { opacity:0, y:45 },
-      { opacity:1, y:0, duration:1.8, stagger:.18, ease:'power3.out', delay:.5 }
+    const els = ref.current.querySelectorAll('[data-reveal]');
+    gsap.fromTo(els,
+      { opacity: 0, y: 70 },
+      { opacity: 1, y: 0, duration: 1.8, stagger: .22, ease: 'power3.out', delay: .3 }
     );
-
-    // Mouse parallax
-    const onMove = e => {
-      const xP = (e.clientX / window.innerWidth  - .5) * 20;
-      const yP = (e.clientY / window.innerHeight - .5) * 14;
-      gsap.to(bgRef.current,      { x: xP * 1.6, y: yP * 1.6, duration:1.4, ease:'power2.out' });
-      gsap.to(contentRef.current, { x: xP * -.5, y: yP * -.5, duration:1.4, ease:'power2.out' });
-    };
-    window.addEventListener('mousemove', onMove);
-    return () => window.removeEventListener('mousemove', onMove);
   }, []);
 
   return (
-    <section ref={sectionRef} style={{ position:'relative', height:'100vh', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
+    <section style={{
+      position: 'relative', height: '100vh', overflow: 'hidden',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      background: 'radial-gradient(ellipse 120% 100% at 50% 100%, #4A0C0C 0%, #1C0408 30%, #0D0209 60%, #080508 100%)',
+    }}>
 
-      {/* BG photo */}
-      <div ref={bgRef} style={{
-        position:'absolute', top:'-12%', left:'-6%', right:'-6%', bottom:'-12%',
-        backgroundImage:'url("https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&q=90&w=1920")',
-        backgroundSize:'cover', backgroundPosition:'center 35%',
-        zIndex:1,
-      }}/>
+      <GoldDust />
 
-      {/* Multi-layer atmospheric overlays */}
-      <div style={{ position:'absolute', inset:0, zIndex:2, background:'linear-gradient(to bottom, rgba(248,245,240,.65) 0%, rgba(248,245,240,.45) 50%, rgba(248,245,240,.72) 100%)' }}/>
-      <div style={{ position:'absolute', inset:0, zIndex:2, background:'radial-gradient(ellipse 65% 70% at 50% 50%, transparent 20%, rgba(245,240,232,.65) 100%)' }}/>
-      {/* Top vignette */}
-      <div style={{ position:'absolute', top:0, left:0, right:0, height:'28%', zIndex:3, background:'linear-gradient(to bottom, rgba(248,244,238,.85), transparent)', pointerEvents:'none' }}/>
-      {/* Bottom vignette */}
-      <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'35%', zIndex:3, background:'linear-gradient(to top, rgba(248,244,238,.92), transparent)', pointerEvents:'none' }}/>
+      {/* Warm center glow */}
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
+        background: 'radial-gradient(ellipse 45% 35% at 50% 52%, rgba(140,30,20,.1) 0%, transparent 70%)',
+      }} />
+
+      {/* Corner brackets */}
+      {[[0,0,'0'],[0,1,'90'],[1,0,'270'],[1,1,'180']].map(([r,c,rot],i) => (
+        <svg key={i} width="48" height="48" viewBox="0 0 48 48" fill="none" style={{
+          position: 'absolute', zIndex: 3, opacity: .45,
+          top: r ? 'auto' : '24px', bottom: r ? '24px' : 'auto',
+          left: c ? 'auto' : '24px', right: c ? '24px' : 'auto',
+          transform: `rotate(${rot}deg)`,
+        }}>
+          <path d="M2 46L2 2L46 2" stroke="rgba(201,169,110,.8)" strokeWidth="1.5" />
+        </svg>
+      ))}
 
       {/* CONTENT */}
-      <div ref={contentRef} style={{ position:'relative', zIndex:10, textAlign:'center', padding:'0 1.5rem', width:'100%', maxWidth:'800px' }}>
+      <div ref={ref} style={{
+        position: 'relative', zIndex: 10,
+        textAlign: 'center', padding: '0 2rem', width: '100%',
+      }}>
 
-        <p className="hl font-sans" style={{ fontSize:'10px', letterSpacing:'.6em', textTransform:'uppercase', color:'var(--cherry-primary)', fontWeight:700, margin:'0 0 1.8rem', opacity:0 }}>
-          Lễ Thành Hôn
+        {/* Eyebrow */}
+        <p data-reveal className="eyebrow" style={{
+          color: 'rgba(201,169,110,.75)', marginBottom: '2.5rem',
+          opacity: 0,
+        }}>
+          Lễ Thành Hôn &nbsp;·&nbsp; 20 · 10 · 2026
         </p>
 
-        <h1 className="hl font-script" style={{ fontSize:'clamp(5.5rem,16vw,10rem)', color:'var(--cherry-dark)', lineHeight:.85, margin:0, textShadow:'0 6px 20px rgba(0,0,0,.05)', opacity:0 }}>
-          Đại Nghĩa
-        </h1>
+        {/* Rule */}
+        <div data-reveal style={{ opacity: 0, width: '160px', height: '1px', margin: '0 auto 3rem', background: 'linear-gradient(90deg,transparent,rgba(201,169,110,.7),transparent)' }} />
 
-        <p className="hl" style={{ opacity:0 }}>
-          <span className="font-serif" style={{ fontSize:'clamp(2rem,5vw,3rem)', fontStyle:'italic', color:'var(--gold-champagne)' }}>&amp;</span>
-        </p>
+        {/* Name 1 — GIANT */}
+        <h1 data-reveal className="f-script" style={{
+          fontSize: 'clamp(5.5rem, 18vw, 13rem)',
+          color: '#F8EDD5', lineHeight: .88, margin: 0,
+          textShadow: '0 0 120px rgba(180,60,20,.25)',
+          opacity: 0,
+        }}>Đại Nghĩa</h1>
 
-        <h1 className="hl font-script" style={{ fontSize:'clamp(5.5rem,16vw,10rem)', color:'var(--cherry-dark)', lineHeight:.85, margin:'0 0 3rem', textShadow:'0 6px 20px rgba(0,0,0,.05)', opacity:0 }}>
-          Thị Nhung
-        </h1>
+        {/* & separator */}
+        <p data-reveal className="f-cormorant" style={{
+          fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)',
+          fontStyle: 'italic', color: 'rgba(201,169,110,.8)',
+          margin: '1.2rem 0', opacity: 0,
+          letterSpacing: '.08em',
+        }}>&amp;</p>
 
-        {/* Date badge */}
-        <div className="hl" style={{ display:'inline-flex', alignItems:'center', gap:'1.2rem', opacity:0 }}>
-          <div style={{ width:'50px', height:'1px', background:'var(--gold-champagne)' }}/>
-          <div style={{ border:'1px solid rgba(212,175,55,.55)', padding:'.9rem 2.5rem' }}>
-            <p className="font-sans" style={{ fontSize:'12px', letterSpacing:'.45em', color:'var(--cherry-dark)', textTransform:'uppercase', margin:0, fontWeight:500 }}>
-              20 · 10 · 2026
-            </p>
-          </div>
-          <div style={{ width:'50px', height:'1px', background:'var(--gold-champagne)' }}/>
+        {/* Name 2 — GIANT */}
+        <h1 data-reveal className="f-script" style={{
+          fontSize: 'clamp(5.5rem, 18vw, 13rem)',
+          color: '#F8EDD5', lineHeight: .88, margin: '0 0 3.5rem',
+          textShadow: '0 0 120px rgba(180,60,20,.25)',
+          opacity: 0,
+        }}>Thị Nhung</h1>
+
+        {/* Rule */}
+        <div data-reveal style={{ opacity: 0, width: '220px', height: '1px', margin: '0 auto 2.5rem', background: 'linear-gradient(90deg,transparent,rgba(201,169,110,.7),transparent)' }} />
+
+        {/* Date */}
+        <div data-reveal style={{ display: 'inline-flex', alignItems: 'center', gap: '1.2rem', opacity: 0 }}>
+          <div style={{ width: '50px', height: '1px', background: 'linear-gradient(to left,rgba(201,169,110,.7),transparent)' }} />
+          <span className="f-sans" style={{ fontSize: '10px', letterSpacing: '.55em', color: 'rgba(201,169,110,.75)', textTransform: 'uppercase' }}>
+            20 · 10 · 2026
+          </span>
+          <div style={{ width: '50px', height: '1px', background: 'linear-gradient(to right,rgba(201,169,110,.7),transparent)' }} />
         </div>
       </div>
 
       {/* Scroll cue */}
-      <div style={{ position:'absolute', bottom:'5%', left:'50%', transform:'translateX(-50%)', zIndex:10, display:'flex', flexDirection:'column', alignItems:'center', gap:'.5rem' }}>
-        <p className="font-sans" style={{ fontSize:'8px', letterSpacing:'.4em', color:'rgba(139,26,40,.5)', textTransform:'uppercase', margin:0 }}>Cuộn xuống</p>
-        <div style={{ width:'1px', height:'40px', background:'linear-gradient(to bottom, rgba(212,175,55,.7), transparent)', animation:'scrollCue 1.6s ease-in-out infinite' }}/>
+      <div style={{
+        position: 'absolute', bottom: '36px', left: '50%', transform: 'translateX(-50%)',
+        zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.5rem',
+      }}>
+        <span className="f-sans" style={{ fontSize: '7px', letterSpacing: '.6em', color: 'rgba(201,169,110,.4)', textTransform: 'uppercase' }}>Cuộn xuống</span>
+        <div style={{ width: '1px', height: '50px', background: 'linear-gradient(to bottom,rgba(201,169,110,.7),transparent)', animation: 'scrollCue 1.8s ease-in-out infinite' }} />
       </div>
-      <style>{`@keyframes scrollCue { 0%,100%{opacity:.5;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.4)} }`}</style>
     </section>
   );
 }
