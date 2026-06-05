@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Invitation() {
   return (
-    <section className="sec s-cream" style={{ textAlign: 'center' }}>
+    <section id="invitation" className="sec s-cream" style={{ textAlign: 'center' }}>
       {/* Top ornament */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '40px' }}>
         <div style={{ width: '80px', height: '1px', background: 'linear-gradient(to left, var(--gold), transparent)' }} />

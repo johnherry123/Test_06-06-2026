@@ -11,7 +11,7 @@ export default function RSVP() {
   };
 
   return (
-    <section className="sec s-ivory" id="rsvp" style={{ textAlign: 'center' }}>
+    <section id="rsvp" className="sec s-ivory" style={{ textAlign: 'center' }}>
       {/* Background pattern */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',

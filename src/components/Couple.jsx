@@ -17,7 +17,7 @@ const PEOPLE = [
 
 export default function Couple() {
   return (
-    <section className="sec s-warm">
+    <section id="couple" className="sec s-warm">
       {/* Decorative top edge */}
       <div style={{
         position: 'absolute', top: 0, left: 0, right: 0, height: '1px',
