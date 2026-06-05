@@ -141,7 +141,7 @@ function GoldDust() {
 }
 
 /* ─── Main Component ─── */
-export default function EnvelopePortal({ onOpenComplete, guestName }) {
+export default function EnvelopePortal({ onOpenComplete, guestName, onSealClick }) {
   const [opened, setOpened]     = useState(false);
   const [sealHovered, setSealHovered] = useState(false);
   const containerRef = useRef(null);
@@ -183,6 +183,9 @@ export default function EnvelopePortal({ onOpenComplete, guestName }) {
   const handleOpen = () => {
     if (opened) return;
     setOpened(true);
+
+    // 🎵 Trigger music at the exact user gesture moment
+    onSealClick?.();
 
     // Wax seal crack — first tactile response
     playSealCrack();

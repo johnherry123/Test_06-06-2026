@@ -147,42 +147,75 @@ function FloatingNav({ visible }) {
 }
 
 /* ══════════════════════════════════════════════
-   MUSIC TOGGLE BUTTON (persistent)
+   MUTE BUTTON (discrete — auto-hides)
 ══════════════════════════════════════════════ */
-function MusicButton({ playing, onToggle, visible }) {
+function MuteButton({ muted, onToggle, visible }) {
+  const [show, setShow] = useState(false);
+  const hideTimer = useRef(null);
+
+  // Show briefly after mount, then hide
+  useEffect(() => {
+    if (!visible) return;
+    setShow(true);
+    hideTimer.current = setTimeout(() => setShow(false), 3500);
+    return () => clearTimeout(hideTimer.current);
+  }, [visible]);
+
+  const handleMouseEnter = () => {
+    clearTimeout(hideTimer.current);
+    setShow(true);
+  };
+  const handleMouseLeave = () => {
+    hideTimer.current = setTimeout(() => setShow(false), 1800);
+  };
+
   if (!visible) return null;
+
   return (
-    <button
-      id="music-toggle"
-      onClick={onToggle}
-      title={playing ? 'Tắt nhạc' : 'Bật nhạc'}
+    // Invisible hover zone — always present so user can reveal the button
+    <div
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       style={{
-        position: 'fixed', bottom: '28px', right: '28px', zIndex: 9998,
-        width: '52px', height: '52px', borderRadius: '50%',
-        border: `1.5px solid ${playing ? 'rgba(212,175,55,.8)' : 'rgba(212,175,55,.4)'}`,
-        background: 'rgba(8,1,1,.8)',
-        backdropFilter: 'blur(12px)',
-        cursor: 'pointer',
+        position: 'fixed', bottom: '16px', right: '16px', zIndex: 9998,
+        width: '72px', height: '72px',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        boxShadow: playing
-          ? '0 0 0 0 rgba(212,175,55,.4), 0 8px 30px rgba(0,0,0,.5)'
-          : '0 4px 20px rgba(0,0,0,.4)',
-        animation: playing ? 'musicRipple 2s ease-in-out infinite' : 'none',
-        transition: 'border-color .4s, box-shadow .4s',
       }}
     >
-      {playing ? (
-        // Pause icon with animated bars
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(212,175,55,.95)">
-          <rect x="6" y="4" width="4" height="16" rx="1.5"/>
-          <rect x="14" y="4" width="4" height="16" rx="1.5"/>
-        </svg>
-      ) : (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(212,175,55,.8)">
-          <path d="M8 5v14l11-7z"/>
-        </svg>
-      )}
-    </button>
+      <button
+        onClick={onToggle}
+        title={muted ? 'Bật nhạc' : 'Tắt tiếng'}
+        style={{
+          width: '42px', height: '42px', borderRadius: '50%',
+          border: '1px solid rgba(201,168,76,.4)',
+          background: 'rgba(8,1,1,.7)',
+          backdropFilter: 'blur(10px)',
+          cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 4px 16px rgba(0,0,0,.35)',
+          opacity: show ? 1 : 0,
+          transform: show ? 'scale(1)' : 'scale(0.8)',
+          transition: 'opacity .4s ease, transform .4s ease',
+          pointerEvents: show ? 'auto' : 'none',
+        }}
+      >
+        {muted ? (
+          // Muted icon
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,.7)" strokeWidth="2" strokeLinecap="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <line x1="23" y1="9" x2="17" y2="15"/>
+            <line x1="17" y1="9" x2="23" y2="15"/>
+          </svg>
+        ) : (
+          // Sound on icon
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,.8)" strokeWidth="2" strokeLinecap="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          </svg>
+        )}
+      </button>
+    </div>
   );
 }
 
@@ -305,11 +338,12 @@ function Countdown() {
    MAIN APP
 ══════════════════════════════════════════════ */
 export default function App() {
-  const [open, setOpen]               = useState(false);
-  const [musicVisible, setMusicVisible] = useState(false);
-  const [musicPlaying, setMusicPlaying] = useState(false);
-  const ytPlayerRef   = useRef(null);
-  const ytContainer   = useRef(null);
+  const [open, setOpen]     = useState(false);
+  const [muted, setMuted]   = useState(false);
+  const [musicReady, setMusicReady] = useState(false);
+  const ytPlayerRef = useRef(null);
+  const ytContainer = useRef(null);
+  const musicStarted = useRef(false);
 
   // Preload YouTube API on mount
   useEffect(() => {
@@ -323,7 +357,7 @@ export default function App() {
           rel: 0, modestbranding: 1,
           start: 0,
         },
-        events: { onReady: () => {} },
+        events: { onReady: () => setMusicReady(true) },
       });
     });
   }, []);
@@ -347,31 +381,33 @@ export default function App() {
     return () => cancelAnimationFrame(raf);
   }, [open]);
 
-  const startMusic = useCallback(() => {
-    const p = ytPlayerRef.current;
-    if (!p) return;
-    try {
-      p.setVolume(50);
-      p.playVideo();
-      setMusicPlaying(true);
-      setMusicVisible(true);
-    } catch (_) {}
+  // Called by EnvelopePortal at the exact moment user clicks seal (= user gesture)
+  const handleSealClick = useCallback(() => {
+    if (musicStarted.current) return;
+    musicStarted.current = true;
+    const tryPlay = () => {
+      const p = ytPlayerRef.current;
+      if (!p || typeof p.playVideo !== 'function') {
+        setTimeout(tryPlay, 200); // Player not ready yet, retry
+        return;
+      }
+      try { p.setVolume(55); p.playVideo(); } catch (_) {}
+    };
+    tryPlay();
   }, []);
 
-  const toggleMusic = useCallback(() => {
+  const toggleMute = useCallback(() => {
     const p = ytPlayerRef.current;
     if (!p) return;
     try {
-      if (musicPlaying) { p.pauseVideo(); setMusicPlaying(false); }
-      else               { p.playVideo();  setMusicPlaying(true);  }
+      if (muted) { p.unMute(); p.setVolume(55); setMuted(false); }
+      else        { p.mute();                     setMuted(true);  }
     } catch (_) {}
-  }, [musicPlaying]);
+  }, [muted]);
 
   const handlePortalComplete = useCallback(() => {
     setOpen(true);
-    // Slight delay so music starts as the page appears
-    setTimeout(startMusic, 600);
-  }, [startMusic]);
+  }, []);
 
   return (
     <>
@@ -381,7 +417,7 @@ export default function App() {
       </div>
 
       {/* Envelope portal */}
-      {!open && <EnvelopePortal onOpenComplete={handlePortalComplete} />}
+      {!open && <EnvelopePortal onOpenComplete={handlePortalComplete} onSealClick={handleSealClick} />}
 
       {/* Main content */}
       {open && (
@@ -472,7 +508,7 @@ export default function App() {
       )}
 
       {/* Persistent UI — visible after portal */}
-      <MusicButton visible={musicVisible} playing={musicPlaying} onToggle={toggleMusic} />
+      <MuteButton visible={open} muted={muted} onToggle={toggleMute} />
       <ScrollTop visible={open} />
 
       <style>{`
