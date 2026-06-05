@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import gsap from 'gsap';
-import GateIntro from './components/GateIntro';
+import EnvelopePortal from './components/EnvelopePortal';
 import Hero from './components/Hero';
 import Invitation from './components/Invitation';
 import Couple from './components/Couple';
@@ -37,7 +37,9 @@ export default function App() {
 
   return (
     <>
-      {!isEntered && <GateIntro onOpen={() => setIsEntered(true)} />}
+      {!isEntered && (
+        <EnvelopePortal onOpenComplete={() => setIsEntered(true)} />
+      )}
 
       <div style={{
         opacity: isEntered ? 1 : 0,
