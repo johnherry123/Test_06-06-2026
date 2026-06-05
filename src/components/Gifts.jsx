@@ -91,7 +91,7 @@ export default function Gifts() {
           <div style={{
             position:'absolute', inset:0, backfaceVisibility:'hidden', WebkitBackfaceVisibility:'hidden',
             transform:'rotateY(180deg)',
-            backgroundImage:'url("/envelope_back_qr.png")',
+            backgroundImage:`url("${import.meta.env.BASE_URL}envelope_back_qr.png")`,
             backgroundSize:'cover', backgroundPosition:'center',
             borderRadius:'16px',
             boxShadow:'0 30px 70px rgba(0,0,0,.15)',

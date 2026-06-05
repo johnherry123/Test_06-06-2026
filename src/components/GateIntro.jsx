@@ -158,7 +158,7 @@ function DoorPanel({ side, name, panelRef }) {
         transformOrigin: `${isLeft ? 'left' : 'right'} center`,
         transformStyle: 'preserve-3d',
         // ── Real gate image, sliced in half ──
-        backgroundImage: 'url("/gate-bg.png")',
+        backgroundImage: `url("${import.meta.env.BASE_URL}gate-bg.png")`,
         backgroundSize: '200% 100%',
         backgroundPosition: `${isLeft ? 'left' : 'right'} center`,
         backgroundRepeat: 'no-repeat',

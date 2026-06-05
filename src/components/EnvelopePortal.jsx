@@ -169,7 +169,7 @@ export default function EnvelopePortal({ onOpenComplete, guestName }) {
         {/* ── ENVELOPE BODY (velvet image) ── */}
         <div style={{
           position:'absolute', inset:0, borderRadius:'1.3rem', overflow:'hidden',
-          backgroundImage:'url("/envelope_front_velvet.png")',
+          backgroundImage:`url("${import.meta.env.BASE_URL}envelope_front_velvet.png")`,
           backgroundSize:'cover', backgroundPosition:'center',
           border:'1px solid rgba(212,175,55,.4)',
           zIndex:1,
@@ -181,7 +181,7 @@ export default function EnvelopePortal({ onOpenComplete, guestName }) {
         {/* ── INNER CARD (hidden until open, uses envelope_back.png) ── */}
         <div ref={cardRef} style={{
           position:'absolute', left:'8px', right:'8px', top:'8px', bottom:'8px',
-          backgroundImage:'url("/envelope_back.png")',
+          backgroundImage:`url("${import.meta.env.BASE_URL}envelope_back.png")`,
           backgroundSize:'cover', backgroundPosition:'center',
           borderRadius:'1rem',
           border:'1px solid rgba(212,175,55,.4)',
