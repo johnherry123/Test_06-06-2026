@@ -1,5 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
+
+/* ═══════════════════════════════════════════════
+   YOUTUBE MUSIC PLAYER — Em Đồng Ý
+═══════════════════════════════════════════════ */
+const YT_VIDEO_ID = 'IOe0tNoUGv8';
+
+function loadYouTubeAPI() {
+  return new Promise((resolve) => {
+    if (window.YT && window.YT.Player) { resolve(window.YT); return; }
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+    window.onYouTubeIframeAPIReady = () => resolve(window.YT);
+  });
+}
 
 /* ═══════════════════════════════════════════════
    CANVAS PARTICLE ENGINE — Gold Dust (60fps)
@@ -257,10 +272,13 @@ export default function GateIntro({ onOpen }) {
   const ring1Ref   = useRef(null);
   const ring2Ref   = useRef(null);
   const glowRef    = useRef(null);
-  const audioRef   = useRef(null);
+  const ytPlayerRef = useRef(null);
+  const ytContainerRef = useRef(null);
   const topBarRef  = useRef(null);
   const botBarRef  = useRef(null);
   const [interacted, setInteracted] = useState(false);
+  const [musicPlaying, setMusicPlaying] = useState(false);
+  const [musicReady, setMusicReady] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -280,8 +298,40 @@ export default function GateIntro({ onOpen }) {
     // Glow pulse behind doors
     gsap.to('.gate-bg-glow', { opacity: 0.18, duration: 2.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
 
+    // Preload YouTube API silently
+    loadYouTubeAPI().then((YT) => {
+      if (!ytContainerRef.current) return;
+      ytPlayerRef.current = new YT.Player(ytContainerRef.current, {
+        videoId: YT_VIDEO_ID,
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          loop: 1,
+          playlist: YT_VIDEO_ID,
+          rel: 0,
+          modestbranding: 1,
+          start: 0,
+        },
+        events: {
+          onReady: () => setMusicReady(true),
+        },
+      });
+    });
+
     return () => { document.body.style.overflow = 'auto'; };
   }, []);
+
+  const toggleMusic = useCallback(() => {
+    const player = ytPlayerRef.current;
+    if (!player) return;
+    if (musicPlaying) {
+      player.pauseVideo();
+      setMusicPlaying(false);
+    } else {
+      player.playVideo();
+      setMusicPlaying(true);
+    }
+  }, [musicPlaying]);
 
   const handleOpen = () => {
     if (interacted) return;
@@ -290,10 +340,11 @@ export default function GateIntro({ onOpen }) {
     // Kill the subtle sway loops
     gsap.killTweensOf([leftDoor.current, rightDoor.current]);
 
-    // Try music
-    if (audioRef.current) {
-      audioRef.current.volume = 0.35;
-      audioRef.current.play().catch(() => {});
+    // Play music via YouTube player
+    if (ytPlayerRef.current && musicReady) {
+      ytPlayerRef.current.setVolume(50);
+      ytPlayerRef.current.playVideo();
+      setMusicPlaying(true);
     }
 
     const tl = gsap.timeline({
@@ -364,12 +415,47 @@ export default function GateIntro({ onOpen }) {
           0%,100% { opacity: 0; }
           50%      { opacity: .7; }
         }
+        @keyframes musicPulse {
+          0%,100% { transform: scale(1); }
+          50%      { transform: scale(1.12); }
+        }
       `}</style>
 
-      {/* Audio */}
-      <audio ref={audioRef} loop>
-        <source src="https://cdn.pixabay.com/audio/2022/10/16/audio_12a5d4e93f.mp3" type="audio/mpeg" />
-      </audio>
+      {/* Hidden YouTube Player */}
+      <div style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden', zIndex: -1 }}>
+        <div ref={ytContainerRef} />
+      </div>
+
+      {/* Music toggle button — shown after gate opens */}
+      {interacted && (
+        <button
+          onClick={toggleMusic}
+          title={musicPlaying ? 'Tắt nhạc' : 'Bật nhạc'}
+          style={{
+            position: 'fixed', bottom: '28px', right: '28px',
+            zIndex: 99999,
+            width: '48px', height: '48px', borderRadius: '50%',
+            border: '1.5px solid rgba(212,175,55,.7)',
+            background: 'rgba(10,0,0,.75)',
+            backdropFilter: 'blur(10px)',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 4px 20px rgba(0,0,0,.5), 0 0 12px rgba(212,175,55,.2)',
+            animation: musicPlaying ? 'musicPulse 1.8s ease-in-out infinite' : 'none',
+            transition: 'border-color .3s',
+          }}
+        >
+          {musicPlaying ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(212,175,55,.9)">
+              <rect x="6" y="4" width="4" height="16" rx="1"/>
+              <rect x="14" y="4" width="4" height="16" rx="1"/>
+            </svg>
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(212,175,55,.9)">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          )}
+        </button>
+      )}
 
       {/* Canvas gold dust */}
       <GoldDust />
