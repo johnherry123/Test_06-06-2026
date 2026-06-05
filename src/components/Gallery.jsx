@@ -1,80 +1,152 @@
 import React, { useState } from 'react';
 
 const PHOTOS = [
-  { src:'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=1100&fit=crop&q=85', span:2 },
-  { src:'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=520&fit=crop&q=85', span:1 },
-  { src:'https://images.unsplash.com/photo-1529636798458-92182e662485?w=800&h=520&fit=crop&q=85', span:1 },
-  { src:'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800&h=520&fit=crop&q=85', span:1 },
-  { src:'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=800&h=1100&fit=crop&q=85', span:2 },
+  'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=1000&fit=crop&q=85',
+  'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=560&fit=crop&q=85',
+  'https://images.unsplash.com/photo-1529636798458-92182e662485?w=800&h=560&fit=crop&q=85',
+  'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=800&h=1000&fit=crop&q=85',
+  'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800&h=560&fit=crop&q=85',
+  'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=800&h=560&fit=crop&q=85',
 ];
 
 export default function Gallery() {
   const [lightbox, setLightbox] = useState(null);
 
   return (
-    <section className="section section--dark" id="gallery">
-      <div className="fade-up" style={{ textAlign:'center', marginBottom:'4rem' }}>
-        <span className="eyebrow" style={{ color:'rgba(201,169,110,.7)', marginBottom:'1rem' }}>Khoảnh Khắc</span>
-        <h2 className="f-script" style={{ fontSize:'clamp(3rem,7vw,5rem)', color:'var(--ivory)', lineHeight:1 }}>Bộ Sưu Tập</h2>
-        <div className="rule-gold" style={{ width:'100px', margin:'1.5rem auto 0' }} />
+    <section className="sec s-warm" id="gallery">
+      {/* Decorative top bar */}
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
+        background: 'linear-gradient(90deg, transparent, rgba(139,0,0,.3) 30%, rgba(139,0,0,.3) 70%, transparent)',
+      }} />
+
+      <div className="sec-head fu">
+        <span className="eyebrow">Khoảnh Khắc</span>
+        <h2>Bộ Sưu Tập</h2>
+        <div className="rule-crimson" style={{ width: '60px', margin: '0 auto' }} />
       </div>
 
-      {/* Grid */}
-      <div style={{
-        maxWidth:'980px', margin:'0 auto', padding:'0 1rem',
-        display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'1rem',
-      }}>
-        {PHOTOS.map((p,i) => (
-          <div key={i} onClick={()=>setLightbox(i)} style={{
-            gridColumn: p.span===2 ? 'span 2' : 'span 1',
-            overflow:'hidden', cursor:'pointer', position:'relative',
-          }}>
-            <img src={p.src} alt="" style={{
-              width:'100%', height: p.span===2 ? '420px' : '260px',
-              objectFit:'cover', display:'block',
-              transition:'transform .5s ease, filter .5s ease',
-            }}
-              onMouseEnter={e=>{e.currentTarget.style.transform='scale(1.05)';e.currentTarget.style.filter='brightness(1.08)';}}
-              onMouseLeave={e=>{e.currentTarget.style.transform='scale(1)';e.currentTarget.style.filter='brightness(1)';}}
-            />
-            <div style={{ position:'absolute',inset:0,background:'rgba(8,5,8,0)',transition:'background .3s',
-              display:'flex',alignItems:'center',justifyContent:'center',
-            }}
-              onMouseEnter={e=>e.currentTarget.style.background='rgba(8,5,8,.3)'}
-              onMouseLeave={e=>e.currentTarget.style.background='rgba(8,5,8,0)'}
-            />
-          </div>
-        ))}
+      {/* Masonry grid */}
+      <div className="wrap">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateRows: 'auto',
+          gap: '10px',
+        }}>
+          {PHOTOS.map((src, i) => (
+            <div
+              key={i}
+              className="fu"
+              style={{
+                transitionDelay: `${i * .08}s`,
+                overflow: 'hidden',
+                cursor: 'pointer',
+                aspectRatio: i % 3 === 0 ? '3/4' : '4/3',
+                position: 'relative',
+                background: 'var(--parchment)',
+              }}
+              onClick={() => setLightbox(i)}
+            >
+              <img
+                src={src}
+                alt={`Khoảnh khắc ${i + 1}`}
+                style={{
+                  width: '100%', height: '100%',
+                  objectFit: 'cover',
+                  display: 'block',
+                  transition: 'transform .65s cubic-bezier(.16,1,.3,1)',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'scale(1.07)';
+                  e.currentTarget.nextElementSibling.style.opacity = '1';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.nextElementSibling.style.opacity = '0';
+                }}
+              />
+              {/* Hover overlay */}
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(to bottom, transparent 30%, rgba(80,0,0,.55) 100%)',
+                opacity: 0,
+                transition: 'opacity .4s',
+                display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+                paddingBottom: '16px',
+                pointerEvents: 'none',
+              }}>
+                <span className="eyebrow" style={{ color: 'rgba(232,201,122,.9)', fontSize: '7px' }}>Xem ảnh</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Lightbox */}
       {lightbox !== null && (
-        <div onClick={()=>setLightbox(null)} style={{
-          position:'fixed', inset:0, zIndex:9999,
-          background:'rgba(8,5,8,.95)', display:'flex', alignItems:'center', justifyContent:'center',
-          cursor:'pointer',
-        }}>
-          <img src={PHOTOS[lightbox].src} alt="" style={{ maxWidth:'90vw', maxHeight:'90vh', objectFit:'contain' }}/>
-          {/* Nav */}
-          {lightbox>0 && (
-            <button onClick={e=>{e.stopPropagation();setLightbox(l=>l-1);}} style={{
-              position:'absolute', left:'2rem', top:'50%', transform:'translateY(-50%)',
-              background:'transparent', border:'1px solid rgba(201,169,110,.4)', color:'var(--gold)',
-              fontSize:'1.5rem', padding:'.6rem 1rem', cursor:'pointer',
-            }}>‹</button>
+        <div
+          onClick={() => setLightbox(null)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(10,0,0,.96)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'zoom-out',
+            backdropFilter: 'blur(8px)',
+          }}
+        >
+          <img src={PHOTOS[lightbox]} alt="" style={{
+            maxWidth: '88vw', maxHeight: '88vh',
+            objectFit: 'contain',
+            boxShadow: '0 40px 120px rgba(0,0,0,.8)',
+          }} />
+
+          {/* Prev */}
+          {lightbox > 0 && (
+            <button
+              onClick={e => { e.stopPropagation(); setLightbox(l => l - 1); }}
+              style={{
+                position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)',
+                background: 'rgba(255,255,255,.07)', border: '1px solid rgba(232,201,122,.3)',
+                color: 'var(--gold)', width: '48px', height: '48px',
+                fontSize: '1.4rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', backdropFilter: 'blur(4px)', transition: 'all .2s',
+              }}
+            >‹</button>
           )}
-          {lightbox<PHOTOS.length-1 && (
-            <button onClick={e=>{e.stopPropagation();setLightbox(l=>l+1);}} style={{
-              position:'absolute', right:'2rem', top:'50%', transform:'translateY(-50%)',
-              background:'transparent', border:'1px solid rgba(201,169,110,.4)', color:'var(--gold)',
-              fontSize:'1.5rem', padding:'.6rem 1rem', cursor:'pointer',
-            }}>›</button>
+
+          {/* Next */}
+          {lightbox < PHOTOS.length - 1 && (
+            <button
+              onClick={e => { e.stopPropagation(); setLightbox(l => l + 1); }}
+              style={{
+                position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)',
+                background: 'rgba(255,255,255,.07)', border: '1px solid rgba(232,201,122,.3)',
+                color: 'var(--gold)', width: '48px', height: '48px',
+                fontSize: '1.4rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', backdropFilter: 'blur(4px)', transition: 'all .2s',
+              }}
+            >›</button>
           )}
-          <button onClick={()=>setLightbox(null)} style={{
-            position:'absolute', top:'1.5rem', right:'1.5rem',
-            background:'transparent', border:'none', color:'rgba(201,169,110,.6)',
-            fontSize:'2rem', cursor:'pointer', lineHeight:1,
-          }}>×</button>
+
+          {/* Close */}
+          <button
+            onClick={() => setLightbox(null)}
+            style={{
+              position: 'absolute', top: '20px', right: '20px',
+              background: 'transparent', border: 'none',
+              color: 'rgba(232,201,122,.6)', fontSize: '2.2rem',
+              cursor: 'pointer', lineHeight: 1, transition: 'color .2s',
+            }}
+          >×</button>
+
+          {/* Counter */}
+          <span className="eyebrow" style={{
+            position: 'absolute', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
+            color: 'rgba(232,201,122,.5)', fontSize: '8px',
+          }}>
+            {lightbox + 1} / {PHOTOS.length}
+          </span>
         </div>
       )}
     </section>

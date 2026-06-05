@@ -94,7 +94,7 @@ export default function EnvelopePortal({ onOpenComplete, guestName }) {
     <div ref={containerRef} style={{
       position:'fixed', inset:0, zIndex:9999,
       display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
-      background:'radial-gradient(ellipse 140% 120% at 50% 115%, #C0251A 0%, #8B1208 20%, #5C0808 42%, #360406 65%, #180102 100%)',
+      background:'radial-gradient(ellipse 140% 120% at 50% 115%, #3A1A08 0%, #251008 25%, #180A05 50%, #100604 75%, #0C0402 100%)',
       overflow:'hidden',
     }}>
       <style>{`

@@ -1,143 +1,144 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 
-/* ── Gold dust particles ── */
-function GoldDust() {
-  const ref = useRef(null);
-  useEffect(() => {
-    const c = ref.current, ctx = c.getContext('2d');
-    let W, H, raf;
-    const resize = () => { W = c.width = window.innerWidth; H = c.height = window.innerHeight; };
-    resize();
-    window.addEventListener('resize', resize);
-    const pts = Array.from({ length: 60 }, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      r: Math.random() * 1.4 + .3,
-      vy: -(Math.random() * .3 + .08),
-      vx: (Math.random() - .5) * .15,
-      a: Math.random() * Math.PI * 2,
-    }));
-    const draw = () => {
-      ctx.clearRect(0, 0, W, H);
-      pts.forEach(p => {
-        p.x += p.vx; p.y += p.vy; p.a += .006;
-        if (p.y < -4) p.y = H + 4;
-        if (p.x < -4) p.x = W + 4;
-        if (p.x > W + 4) p.x = -4;
-        const op = Math.sin(p.a) * .4 + .55;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(201,169,110,${op * .75})`;
-        ctx.fill();
-      });
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
-  }, []);
-  return <canvas ref={ref} style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none' }} />;
-}
-
 export default function Hero() {
   const ref = useRef(null);
 
   useEffect(() => {
-    const els = ref.current.querySelectorAll('[data-reveal]');
-    gsap.fromTo(els,
-      { opacity: 0, y: 70 },
-      { opacity: 1, y: 0, duration: 1.8, stagger: .22, ease: 'power3.out', delay: .3 }
-    );
+    // Wait two frames so the DOM is fully painted before GSAP queries
+    const raf = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (!ref.current) return;
+        const els = ref.current.querySelectorAll('.hero-anim');
+        if (!els.length) {
+          // Fallback: make all children visible immediately
+          if (ref.current) ref.current.style.opacity = '1';
+          return;
+        }
+        gsap.fromTo(els,
+          { opacity: 0, y: 44 },
+          { opacity: 1, y: 0, stagger: .18, duration: 1.8, ease: 'power3.out', delay: .3 }
+        );
+      });
+    });
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   return (
     <section style={{
-      position: 'relative', height: '100vh', overflow: 'hidden',
-      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      background: 'radial-gradient(ellipse 120% 100% at 50% 100%, #4A0C0C 0%, #1C0408 30%, #0D0209 60%, #080508 100%)',
+      position: 'relative',
+      height: '100vh',
+      minHeight: '600px',
+      overflow: 'hidden',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
     }}>
+      {/* Background */}
+      <img
+        src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1920&h=1080&fit=crop&q=90"
+        alt=""
+        style={{
+          position: 'absolute', inset: 0,
+          width: '100%', height: '100%',
+          objectFit: 'cover', objectPosition: 'center 30%',
+          zIndex: 0,
+        }}
+      />
 
-      <GoldDust />
-
-      {/* Warm center glow */}
+      {/* Cinematic overlay */}
       <div style={{
-        position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-        background: 'radial-gradient(ellipse 45% 35% at 50% 52%, rgba(140,30,20,.1) 0%, transparent 70%)',
+        position: 'absolute', inset: 0, zIndex: 1,
+        background: 'linear-gradient(to bottom, rgba(5,0,0,.75) 0%, rgba(5,0,0,.55) 45%, rgba(5,0,0,.8) 100%)',
       }} />
 
-      {/* Corner brackets */}
-      {[[0,0,'0'],[0,1,'90'],[1,0,'270'],[1,1,'180']].map(([r,c,rot],i) => (
-        <svg key={i} width="48" height="48" viewBox="0 0 48 48" fill="none" style={{
-          position: 'absolute', zIndex: 3, opacity: .45,
-          top: r ? 'auto' : '24px', bottom: r ? '24px' : 'auto',
-          left: c ? 'auto' : '24px', right: c ? '24px' : 'auto',
-          transform: `rotate(${rot}deg)`,
-        }}>
-          <path d="M2 46L2 2L46 2" stroke="rgba(201,169,110,.8)" strokeWidth="1.5" />
-        </svg>
-      ))}
+      {/* Vignette */}
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
+        background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(0,0,0,.55) 100%)',
+      }} />
 
-      {/* CONTENT */}
+      {/* Content */}
       <div ref={ref} style={{
         position: 'relative', zIndex: 10,
-        textAlign: 'center', padding: '0 2rem', width: '100%',
+        textAlign: 'center',
+        padding: '0 24px',
+        width: '100%',
       }}>
-
-        {/* Eyebrow */}
-        <p data-reveal className="eyebrow" style={{
-          color: 'rgba(201,169,110,.75)', marginBottom: '2.5rem',
+        <p className="hero-anim eyebrow" style={{
+          color: 'rgba(232,201,122,.85)',
+          marginBottom: '20px',
+          letterSpacing: '.9em',
           opacity: 0,
         }}>
-          Lễ Thành Hôn &nbsp;·&nbsp; 20 · 10 · 2026
+          Lễ Thành Hôn · 20 · 10 · 2026
         </p>
 
-        {/* Rule */}
-        <div data-reveal style={{ opacity: 0, width: '160px', height: '1px', margin: '0 auto 3rem', background: 'linear-gradient(90deg,transparent,rgba(201,169,110,.7),transparent)' }} />
-
-        {/* Name 1 — GIANT */}
-        <h1 data-reveal className="f-script" style={{
-          fontSize: 'clamp(5.5rem, 18vw, 13rem)',
-          color: '#F8EDD5', lineHeight: .88, margin: 0,
-          textShadow: '0 0 120px rgba(180,60,20,.25)',
+        <div className="hero-anim" style={{
           opacity: 0,
-        }}>Đại Nghĩa</h1>
+          width: '100px',
+          height: '1px',
+          margin: '0 auto 28px',
+          background: 'linear-gradient(90deg, transparent, rgba(232,201,122,.7), transparent)',
+        }} />
 
-        {/* & separator */}
-        <p data-reveal className="f-cormorant" style={{
-          fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)',
-          fontStyle: 'italic', color: 'rgba(201,169,110,.8)',
-          margin: '1.2rem 0', opacity: 0,
-          letterSpacing: '.08em',
-        }}>&amp;</p>
-
-        {/* Name 2 — GIANT */}
-        <h1 data-reveal className="f-script" style={{
-          fontSize: 'clamp(5.5rem, 18vw, 13rem)',
-          color: '#F8EDD5', lineHeight: .88, margin: '0 0 3.5rem',
-          textShadow: '0 0 120px rgba(180,60,20,.25)',
+        <h1 className="hero-anim f-script" style={{
           opacity: 0,
-        }}>Thị Nhung</h1>
+          fontSize: 'clamp(4.5rem, 18vw, 13rem)',
+          color: '#F5ECD8',
+          lineHeight: .88,
+          margin: 0,
+          textShadow: '0 4px 60px rgba(139,0,0,.5), 0 2px 20px rgba(0,0,0,.5)',
+        }}>
+          Đại Nghĩa
+        </h1>
 
-        {/* Rule */}
-        <div data-reveal style={{ opacity: 0, width: '220px', height: '1px', margin: '0 auto 2.5rem', background: 'linear-gradient(90deg,transparent,rgba(201,169,110,.7),transparent)' }} />
+        <p className="hero-anim f-serif" style={{
+          opacity: 0,
+          fontSize: 'clamp(1.4rem, 3.5vw, 2.6rem)',
+          fontStyle: 'italic',
+          color: 'rgba(232,201,122,.9)',
+          margin: '10px 0',
+        }}>
+          &amp;
+        </p>
 
-        {/* Date */}
-        <div data-reveal style={{ display: 'inline-flex', alignItems: 'center', gap: '1.2rem', opacity: 0 }}>
-          <div style={{ width: '50px', height: '1px', background: 'linear-gradient(to left,rgba(201,169,110,.7),transparent)' }} />
-          <span className="f-sans" style={{ fontSize: '10px', letterSpacing: '.55em', color: 'rgba(201,169,110,.75)', textTransform: 'uppercase' }}>
-            20 · 10 · 2026
+        <h1 className="hero-anim f-script" style={{
+          opacity: 0,
+          fontSize: 'clamp(4.5rem, 18vw, 13rem)',
+          color: '#F5ECD8',
+          lineHeight: .88,
+          margin: '0 0 32px',
+          textShadow: '0 4px 60px rgba(139,0,0,.5), 0 2px 20px rgba(0,0,0,.5)',
+        }}>
+          Thị Nhung
+        </h1>
+
+        <div className="hero-anim" style={{
+          opacity: 0,
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '16px',
+        }}>
+          <div style={{ width: '50px', height: '1px', background: 'linear-gradient(to left, rgba(232,201,122,.7), transparent)' }} />
+          <span className="eyebrow" style={{ color: 'rgba(232,201,122,.8)', fontSize: '8px', letterSpacing: '.7em' }}>
+            Thứ Ba · 20 Tháng 10 · 2026
           </span>
-          <div style={{ width: '50px', height: '1px', background: 'linear-gradient(to right,rgba(201,169,110,.7),transparent)' }} />
+          <div style={{ width: '50px', height: '1px', background: 'linear-gradient(to right, rgba(232,201,122,.7), transparent)' }} />
         </div>
       </div>
 
       {/* Scroll cue */}
       <div style={{
-        position: 'absolute', bottom: '36px', left: '50%', transform: 'translateX(-50%)',
-        zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.5rem',
+        position: 'absolute', bottom: '6%', left: '50%', transform: 'translateX(-50%)',
+        zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
       }}>
-        <span className="f-sans" style={{ fontSize: '7px', letterSpacing: '.6em', color: 'rgba(201,169,110,.4)', textTransform: 'uppercase' }}>Cuộn xuống</span>
-        <div style={{ width: '1px', height: '50px', background: 'linear-gradient(to bottom,rgba(201,169,110,.7),transparent)', animation: 'scrollCue 1.8s ease-in-out infinite' }} />
+        <span className="eyebrow" style={{ color: 'rgba(232,201,122,.35)', fontSize: '7px' }}>Cuộn xuống</span>
+        <div style={{
+          width: '1px', height: '52px',
+          background: 'linear-gradient(to bottom, rgba(232,201,122,.7), transparent)',
+          animation: 'scrollCue 2s ease-in-out infinite',
+        }} />
       </div>
     </section>
   );
