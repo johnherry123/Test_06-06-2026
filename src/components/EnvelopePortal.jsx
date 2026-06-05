@@ -1,5 +1,114 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import gsap from 'gsap';
+
+/* ══════════════════════════════════════════════════
+   WEB AUDIO SOUND ENGINE
+══════════════════════════════════════════════════ */
+let _audioCtx = null;
+function getAudioCtx() {
+  if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return _audioCtx;
+}
+
+// Paper rustle — gentle noise burst
+function playRustle() {
+  try {
+    const ctx = getAudioCtx();
+    const bufLen = ctx.sampleRate * 0.18;
+    const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufLen; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufLen, 2.5);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const bpf = ctx.createBiquadFilter();
+    bpf.type = 'bandpass'; bpf.frequency.value = 3800; bpf.Q.value = 0.6;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+    src.connect(bpf); bpf.connect(gain); gain.connect(ctx.destination);
+    src.start(); src.stop(ctx.currentTime + 0.2);
+  } catch (_) {}
+}
+
+// Wax seal crack — low thud + high click
+function playSealCrack() {
+  try {
+    const ctx = getAudioCtx();
+    // Deep thud
+    const osc = ctx.createOscillator();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(120, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 0.22);
+    const g1 = ctx.createGain();
+    g1.gain.setValueAtTime(0.7, ctx.currentTime);
+    g1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+    osc.connect(g1); g1.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime + 0.25);
+    // Crack snap
+    const bufLen = ctx.sampleRate * 0.05;
+    const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufLen; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufLen, 1.5);
+    const snap = ctx.createBufferSource(); snap.buffer = buf;
+    const hpf = ctx.createBiquadFilter(); hpf.type = 'highpass'; hpf.frequency.value = 1200;
+    const g2 = ctx.createGain(); g2.gain.setValueAtTime(0.5, ctx.currentTime);
+    snap.connect(hpf); hpf.connect(g2); g2.connect(ctx.destination);
+    snap.start(); snap.stop(ctx.currentTime + 0.06);
+  } catch (_) {}
+}
+
+// Flap whoosh — breathy sweep upward
+function playFlapWhoosh() {
+  try {
+    const ctx = getAudioCtx();
+    const bufLen = ctx.sampleRate * 0.55;
+    const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufLen; i++) data[i] = (Math.random() * 2 - 1) * Math.sin(Math.PI * i / bufLen);
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const bpf = ctx.createBiquadFilter(); bpf.type = 'bandpass';
+    bpf.frequency.setValueAtTime(400, ctx.currentTime);
+    bpf.frequency.exponentialRampToValueAtTime(2800, ctx.currentTime + 0.55);
+    bpf.Q.value = 1.2;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.28, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55);
+    src.connect(bpf); bpf.connect(gain); gain.connect(ctx.destination);
+    src.start(); src.stop(ctx.currentTime + 0.6);
+  } catch (_) {}
+}
+
+// Card shimmer — delicate high-frequency chime
+function playCardShimmer() {
+  try {
+    const ctx = getAudioCtx();
+    [880, 1320, 1760].forEach((freq, i) => {
+      const osc = ctx.createOscillator(); osc.type = 'sine';
+      osc.frequency.value = freq;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.06);
+      gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + i * 0.06 + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.06 + 0.5);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + i * 0.06);
+      osc.stop(ctx.currentTime + i * 0.06 + 0.55);
+    });
+  } catch (_) {}
+}
+
+/* ══════════════════════════════════════════════════
+   YOUTUBE PLAYER — Em Đồng Ý
+══════════════════════════════════════════════════ */
+const YT_VIDEO_ID = 'IOe0tNoUGv8';
+
+function loadYouTubeAPI() {
+  return new Promise((resolve) => {
+    if (window.YT && window.YT.Player) { resolve(window.YT); return; }
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+    window.onYouTubeIframeAPIReady = () => resolve(window.YT);
+  });
+}
 
 /* ─── Canvas Gold Particles ─── */
 function GoldDust() {
@@ -47,14 +156,19 @@ function GoldDust() {
 /* ─── Main Component ─── */
 export default function EnvelopePortal({ onOpenComplete, guestName }) {
   const [opened, setOpened] = useState(false);
-  const containerRef = useRef(null);
-  const envelopeRef  = useRef(null);
-  const flapRef      = useRef(null);
-  const cardRef      = useRef(null);
-  const sealRef      = useRef(null);
-  const ring1Ref     = useRef(null);
-  const ring2Ref     = useRef(null);
-  const hintRef      = useRef(null);
+  const [sealHovered, setSealHovered] = useState(false);
+  const containerRef   = useRef(null);
+  const envelopeRef    = useRef(null);
+  const flapRef        = useRef(null);
+  const cardRef        = useRef(null);
+  const sealRef        = useRef(null);
+  const ring1Ref       = useRef(null);
+  const ring2Ref       = useRef(null);
+  const hintRef        = useRef(null);
+  const ytContainerRef = useRef(null);
+  const ytPlayerRef    = useRef(null);
+  const rustleTimer    = useRef(null);
+  const [musicPlaying, setMusicPlaying] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -63,28 +177,65 @@ export default function EnvelopePortal({ onOpenComplete, guestName }) {
     gsap.to(ring2Ref.current, { rotation:-360,  duration:16, repeat:-1, ease:'none', transformOrigin:'center center' });
     gsap.to(sealRef.current,  { scale:1.06, duration:2.2, yoyo:true, repeat:-1, ease:'sine.inOut' });
     gsap.fromTo(hintRef.current, { opacity:0, y:8 }, { opacity:1, y:0, duration:1.8, delay:1.5 });
-    return () => { document.body.style.overflow = 'auto'; };
+
+    // Preload YouTube API
+    loadYouTubeAPI().then((YT) => {
+      if (!ytContainerRef.current) return;
+      ytPlayerRef.current = new YT.Player(ytContainerRef.current, {
+        videoId: YT_VIDEO_ID,
+        playerVars: { autoplay:0, controls:0, loop:1, playlist:YT_VIDEO_ID, rel:0, modestbranding:1 },
+        events: { onReady: () => {} },
+      });
+    });
+
+    return () => {
+      document.body.style.overflow = 'auto';
+      clearTimeout(rustleTimer.current);
+    };
   }, []);
+
+  // Throttled rustle on envelope hover
+  const handleEnvelopeMove = useCallback(() => {
+    if (opened) return;
+    if (rustleTimer.current) return;
+    playRustle();
+    rustleTimer.current = setTimeout(() => { rustleTimer.current = null; }, 320);
+  }, [opened]);
 
   const handleOpen = () => {
     if (opened) return;
     setOpened(true);
+
+    // 1. Seal crack sound immediately
+    playSealCrack();
+
     gsap.killTweensOf([envelopeRef.current, ring1Ref.current, ring2Ref.current, sealRef.current]);
     const tl = gsap.timeline({
       onComplete: () => {
         gsap.to(containerRef.current, {
           opacity:0, duration:1.2, ease:'power2.inOut',
-          onComplete: () => { document.body.style.overflow = 'auto'; onOpenComplete?.(); }
+          onComplete: () => {
+            document.body.style.overflow = 'auto';
+            // Start music when portal fades out
+            if (ytPlayerRef.current) {
+              try { ytPlayerRef.current.setVolume(55); ytPlayerRef.current.playVideo(); setMusicPlaying(true); } catch(_) {}
+            }
+            onOpenComplete?.();
+          }
         });
       }
     });
     tl.to(sealRef.current, { scale:1.3, opacity:0, duration:0.4, ease:'power3.in' }, 0);
     tl.to(flapRef.current, {
       rotateX:-190, duration:1.6, ease:'back.out(1.1)',
+      onStart: () => setTimeout(playFlapWhoosh, 80),
       onUpdate() { if (this.progress() > 0.42) flapRef.current.style.zIndex = '2'; }
     }, 0.1);
     tl.set(cardRef.current, { opacity:1 }, 0.35);
-    tl.to(cardRef.current, { y:'-68%', duration:1.9, ease:'power2.out' }, 0.7);
+    tl.to(cardRef.current, {
+      y:'-68%', duration:1.9, ease:'power2.out',
+      onStart: () => setTimeout(playCardShimmer, 100),
+    }, 0.7);
     tl.to(envelopeRef.current, { scale:4.5, opacity:0, duration:1.5, ease:'power2.inOut' }, 1.5);
   };
 
@@ -102,6 +253,10 @@ export default function EnvelopePortal({ onOpenComplete, guestName }) {
         @keyframes sealPulse {
           0%,100% { box-shadow: 0 6px 28px rgba(0,0,0,.6), 0 0 0 2px rgba(212,175,55,.55), 0 0 18px rgba(212,175,55,.25), inset 0 2px 5px rgba(255,255,255,.55); }
           50%      { box-shadow: 0 6px 28px rgba(0,0,0,.6), 0 0 0 2px rgba(212,175,55,.55), 0 0 50px rgba(212,175,55,.6), inset 0 2px 5px rgba(255,255,255,.55); }
+        }
+        @keyframes musicPulse {
+          0%,100% { transform: scale(1); box-shadow: 0 4px 20px rgba(0,0,0,.5), 0 0 12px rgba(212,175,55,.2); }
+          50%      { transform: scale(1.1); box-shadow: 0 4px 20px rgba(0,0,0,.5), 0 0 22px rgba(212,175,55,.55); }
         }
       `}</style>
 
@@ -140,7 +295,9 @@ export default function EnvelopePortal({ onOpenComplete, guestName }) {
       )}
 
       {/* ── ENVELOPE ── */}
-      <div ref={envelopeRef} style={{
+      <div ref={envelopeRef}
+        onMouseMove={handleEnvelopeMove}
+        style={{
         position:'relative',
         width:'clamp(280px, 50vw, 370px)',
         aspectRatio:'5 / 7',
@@ -230,10 +387,16 @@ export default function EnvelopePortal({ onOpenComplete, guestName }) {
             </svg>
 
             {/* Seal */}
-            <div ref={sealRef} onClick={handleOpen} style={{
+            <div ref={sealRef}
+              onClick={handleOpen}
+              onMouseEnter={() => { setSealHovered(true); playRustle(); }}
+              onMouseLeave={() => setSealHovered(false)}
+              style={{
               position:'absolute', bottom:'14%', left:'50%', transform:'translateX(-50%)',
               width:'clamp(76px,13vw,96px)', height:'clamp(76px,13vw,96px)',
               cursor:'pointer',
+              filter: sealHovered ? 'brightness(1.25) drop-shadow(0 0 14px rgba(212,175,55,.8))' : 'none',
+              transition: 'filter .3s ease',
             }}>
               <div ref={ring1Ref} style={{ position:'absolute', inset:'-9px', borderRadius:'50%', border:'1px dashed rgba(201,168,76,.6)', transformOrigin:'center center' }}/>
               <div ref={ring2Ref} style={{ position:'absolute', inset:'-3px', borderRadius:'50%', border:'1px solid rgba(201,168,76,.25)', transformOrigin:'center center' }}/>
@@ -267,6 +430,45 @@ export default function EnvelopePortal({ onOpenComplete, guestName }) {
       }}>
         {opened ? '' : 'Nhấn ấn ký để mở thiệp'}
       </p>
+
+      {/* Hidden YouTube Player */}
+      <div style={{ position:'absolute', width:0, height:0, overflow:'hidden', zIndex:-1 }}>
+        <div ref={ytContainerRef} />
+      </div>
+
+      {/* Music toggle — shown after portal opens */}
+      {musicPlaying !== null && opened && (
+        <button
+          onClick={() => {
+            const p = ytPlayerRef.current;
+            if (!p) return;
+            if (musicPlaying) { p.pauseVideo(); setMusicPlaying(false); }
+            else { p.playVideo(); setMusicPlaying(true); }
+          }}
+          title={musicPlaying ? 'Tắt nhạc' : 'Bật nhạc'}
+          style={{
+            position:'fixed', bottom:'28px', right:'28px', zIndex:99999,
+            width:'48px', height:'48px', borderRadius:'50%',
+            border:'1.5px solid rgba(212,175,55,.7)',
+            background:'rgba(10,0,0,.75)',
+            backdropFilter:'blur(10px)',
+            cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center',
+            boxShadow:'0 4px 20px rgba(0,0,0,.5), 0 0 12px rgba(212,175,55,.2)',
+            animation: musicPlaying ? 'musicPulse 1.8s ease-in-out infinite' : 'none',
+          }}
+        >
+          {musicPlaying ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(212,175,55,.9)">
+              <rect x="6" y="4" width="4" height="16" rx="1"/>
+              <rect x="14" y="4" width="4" height="16" rx="1"/>
+            </svg>
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(212,175,55,.9)">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          )}
+        </button>
+      )}
     </div>
   );
 }
