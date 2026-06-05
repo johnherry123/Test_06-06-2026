@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import gsap from 'gsap';
 import GateIntro from './components/GateIntro';
 import Hero from './components/Hero';
 import Invitation from './components/Invitation';
@@ -8,13 +10,19 @@ import Gallery from './components/Gallery';
 import RSVP from './components/RSVP';
 import Gifts from './components/Gifts';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function App() {
-  
   const [isEntered, setIsEntered] = useState(false);
 
-  // Simple intersection observer for fade-up animations
+  // Intersection observer for fade-up — runs AFTER gate opens
   useEffect(() => {
-    if (!isEntered) return; // Only start observing after entering
+    if (!isEntered) return;
+
+    // ── Critical fix: refresh ScrollTrigger so it recalculates
+    //    positions now that overflow is restored and content is visible
+    ScrollTrigger.refresh();
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -30,31 +38,36 @@ export default function App() {
   return (
     <>
       {!isEntered && <GateIntro onOpen={() => setIsEntered(true)} />}
-      <Hero />
-      <Invitation />
-      <Couple />
-      <Events />
-      <Gallery />
-      <RSVP />
-      <Gifts />
 
-      {/* Royal Footer */}
-      <footer style={{
-        padding: '4rem 1.5rem',
-        textAlign: 'center',
-        background: 'var(--bg-cream)',
-        borderTop: '1px solid rgba(212,175,55,0.2)'
+      <div style={{
+        opacity: isEntered ? 1 : 0,
+        transition: 'opacity 0.8s ease',
+        minHeight: '100vh',
       }}>
-        <h2 className="font-script" style={{ fontSize: '3rem', color: 'var(--cherry-dark)', margin: '0 0 1rem' }}>
-          Đại Nghĩa & Thị Nhung
-        </h2>
-        <p className="font-serif" style={{ fontSize: '1rem', color: 'var(--text-light)', fontStyle: 'italic', marginBottom: '2rem' }}>
-          "Trăm năm viên mãn cậy nhờ ba sinh."
-        </p>
-        <p className="font-sans" style={{ fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold-champagne)' }}>
-          Xin Chân Thành Cảm Ơn
-        </p>
-      </footer>
+        <Hero />
+        <Invitation />
+        <Couple />
+        <Events />
+        <Gallery />
+        <RSVP />
+        <Gifts />
+
+        {/* Footer */}
+        <footer className="text-center py-20 px-6" style={{ background: 'var(--bg-cream)', borderTop: '1px solid rgba(212,175,55,0.2)' }}>
+          <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <h2 className="font-script" style={{ fontSize: '3rem', color: 'var(--cherry-dark)', margin: '0 0 1rem' }}>
+              Đại Nghĩa &amp; Thị Nhung
+            </h2>
+            <div className="divider-gold" />
+            <p className="font-serif" style={{ fontSize: '1rem', color: 'var(--text-light)', fontStyle: 'italic', margin: '1.5rem 0' }}>
+              "Trăm năm viên mãn cậy nhờ ba sinh."
+            </p>
+            <p className="font-sans" style={{ fontSize: '9px', letterSpacing: '.4em', textTransform: 'uppercase', color: 'var(--gold-champagne)' }}>
+              Gia Đình Hai Họ Kính Báo · 20 · 10 · 2026
+            </p>
+          </div>
+        </footer>
+      </div>
     </>
   );
 }

@@ -87,34 +87,39 @@ export default function Gifts() {
             </div>
           </div>
 
-          {/* ── BACK: Pearl White with account details ── */}
+          {/* ── BACK: envelope_back_qr.png ── */}
           <div style={{
             position:'absolute', inset:0, backfaceVisibility:'hidden', WebkitBackfaceVisibility:'hidden',
             transform:'rotateY(180deg)',
-            background:'#FDFBF7',
+            backgroundImage:'url("/envelope_back_qr.png")',
+            backgroundSize:'cover', backgroundPosition:'center',
             borderRadius:'16px',
             boxShadow:'0 30px 70px rgba(0,0,0,.15)',
             border:'1px solid rgba(212,175,55,.35)',
             display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
             padding:'2rem',
             gap:'1.5rem',
+            overflow:'hidden',
           }}>
-            <div style={{ position:'absolute', inset:'12px', border:'1px solid rgba(212,175,55,.2)', borderRadius:'8px', pointerEvents:'none' }}/>
+            {/* Overlay so content stays readable over the patterned background */}
+            <div style={{ position:'absolute', inset:0, background:'rgba(253,251,240,0.78)', pointerEvents:'none' }}/>
 
-            <h3 className="font-script" style={{ fontSize:'2.5rem', color:'var(--cherry-dark)', margin:0 }}>Thông Tin Chuyển Khoản</h3>
-            <div className="divider-gold"/>
+            <h3 className="font-script" style={{ fontSize:'2.5rem', color:'var(--cherry-dark)', margin:0, position:'relative', zIndex:1 }}>Thông Tin Chuyển Khoản</h3>
+            <div className="divider-gold" style={{ position:'relative', zIndex:1 }}/>
 
-            {[
-              { label:'Chủ tài khoản', value:'Nguyễn Đại Nghĩa' },
-              { label:'Số tài khoản', value:'123 456 789' },
-              { label:'Ngân hàng', value:'Vietcombank' },
-              { label:'Nội dung', value:'Chúc mừng đám cưới' },
-            ].map(row => (
-              <div key={row.label} style={{ width:'100%', display:'flex', justifyContent:'space-between', alignItems:'center', borderBottom:'1px solid rgba(212,175,55,.15)', paddingBottom:'.8rem' }}>
-                <span className="font-sans" style={{ fontSize:'11px', letterSpacing:'.1em', color:'var(--text-light)', textTransform:'uppercase' }}>{row.label}</span>
-                <span className="font-serif" style={{ fontSize:'1.1rem', color:'var(--cherry-dark)', fontWeight:500 }}>{row.value}</span>
-              </div>
-            ))}
+            <div style={{ width:'100%', display:'flex', flexDirection:'column', gap:'1rem', position:'relative', zIndex:1 }}>
+              {[
+                { label:'Chủ tài khoản', value:'Nguyễn Đại Nghĩa' },
+                { label:'Số tài khoản',  value:'123 456 789' },
+                { label:'Ngân hàng',     value:'Vietcombank' },
+                { label:'Nội dung',      value:'Chúc mừng đám cưới' },
+              ].map(row => (
+                <div key={row.label} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', borderBottom:'1px solid rgba(212,175,55,.2)', paddingBottom:'.8rem' }}>
+                  <span className="font-sans" style={{ fontSize:'11px', letterSpacing:'.1em', color:'var(--text-light)', textTransform:'uppercase' }}>{row.label}</span>
+                  <span className="font-serif" style={{ fontSize:'1.1rem', color:'var(--cherry-dark)', fontWeight:500 }}>{row.value}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
         </div>

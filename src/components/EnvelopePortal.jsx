@@ -165,39 +165,32 @@ export default function EnvelopePortal({ onOpenComplete, guestName }) {
           boxShadow: '0 0 80px rgba(180,60,30,0.45), 0 60px 130px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,149,60,0.25)',
         }} />
 
-        {/* Envelope body — rich crimson */}
+        {/* Envelope body — real velvet texture image */}
         <div style={{
           position: 'absolute', inset: 0, borderRadius: '1.4rem', overflow: 'hidden',
-          background: 'linear-gradient(165deg, #C0392B 0%, #9B1C1C 35%, #7B0C0C 65%, #5C0808 100%)',
+          backgroundImage: 'url("/envelope_front_velvet.png")',
+          backgroundSize: 'cover', backgroundPosition: 'center',
           border: '1px solid rgba(201,149,60,0.3)',
         }}>
-          {/* diamond texture */}
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.07 }}>
-            <defs>
-              <pattern id="env-d" x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse">
-                <path d="M11 0 L22 11 L11 22 L0 11 Z" stroke="#F0D080" strokeWidth="0.5" fill="none" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#env-d)" />
-          </svg>
-          {/* shine top */}
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to bottom, rgba(255,255,255,0.07), transparent)' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 55%)' }} />
+          {/* Cinematic shine overlay */}
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to bottom, rgba(255,255,255,0.08), transparent)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 55%)', pointerEvents: 'none' }} />
         </div>
 
-        {/* Inner ivory card */}
+        {/* Inner card — real envelope_back.png with copper border pattern */}
         <div ref={cardRef} style={{
           position: 'absolute', left: '10px', right: '10px', top: '10px', bottom: '10px',
           zIndex: 10,
-          background: 'linear-gradient(158deg, #FDFBF0 0%, #F5EACF 60%, #EDDFB5 100%)',
+          backgroundImage: 'url("/envelope_back.png")',
+          backgroundSize: 'cover', backgroundPosition: 'center',
           borderRadius: '1rem',
           border: '1px solid rgba(201,149,60,0.3)',
           boxShadow: '0 12px 50px rgba(44,24,16,0.22)',
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
           overflow: 'hidden',
         }}>
-          {/* card texture */}
-          <div style={{ position: 'absolute', inset: 0, opacity: 0.03, backgroundImage: 'repeating-linear-gradient(45deg,#C9953C 0,#C9953C 1px,transparent 0,transparent 50%)', backgroundSize: '12px 12px' }} />
+          {/* semi-transparent overlay so text remains readable */}
+          <div style={{ position:'absolute', inset:0, background:'rgba(253,251,240,0.72)', pointerEvents:'none' }}/>
           <div style={{ position: 'absolute', inset: '10px', border: '0.5px solid rgba(201,149,60,0.22)', borderRadius: '0.65rem', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', inset: '17px', border: '0.5px solid rgba(201,149,60,0.1)', borderRadius: '0.4rem', pointerEvents: 'none' }} />
 
