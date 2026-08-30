@@ -1,95 +1,300 @@
 import React from 'react';
 
+/* ══════════════════════════════════════════════════════════════════════
+   WEDDING INVITATION & ANNOUNCEMENT (LỜI NGỎ)
+   100% Native Vietnamese Typography & Family Lineage
+══════════════════════════════════════════════════════════════════════ */
+
 export default function Invitation() {
   return (
-    <section id="invitation" className="sec s-cream" style={{ textAlign: 'center' }}>
-      {/* Top ornament */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '40px' }}>
-        <div style={{ width: '80px', height: '1px', background: 'linear-gradient(to left, var(--gold), transparent)' }} />
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M10 1 L12 7 L18 7 L13.5 11 L15.5 17 L10 13.5 L4.5 17 L6.5 11 L2 7 L8 7 Z" fill="var(--gold)" opacity=".6" />
-        </svg>
-        <div style={{ width: '80px', height: '1px', background: 'linear-gradient(to right, var(--gold), transparent)' }} />
-      </div>
+    <section
+      id="invitation"
+      style={{
+        position: 'relative',
+        padding: 'clamp(70px, 10vw, 110px) 24px',
+        backgroundColor: '#FFFFFF',
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(197, 160, 89, 0.12) 1px, transparent 0)',
+          backgroundSize: '36px 36px',
+          pointerEvents: 'none',
+          opacity: 0.6,
+        }}
+      />
 
-      <div className="wrap-sm fu">
-        <span className="eyebrow" style={{ marginBottom: '16px' }}>Lời Ngỏ</span>
-
-        <h2 className="f-script" style={{
-          fontSize: 'clamp(3.5rem, 9vw, 6rem)',
-          color: 'var(--crimson)',
-          lineHeight: 1,
-          marginBottom: '24px',
-        }}>
-          Thiệp Mời
-        </h2>
-
-        <div className="rule-crimson" style={{ width: '60px', margin: '0 auto 44px' }} />
-
-        {/* Quote */}
-        <div style={{
+      <div
+        style={{
           position: 'relative',
-          background: 'linear-gradient(135deg, rgba(201,168,76,.06) 0%, rgba(139,0,0,.04) 100%)',
-          border: '1px solid rgba(201,168,76,.2)',
-          padding: '36px 40px',
-          marginBottom: '40px',
-        }}>
-          {/* Quote marks */}
-          <span style={{
-            position: 'absolute', top: '12px', left: '18px',
-            fontFamily: 'Georgia, serif', fontSize: '4rem',
-            color: 'rgba(201,168,76,.25)', lineHeight: 1,
-          }}>"</span>
-          <p className="f-serif" style={{
-            fontSize: 'clamp(1.3rem, 3vw, 1.8rem)',
-            fontStyle: 'italic',
-            color: 'var(--text-muted)',
-            lineHeight: 2,
-          }}>
-            Tình yêu không phải là nhìn nhau,<br />
-            mà là cùng nhìn về một hướng.
-          </p>
-          <span style={{
-            position: 'absolute', bottom: '4px', right: '18px',
-            fontFamily: 'Georgia, serif', fontSize: '4rem',
-            color: 'rgba(201,168,76,.25)', lineHeight: 1,
-          }}>"</span>
+          maxWidth: '860px',
+          margin: '0 auto',
+          zIndex: 2,
+        }}
+      >
+        <div
+          className="gold-frame corner-ornament"
+          style={{
+            backgroundColor: '#FFFDF9',
+            padding: 'clamp(36px, 6vw, 64px) clamp(24px, 5vw, 56px)',
+            textAlign: 'center',
+          }}
+        >
+          {/* Eyebrow */}
+          <div className="eyebrow-luxury">Lời Ngỏ</div>
+
+          <h2
+            className="font-display"
+            style={{
+              fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
+              color: '#231B15',
+              fontWeight: 700,
+              margin: '0 0 16px',
+            }}
+          >
+            Trân Trọng Kính Mời
+          </h2>
+
+          <div className="divider-luxury" style={{ marginBottom: '32px' }}>
+            <span style={{ color: '#8B1E22', fontSize: '1.2rem' }}>囍</span>
+          </div>
+
+          {/* Family Lineage Presentation */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gap: '24px',
+              margin: '0 auto 36px',
+              padding: '24px 20px',
+              backgroundColor: 'rgba(248, 245, 238, 0.85)',
+              border: '1px solid rgba(197, 160, 89, 0.25)',
+              borderRadius: '3px',
+            }}
+          >
+            {/* Groom Family */}
+            <div style={{ textAlign: 'center' }}>
+              <span
+                className="font-display"
+                style={{
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.18em',
+                  color: '#8B1E22',
+                  textTransform: 'uppercase',
+                  display: 'block',
+                  marginBottom: '8px',
+                }}
+              >
+                Nhà Trai
+              </span>
+              <p
+                className="font-display"
+                style={{
+                  fontSize: '1.15rem',
+                  fontWeight: 600,
+                  color: '#231B15',
+                  margin: '0 0 4px',
+                }}
+              >
+                Ông: NGUYỄN VĂN HÙNG
+              </p>
+              <p
+                className="font-display"
+                style={{
+                  fontSize: '1.15rem',
+                  fontWeight: 600,
+                  color: '#231B15',
+                  margin: '0 0 6px',
+                }}
+              >
+                Bà: TRẦN THỊ MAI
+              </p>
+              <span
+                className="font-sans"
+                style={{
+                  fontSize: '0.85rem',
+                  color: '#8F7E73',
+                }}
+              >
+                Tân Bình, TP. Hồ Chí Minh
+              </span>
+            </div>
+
+            {/* Bride Family */}
+            <div style={{ textAlign: 'center' }}>
+              <span
+                className="font-display"
+                style={{
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.18em',
+                  color: '#8B1E22',
+                  textTransform: 'uppercase',
+                  display: 'block',
+                  marginBottom: '8px',
+                }}
+              >
+                Nhà Gái
+              </span>
+              <p
+                className="font-display"
+                style={{
+                  fontSize: '1.15rem',
+                  fontWeight: 600,
+                  color: '#231B15',
+                  margin: '0 0 4px',
+                }}
+              >
+                Ông: LÊ VĂN THÀNH
+              </p>
+              <p
+                className="font-display"
+                style={{
+                  fontSize: '1.15rem',
+                  fontWeight: 600,
+                  color: '#231B15',
+                  margin: '0 0 6px',
+                }}
+              >
+                Bà: PHẠM THỊ LAN
+              </p>
+              <span
+                className="font-sans"
+                style={{
+                  fontSize: '0.85rem',
+                  color: '#8F7E73',
+                }}
+              >
+                Quận 3, TP. Hồ Chí Minh
+              </span>
+            </div>
+          </div>
+
+          {/* Couple Role Titles */}
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '24px',
+              margin: '0 auto 36px',
+            }}
+          >
+            <div style={{ textAlign: 'center' }}>
+              <span
+                className="font-display"
+                style={{
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  color: '#8F7E73',
+                  letterSpacing: '0.15em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Trưởng Nam
+              </span>
+              <h3
+                className="font-display"
+                style={{
+                  fontSize: '1.75rem',
+                  fontWeight: 700,
+                  color: '#8B1E22',
+                  margin: '4px 0 0',
+                }}
+              >
+                NGUYỄN ĐẠI NGHĨA
+              </h3>
+            </div>
+
+            <span
+              className="font-serif"
+              style={{ fontSize: '1.8rem', color: '#C5A059', fontStyle: 'italic' }}
+            >
+              &
+            </span>
+
+            <div style={{ textAlign: 'center' }}>
+              <span
+                className="font-display"
+                style={{
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  color: '#8F7E73',
+                  letterSpacing: '0.15em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Út Nữ
+              </span>
+              <h3
+                className="font-display"
+                style={{
+                  fontSize: '1.75rem',
+                  fontWeight: 700,
+                  color: '#8B1E22',
+                  margin: '4px 0 0',
+                }}
+              >
+                LÊ THỊ NHUNG
+              </h3>
+            </div>
+          </div>
+
+          {/* Message Body */}
+          <div style={{ maxWidth: '640px', margin: '0 auto 36px' }}>
+            <p
+              className="font-serif"
+              style={{
+                fontSize: 'clamp(1.05rem, 2vw, 1.25rem)',
+                fontStyle: 'italic',
+                color: '#584A40',
+                lineHeight: 1.9,
+                margin: '0 0 18px',
+              }}
+            >
+              "Tình yêu không chỉ là nhìn nhau, mà là cùng nhau nhìn về một hướng.
+              Sau hành trình tìm hiểu và gắn kết, chúng tôi quyết định nắm tay nhau bước vào
+              chương mới của cuộc đời."
+            </p>
+
+            <p
+              className="font-sans"
+              style={{
+                fontSize: '0.95rem',
+                color: '#231B15',
+                lineHeight: 1.8,
+                margin: 0,
+              }}
+            >
+              Sự hiện diện và lời chúc phúc của Quý khách là niềm vinh hạnh và món quà quý giá
+              nhất đối với gia đình chúng tôi trong ngày trọng đại này.
+            </p>
+          </div>
+
+          {/* Signatures */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '36px',
+              marginTop: '28px',
+            }}
+          >
+            <div className="font-script text-gold-luxury" style={{ fontSize: '2.5rem' }}>
+              Đại Nghĩa
+            </div>
+            <div style={{ width: '32px', height: '1px', backgroundColor: '#C5A059' }} />
+            <div className="font-script text-gold-luxury" style={{ fontSize: '2.5rem' }}>
+              Thị Nhung
+            </div>
+          </div>
         </div>
-
-        {/* Divider */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', margin: '0 auto 36px', justifyContent: 'center' }}>
-          <div className="rule" style={{ width: '40px', flex: '0 0 40px' }} />
-          <span style={{ color: 'var(--gold)', fontSize: '10px' }}>✦</span>
-          <div className="rule" style={{ width: '40px', flex: '0 0 40px' }} />
-        </div>
-
-        <p className="f-sans" style={{
-          fontSize: '13px',
-          color: 'var(--text-muted)',
-          lineHeight: 2.2,
-          letterSpacing: '.02em',
-          marginBottom: '40px',
-        }}>
-          Sự hiện diện của Quý vị là niềm vinh hạnh lớn nhất<br />
-          cho gia đình chúng tôi trong ngày trọng đại này.
-        </p>
-
-        {/* Couple name signature */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
-          <div style={{ width: '60px', height: '1px', background: 'linear-gradient(to left, var(--gold), transparent)' }} />
-          <span className="f-script" style={{
-            fontSize: 'clamp(2rem, 5vw, 3rem)',
-            color: 'var(--crimson)',
-            lineHeight: 1,
-          }}>
-            Đại Nghĩa &amp; Thị Nhung
-          </span>
-          <div style={{ width: '60px', height: '1px', background: 'linear-gradient(to right, var(--gold), transparent)' }} />
-        </div>
-
-        <span className="eyebrow" style={{ marginTop: '16px', color: 'var(--text-faint)' }}>
-          20 · 10 · 2026 · Thứ Ba
-        </span>
       </div>
     </section>
   );

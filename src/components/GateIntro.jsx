@@ -17,15 +17,33 @@ function loadYouTubeAPI() {
 }
 
 /* ═══════════════════════════════════════════════
-   CANVAS PARTICLE ENGINE — Gold Dust (60fps)
+   CANVAS PARTICLE ENGINE — Ultra Gold Dust (60fps)
+   Particle types: orb, star, spark
 ═══════════════════════════════════════════════ */
-function GoldDust() {
+function GoldDust({ burst, burstOrigin }) {
   const canvas = useRef(null);
+  const particles = useRef([]);
+  const rafRef = useRef(null);
+  const tRef = useRef(0);
+
+  const makeAmbient = () => ({
+    x:     Math.random() * window.innerWidth,
+    y:     Math.random() * window.innerHeight,
+    r:     Math.random() * 2.2 + 0.4,
+    vx:    (Math.random() - 0.5) * 0.22,
+    vy:    -(Math.random() * 0.45 + 0.06),
+    phase: Math.random() * Math.PI * 2,
+    spd:   0.006 + Math.random() * 0.007,
+    hue:   38 + Math.random() * 22,
+    type:  Math.random() > 0.7 ? 'star' : 'orb',
+    life:  1,
+    burst: false,
+  });
+
   useEffect(() => {
     const c = canvas.current;
     if (!c) return;
     const ctx = c.getContext('2d');
-    let raf;
 
     const resize = () => {
       c.width  = window.innerWidth;
@@ -34,51 +52,119 @@ function GoldDust() {
     resize();
     window.addEventListener('resize', resize);
 
-    // 80 gold particles
-    const pts = Array.from({ length: 80 }, () => ({
-      x:     Math.random() * window.innerWidth,
-      y:     Math.random() * window.innerHeight,
-      r:     Math.random() * 1.8 + 0.3,
-      vx:    (Math.random() - 0.5) * 0.25,
-      vy:    -(Math.random() * 0.4 + 0.06),
-      phase: Math.random() * Math.PI * 2,
-      spd:   0.006 + Math.random() * 0.006,
-      hue:   40 + Math.random() * 20,   // gold family
-    }));
+    // 120 ambient particles
+    particles.current = Array.from({ length: 120 }, makeAmbient);
 
-    let t = 0;
+    const drawStar = (ctx, x, y, r, alpha, hue) => {
+      const spikes = 4;
+      const outer = r * 3.5;
+      const inner = r * 1.2;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(tRef.current * 0.008);
+      ctx.beginPath();
+      for (let i = 0; i < spikes * 2; i++) {
+        const radius = i % 2 === 0 ? outer : inner;
+        const angle = (i * Math.PI) / spikes;
+        if (i === 0) ctx.moveTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
+        else ctx.lineTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
+      }
+      ctx.closePath();
+      ctx.fillStyle = `hsla(${hue}, 95%, 82%, ${alpha * 0.9})`;
+      ctx.fill();
+      // Core glow
+      const grd = ctx.createRadialGradient(0, 0, 0, 0, 0, outer);
+      grd.addColorStop(0, `hsla(${hue}, 100%, 95%, ${alpha})`);
+      grd.addColorStop(1, `hsla(${hue}, 80%, 60%, 0)`);
+      ctx.beginPath();
+      ctx.arc(0, 0, outer, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+      ctx.restore();
+    };
+
+    const drawOrb = (ctx, x, y, r, alpha, hue) => {
+      const grd = ctx.createRadialGradient(x, y, 0, x, y, r * 4.5);
+      grd.addColorStop(0,   `hsla(${hue}, 95%, 90%, ${alpha})`);
+      grd.addColorStop(0.3, `hsla(${hue}, 85%, 72%, ${alpha * 0.7})`);
+      grd.addColorStop(0.7, `hsla(${hue}, 70%, 50%, ${alpha * 0.3})`);
+      grd.addColorStop(1,   `hsla(${hue}, 60%, 35%, 0)`);
+      ctx.beginPath();
+      ctx.arc(x, y, r * 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+      // Bright white core
+      ctx.beginPath();
+      ctx.arc(x, y, r * 0.5, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(50, 100%, 98%, ${alpha})`;
+      ctx.fill();
+    };
+
     const draw = () => {
-      t++;
+      tRef.current++;
       ctx.clearRect(0, 0, c.width, c.height);
-      pts.forEach(p => {
-        // drift + float
-        p.x += p.vx + Math.sin(t * 0.008 + p.phase) * 0.12;
-        p.y += p.vy;
-        if (p.y < -8)  { p.y = c.height + 5; p.x = Math.random() * c.width; }
-        if (p.x < -5 || p.x > c.width + 5) p.x = Math.random() * c.width;
 
-        const alpha = ((Math.sin(t * p.spd + p.phase) + 1) / 2) * 0.7;
-        // Draw glowing orb
-        const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
-        grd.addColorStop(0,   `hsla(${p.hue}, 85%, 80%, ${alpha})`);
-        grd.addColorStop(0.4, `hsla(${p.hue}, 70%, 60%, ${alpha * 0.6})`);
-        grd.addColorStop(1,   `hsla(${p.hue}, 60%, 40%, 0)`);
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
-        ctx.fillStyle = grd;
-        ctx.fill();
+      particles.current.forEach((p, i) => {
+        if (p.burst) {
+          // Burst particles: fly out then fade
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.04; // gravity
+          p.life -= 0.018;
+          if (p.life <= 0) {
+            particles.current[i] = makeAmbient();
+            return;
+          }
+          const a = Math.max(0, p.life * 0.9);
+          if (p.type === 'star') drawStar(ctx, p.x, p.y, p.r, a, p.hue);
+          else drawOrb(ctx, p.x, p.y, p.r, a, p.hue);
+        } else {
+          // Ambient float
+          p.x += p.vx + Math.sin(tRef.current * 0.009 + p.phase) * 0.14;
+          p.y += p.vy;
+          if (p.y < -10) { p.y = c.height + 5; p.x = Math.random() * c.width; }
+          if (p.x < -5 || p.x > c.width + 5) p.x = Math.random() * c.width;
 
-        // Bright core
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 0.6, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(50, 100%, 90%, ${alpha * 0.9})`;
-        ctx.fill();
+          const alpha = ((Math.sin(tRef.current * p.spd + p.phase) + 1) / 2) * 0.75;
+          if (p.type === 'star') drawStar(ctx, p.x, p.y, p.r, alpha, p.hue);
+          else drawOrb(ctx, p.x, p.y, p.r, alpha, p.hue);
+        }
       });
-      raf = requestAnimationFrame(draw);
+
+      rafRef.current = requestAnimationFrame(draw);
     };
     draw();
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('resize', resize);
+    };
   }, []);
+
+  // Handle burst
+  useEffect(() => {
+    if (!burst || !burstOrigin) return;
+    const { x, y } = burstOrigin;
+    // Replace 80 particles with burst particles
+    const burstCount = 80;
+    for (let i = 0; i < burstCount; i++) {
+      const angle = (Math.PI * 2 * i) / burstCount + Math.random() * 0.3;
+      const speed = Math.random() * 9 + 2;
+      const hue = 35 + Math.random() * 30;
+      particles.current[i] = {
+        x, y,
+        r: Math.random() * 2.5 + 0.8,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - Math.random() * 3,
+        phase: 0,
+        spd: 0.01,
+        hue,
+        type: Math.random() > 0.5 ? 'star' : 'orb',
+        life: 0.9 + Math.random() * 0.5,
+        burst: true,
+      };
+    }
+  }, [burst, burstOrigin]);
 
   return <canvas ref={canvas} style={{
     position: 'absolute', inset: 0,
@@ -87,9 +173,88 @@ function GoldDust() {
 }
 
 /* ═══════════════════════════════════════════════
-   WAX SEAL COMPONENT
+   LIGHT RAYS — cinematic crepuscular rays
 ═══════════════════════════════════════════════ */
-function WaxSeal({ sealRef, ring1Ref, ring2Ref, onClick }) {
+function LightRays({ visible }) {
+  const canvasRef = useRef(null);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    if (!visible) return;
+    const c = canvasRef.current;
+    if (!c) return;
+    c.width  = window.innerWidth;
+    c.height = window.innerHeight;
+    const ctx = c.getContext('2d');
+    let t = 0;
+    let opacity = 0;
+
+    const draw = () => {
+      t++;
+      if (opacity < 1) opacity = Math.min(1, opacity + 0.025);
+      ctx.clearRect(0, 0, c.width, c.height);
+
+      const cx = c.width / 2;
+      const cy = c.height / 2;
+      const numRays = 14;
+
+      for (let i = 0; i < numRays; i++) {
+        const baseAngle = (Math.PI * 2 * i) / numRays;
+        const angle = baseAngle + Math.sin(t * 0.005 + i * 0.5) * 0.08;
+        const len = Math.min(c.width, c.height) * (0.7 + Math.sin(t * 0.008 + i) * 0.15);
+        const width = 18 + Math.sin(t * 0.012 + i * 0.8) * 10;
+        const rayAlpha = (0.04 + Math.sin(t * 0.01 + i) * 0.02) * opacity;
+
+        const x2 = cx + Math.cos(angle) * len;
+        const y2 = cy + Math.sin(angle) * len;
+
+        const grd = ctx.createLinearGradient(cx, cy, x2, y2);
+        grd.addColorStop(0,   `rgba(255, 240, 160, ${rayAlpha * 2.5})`);
+        grd.addColorStop(0.3, `rgba(220, 185, 80, ${rayAlpha})`);
+        grd.addColorStop(1,   'rgba(180, 130, 40, 0)');
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle);
+        ctx.beginPath();
+        ctx.moveTo(-width / 2, 0);
+        ctx.lineTo(width / 2, 0);
+        ctx.lineTo(width * 1.5, len);
+        ctx.lineTo(-width * 1.5, len);
+        ctx.closePath();
+        ctx.fillStyle = grd;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Central glow
+      const radial = ctx.createRadialGradient(cx, cy, 0, cx, cy, c.height * 0.5);
+      radial.addColorStop(0, `rgba(255, 245, 180, ${0.35 * opacity})`);
+      radial.addColorStop(0.3, `rgba(220, 180, 60, ${0.1 * opacity})`);
+      radial.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.beginPath();
+      ctx.arc(cx, cy, c.height * 0.5, 0, Math.PI * 2);
+      ctx.fillStyle = radial;
+      ctx.fill();
+
+      rafRef.current = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [visible]);
+
+  if (!visible) return null;
+  return <canvas ref={canvasRef} style={{
+    position: 'absolute', inset: 0,
+    pointerEvents: 'none', zIndex: 2,
+    mixBlendMode: 'screen',
+  }} />;
+}
+
+/* ═══════════════════════════════════════════════
+   WAX SEAL COMPONENT — Enhanced
+═══════════════════════════════════════════════ */
+function WaxSeal({ sealRef, ring1Ref, ring2Ref, ring3Ref, onClick }) {
   return (
     <div
       ref={sealRef}
@@ -97,72 +262,103 @@ function WaxSeal({ sealRef, ring1Ref, ring2Ref, onClick }) {
       style={{
         position: 'absolute', top: '50%', left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 'clamp(96px, 11vw, 130px)',
-        height: 'clamp(96px, 11vw, 130px)',
+        width: 'clamp(100px, 11vw, 136px)',
+        height: 'clamp(100px, 11vw, 136px)',
         cursor: 'pointer', zIndex: 30,
       }}
     >
-      {/* Outer halo pulse */}
+      {/* Outer halo pulse — 3 rings */}
       <div style={{
-        position: 'absolute', inset: '-20px', borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(212,175,55,.22) 0%, transparent 70%)',
+        position: 'absolute', inset: '-28px', borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(212,175,55,.18) 0%, transparent 70%)',
         animation: 'haloPulse 2.2s ease-in-out infinite',
       }} />
+      <div style={{
+        position: 'absolute', inset: '-18px', borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(212,175,55,.12) 0%, transparent 70%)',
+        animation: 'haloPulse 2.2s ease-in-out infinite 0.4s',
+      }} />
 
-      {/* Ring 1 — slow CW */}
+      {/* Ring 1 — slow CW dashed */}
       <div ref={ring1Ref} style={{
-        position: 'absolute', inset: '-8px', borderRadius: '50%',
-        border: '1px solid rgba(212,175,55,.55)',
-        borderStyle: 'dashed',
+        position: 'absolute', inset: '-10px', borderRadius: '50%',
+        border: '1px dashed rgba(212,175,55,.6)',
         transformOrigin: 'center center',
       }} />
 
-      {/* Ring 2 — faster CCW */}
+      {/* Ring 2 — faster CCW solid */}
       <div ref={ring2Ref} style={{
-        position: 'absolute', inset: '-2px', borderRadius: '50%',
-        border: '1px solid rgba(212,175,55,.25)',
+        position: 'absolute', inset: '-3px', borderRadius: '50%',
+        border: '1px solid rgba(212,175,55,.3)',
+        transformOrigin: 'center center',
+      }} />
+
+      {/* Ring 3 — inner subtle */}
+      <div ref={ring3Ref} style={{
+        position: 'absolute', inset: '4px', borderRadius: '50%',
+        border: '1px solid rgba(212,175,55,.15)',
         transformOrigin: 'center center',
       }} />
 
       {/* Seal body */}
       <div style={{
         position: 'absolute', inset: 0, borderRadius: '50%',
-        background: 'radial-gradient(circle at 32% 28%, #FFF8E1 0%, #D4AF37 25%, #9B7412 55%, #5A3E00 78%, #2A1800 100%)',
+        background: 'radial-gradient(circle at 30% 26%, #FFF8E1 0%, #E8C97A 18%, #D4AF37 32%, #9B7412 55%, #5A3E00 78%, #2A1800 100%)',
         boxShadow: [
-          '0 0 0 2px rgba(212,175,55,.75)',
-          '0 0 0 5px rgba(212,175,55,.18)',
-          '0 28px 70px rgba(0,0,0,.98)',
-          '0 8px 20px rgba(0,0,0,.7)',
-          'inset 0 3px 7px rgba(255,255,255,.6)',
-          'inset 0 -4px 14px rgba(0,0,0,.75)',
+          '0 0 0 2px rgba(212,175,55,.8)',
+          '0 0 0 6px rgba(212,175,55,.15)',
+          '0 30px 80px rgba(0,0,0,.98)',
+          '0 8px 24px rgba(0,0,0,.7)',
+          'inset 0 3px 8px rgba(255,255,255,.7)',
+          'inset 0 -5px 16px rgba(0,0,0,.8)',
         ].join(', '),
         display: 'flex', alignItems: 'center', justifyContent: 'center',
+        animation: 'sealPulse 2.8s ease-in-out infinite',
       }}>
-        {/* Inner ring groove */}
+        {/* Texture rings */}
         <div style={{
-          position: 'absolute', inset: '8px', borderRadius: '50%',
-          border: '1px solid rgba(139,101,8,.45)',
+          position: 'absolute', inset: '7px', borderRadius: '50%',
+          border: '1px solid rgba(139,101,8,.5)',
+        }} />
+        <div style={{
+          position: 'absolute', inset: '14px', borderRadius: '50%',
+          border: '0.5px solid rgba(212,175,55,.2)',
         }} />
         {/* Character */}
         <span style={{
           fontFamily: '"Playfair Display", serif',
-          fontSize: 'clamp(2.2rem, 4vw, 3rem)',
+          fontSize: 'clamp(2.4rem, 4vw, 3.2rem)',
           color: '#1A0005',
           fontWeight: 700,
-          textShadow: '0 1px 4px rgba(255,255,255,.5)',
+          textShadow: '0 1px 5px rgba(255,255,255,.6), 0 -1px 3px rgba(0,0,0,.5)',
           lineHeight: 1,
           position: 'relative', zIndex: 2,
           userSelect: 'none',
         }}>囍</span>
+      </div>
+
+      {/* Hover prompt text */}
+      <div style={{
+        position: 'absolute', top: '110%', left: '50%',
+        transform: 'translateX(-50%)',
+        whiteSpace: 'nowrap',
+        fontFamily: '"Montserrat", sans-serif',
+        fontSize: '8px', letterSpacing: '.5em', textTransform: 'uppercase',
+        color: 'rgba(212,175,55,.5)',
+        animation: 'hintBlink 2.4s ease-in-out infinite',
+        marginTop: '8px',
+        pointerEvents: 'none',
+      }}>
+        Chạm để mở
       </div>
     </div>
   );
 }
 
 /* ═══════════════════════════════════════════════
-   DOOR PANEL COMPONENT
+   DOOR PANEL COMPONENT — Enhanced 3D + Dynamic Shadow
 ═══════════════════════════════════════════════ */
-function DoorPanel({ side, name, panelRef }) {
+function DoorPanel({ side, name, panelRef, openProgress }) {
   const isLeft = side === 'left';
   return (
     <div
@@ -172,58 +368,90 @@ function DoorPanel({ side, name, panelRef }) {
         [isLeft ? 'left' : 'right']: 0,
         transformOrigin: `${isLeft ? 'left' : 'right'} center`,
         transformStyle: 'preserve-3d',
-        // ── Real gate image, sliced in half ──
         backgroundImage: `url("${import.meta.env.BASE_URL}gate-bg.png")`,
         backgroundSize: '200% 100%',
         backgroundPosition: `${isLeft ? 'left' : 'right'} center`,
         backgroundRepeat: 'no-repeat',
         [isLeft ? 'borderRight' : 'borderLeft']: '3px solid #D4AF37',
-        // Depth shadows
         boxShadow: isLeft
-          ? 'inset -80px 0 160px rgba(0,0,0,.75), 20px 0 50px rgba(0,0,0,.98)'
-          : 'inset 80px 0 160px rgba(0,0,0,.75), -20px 0 50px rgba(0,0,0,.98)',
+          ? 'inset -100px 0 200px rgba(0,0,0,.8), 24px 0 60px rgba(0,0,0,.98)'
+          : 'inset 100px 0 200px rgba(0,0,0,.8), -24px 0 60px rgba(0,0,0,.98)',
         overflow: 'hidden',
         zIndex: 5,
       }}
     >
-      {/* Darkening gradient from the hinge side — creates depth illusion */}
+      {/* Darkening gradient from hinge — depth illusion */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
         background: isLeft
-          ? 'linear-gradient(to right, rgba(0,0,0,.55) 0%, rgba(0,0,0,.1) 60%, transparent 100%)'
-          : 'linear-gradient(to left,  rgba(0,0,0,.55) 0%, rgba(0,0,0,.1) 60%, transparent 100%)',
+          ? 'linear-gradient(to right, rgba(0,0,0,.6) 0%, rgba(0,0,0,.15) 55%, transparent 100%)'
+          : 'linear-gradient(to left,  rgba(0,0,0,.6) 0%, rgba(0,0,0,.15) 55%, transparent 100%)',
+      }} />
+
+      {/* Edge light strip — bright rim when door is opening */}
+      <div style={{
+        position: 'absolute', top: 0, bottom: 0,
+        [isLeft ? 'right' : 'left']: 0,
+        width: '4px',
+        background: 'linear-gradient(to bottom, transparent, rgba(255,235,160,.35) 20%, rgba(255,220,100,.6) 50%, rgba(255,235,160,.35) 80%, transparent)',
+        pointerEvents: 'none', zIndex: 4,
+      }} />
+
+      {/* Worn texture overlay */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'300\' height=\'300\' filter=\'url(%23n)\' opacity=\'0.04\'/%3E%3C/svg%3E")',
+        opacity: 0.6,
+        mixBlendMode: 'overlay',
       }} />
 
       {/* Gold inner frame */}
-      <div style={{ position: 'absolute', inset: '14px', border: '1.5px solid rgba(212,175,55,.6)', pointerEvents: 'none', zIndex: 3 }} />
-      <div style={{ position: 'absolute', inset: '24px', border: '1px solid rgba(212,175,55,.22)', pointerEvents: 'none', zIndex: 3 }} />
+      <div style={{ position: 'absolute', inset: '14px', border: '1.5px solid rgba(212,175,55,.65)', pointerEvents: 'none', zIndex: 3 }} />
+      <div style={{ position: 'absolute', inset: '24px', border: '1px solid rgba(212,175,55,.25)', pointerEvents: 'none', zIndex: 3 }} />
+      <div style={{ position: 'absolute', inset: '30px', border: '0.5px solid rgba(212,175,55,.08)', pointerEvents: 'none', zIndex: 3 }} />
 
       {/* Corner ornaments */}
       {[
-        { top: '16px',  left: '16px',  rot: '0deg'   },
-        { top: '16px',  right: '16px', rot: '90deg'  },
-        { bottom:'16px',left: '16px',  rot: '270deg' },
-        { bottom:'16px',right:'16px',  rot: '180deg' },
+        { top: '16px',   left: '16px',  rot: '0deg'   },
+        { top: '16px',   right: '16px', rot: '90deg'  },
+        { bottom:'16px', left: '16px',  rot: '270deg' },
+        { bottom:'16px', right:'16px',  rot: '180deg' },
       ].map((c, i) => (
-        <svg key={i} style={{ position:'absolute', ...c, transform:`rotate(${c.rot})`, width:'20px', height:'20px', zIndex:4, pointerEvents:'none' }} viewBox="0 0 20 20" fill="none">
-          <path d="M0 20 L0 0 L20 0" stroke="rgba(212,175,55,.75)" strokeWidth="1.5" fill="none"/>
-          <circle cx="0" cy="0" r="2.5" fill="rgba(212,175,55,.6)"/>
+        <svg key={i} style={{ position:'absolute', ...c, transform:`rotate(${c.rot})`, width:'24px', height:'24px', zIndex:4, pointerEvents:'none' }} viewBox="0 0 24 24" fill="none">
+          <path d="M0 24 L0 0 L24 0" stroke="rgba(212,175,55,.8)" strokeWidth="1.5" fill="none"/>
+          <circle cx="0" cy="0" r="3" fill="rgba(212,175,55,.65)"/>
+          <circle cx="0" cy="0" r="1.2" fill="rgba(255,240,180,.5)"/>
         </svg>
       ))}
+
+      {/* Dragon/Phoenix decorative motif at center */}
+      <div style={{
+        position: 'absolute', top: '50%', left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '60%', aspectRatio: '1',
+        opacity: 0.06,
+        background: 'radial-gradient(circle, rgba(212,175,55,1) 0%, transparent 70%)',
+        pointerEvents: 'none', zIndex: 2,
+      }} />
 
       {/* Name label at bottom */}
       <div style={{ position: 'absolute', bottom: '9%', left: 0, right: 0, textAlign: 'center', zIndex: 5 }}>
         <div style={{ display: 'inline-block' }}>
+          <div style={{
+            width: '100%', height: '1px',
+            background: 'linear-gradient(to right, transparent, rgba(212,175,55,.7), transparent)',
+            marginBottom: '10px',
+          }} />
           <h2 style={{
             fontFamily: '"Dancing Script", cursive',
-            fontSize: 'clamp(2.4rem, 5vw, 4.2rem)',
+            fontSize: 'clamp(2.6rem, 5vw, 4.5rem)',
             color: '#F3E5AB',
             margin: 0,
             letterSpacing: '.04em',
             textShadow: [
-              '0 0 40px rgba(212,175,55,.9)',
-              '0 0 80px rgba(212,175,55,.4)',
-              '0 4px 15px rgba(0,0,0,.98)',
+              '0 0 50px rgba(212,175,55,1)',
+              '0 0 100px rgba(212,175,55,.5)',
+              '0 4px 20px rgba(0,0,0,.98)',
             ].join(', '),
           }}>
             {name}
@@ -231,29 +459,29 @@ function DoorPanel({ side, name, panelRef }) {
           <div style={{
             width: '100%', height: '1px',
             background: 'linear-gradient(to right, transparent, rgba(212,175,55,.9), transparent)',
-            marginTop: '6px',
+            marginTop: '10px',
           }} />
         </div>
       </div>
 
-      {/* Metallic hinges */}
+      {/* Metallic hinges — 3 hinges */}
       {[0.14, 0.5, 0.86].map((pos, i) => (
         <div key={i} style={{
           position: 'absolute',
-          top: `calc(${pos * 100}% - 24px)`,
+          top: `calc(${pos * 100}% - 26px)`,
           [isLeft ? 'right' : 'left']: '-1px',
-          width: '20px', height: '48px',
-          background: 'linear-gradient(180deg, #3A2700 0%, #8B6508 20%, #D4AF37 38%, #FFF8E1 50%, #D4AF37 62%, #8B6508 80%, #3A2700 100%)',
+          width: '22px', height: '52px',
+          background: 'linear-gradient(180deg, #3A2700 0%, #8B6508 18%, #D4AF37 35%, #FFF8E1 50%, #D4AF37 65%, #8B6508 82%, #3A2700 100%)',
           borderRadius: '3px',
-          boxShadow: '0 4px 12px rgba(0,0,0,.9)',
+          boxShadow: '0 4px 14px rgba(0,0,0,.9), inset 0 1px 2px rgba(255,255,255,.2)',
           zIndex: 6,
         }}>
           <div style={{
             position: 'absolute', top: '50%', left: '50%',
-            width: '9px', height: '9px', borderRadius: '50%',
-            background: 'radial-gradient(circle at 35% 35%, #FFF8E1, #B8860B 60%, #5A3E00)',
+            width: '10px', height: '10px', borderRadius: '50%',
+            background: 'radial-gradient(circle at 33% 33%, #FFF8E1, #C8A020 55%, #5A3E00)',
             transform: 'translate(-50%, -50%)',
-            boxShadow: 'inset 0 1px 2px rgba(255,255,255,.5)',
+            boxShadow: 'inset 0 1px 2px rgba(255,255,255,.6)',
           }} />
         </div>
       ))}
@@ -271,7 +499,9 @@ export default function GateIntro({ onOpen }) {
   const sealRef    = useRef(null);
   const ring1Ref   = useRef(null);
   const ring2Ref   = useRef(null);
+  const ring3Ref   = useRef(null);
   const glowRef    = useRef(null);
+  const seamRef    = useRef(null);
   const ytPlayerRef = useRef(null);
   const ytContainerRef = useRef(null);
   const topBarRef  = useRef(null);
@@ -279,42 +509,36 @@ export default function GateIntro({ onOpen }) {
   const [interacted, setInteracted] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [musicReady, setMusicReady] = useState(false);
+  const [showRays, setShowRays] = useState(false);
+  const [burst, setBurst] = useState(false);
+  const [burstOrigin, setBurstOrigin] = useState(null);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
 
-    // Entrance: doors start slightly ajar (like they just settled)
+    // Initial door set
     gsap.set([leftDoor.current, rightDoor.current], { rotateY: 0 });
 
-    // Subtle door breathing (very slight sway)
-    gsap.to(leftDoor.current,  { rotateY: -1.5, duration: 4, yoyo: true, repeat: -1, ease: 'sine.inOut' });
-    gsap.to(rightDoor.current, { rotateY:  1.5, duration: 4, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: 0.3 });
+    // Subtle breathing sway
+    gsap.to(leftDoor.current,  { rotateY: -1.8, duration: 4.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to(rightDoor.current, { rotateY:  1.8, duration: 4.5, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: 0.4 });
 
     // Seal animations
-    gsap.to(sealRef.current, { scale: 1.06, duration: 2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
-    gsap.to(ring1Ref.current, { rotation:  360, duration: 22, repeat: -1, ease: 'none', transformOrigin: 'center center' });
-    gsap.to(ring2Ref.current, { rotation: -360, duration: 14, repeat: -1, ease: 'none', transformOrigin: 'center center' });
+    gsap.to(sealRef.current, { scale: 1.07, duration: 2.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to(ring1Ref.current, { rotation:  360, duration: 20, repeat: -1, ease: 'none', transformOrigin: 'center center' });
+    gsap.to(ring2Ref.current, { rotation: -360, duration: 12, repeat: -1, ease: 'none', transformOrigin: 'center center' });
+    gsap.to(ring3Ref.current, { rotation:  360, duration: 30, repeat: -1, ease: 'none', transformOrigin: 'center center' });
 
-    // Glow pulse behind doors
-    gsap.to('.gate-bg-glow', { opacity: 0.18, duration: 2.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    // Glow pulse
+    gsap.to('.gate-bg-glow', { opacity: 0.22, duration: 2.8, yoyo: true, repeat: -1, ease: 'sine.inOut' });
 
-    // Preload YouTube API silently
+    // Preload YouTube API
     loadYouTubeAPI().then((YT) => {
       if (!ytContainerRef.current) return;
       ytPlayerRef.current = new YT.Player(ytContainerRef.current, {
         videoId: YT_VIDEO_ID,
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          loop: 1,
-          playlist: YT_VIDEO_ID,
-          rel: 0,
-          modestbranding: 1,
-          start: 0,
-        },
-        events: {
-          onReady: () => setMusicReady(true),
-        },
+        playerVars: { autoplay: 0, controls: 0, loop: 1, playlist: YT_VIDEO_ID, rel: 0, modestbranding: 1, start: 0 },
+        events: { onReady: () => setMusicReady(true) },
       });
     });
 
@@ -324,25 +548,27 @@ export default function GateIntro({ onOpen }) {
   const toggleMusic = useCallback(() => {
     const player = ytPlayerRef.current;
     if (!player) return;
-    if (musicPlaying) {
-      player.pauseVideo();
-      setMusicPlaying(false);
-    } else {
-      player.playVideo();
-      setMusicPlaying(true);
-    }
+    if (musicPlaying) { player.pauseVideo(); setMusicPlaying(false); }
+    else { player.playVideo(); setMusicPlaying(true); }
   }, [musicPlaying]);
 
   const handleOpen = () => {
     if (interacted) return;
     setInteracted(true);
 
-    // Kill the subtle sway loops
+    // Get seal position for burst origin
+    const sealEl = sealRef.current;
+    if (sealEl) {
+      const rect = sealEl.getBoundingClientRect();
+      setBurstOrigin({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+    }
+    setBurst(true);
+
     gsap.killTweensOf([leftDoor.current, rightDoor.current]);
 
-    // Play music via YouTube player
+    // Play music
     if (ytPlayerRef.current && musicReady) {
-      ytPlayerRef.current.setVolume(50);
+      ytPlayerRef.current.setVolume(52);
       ytPlayerRef.current.playVideo();
       setMusicPlaying(true);
     }
@@ -354,43 +580,61 @@ export default function GateIntro({ onOpen }) {
       },
     });
 
-    // 1. Seal vanishes with impact
+    // 1. Seal cracks: expand + shatter out
     tl.to(sealRef.current, {
-      scale: 0, opacity: 0, duration: 0.5,
-      ease: 'back.in(3)',
+      scale: 0, opacity: 0, duration: 0.45,
+      ease: 'back.in(4)',
     }, 0);
 
-    // 2. Doors begin to open — weighted, cinematic
-    tl.to(leftDoor.current, {
-      rotateY: -118,
-      duration: 3.4,
-      ease: 'power3.inOut',
-    }, 0.35);
-    tl.to(rightDoor.current, {
-      rotateY: 118,
-      duration: 3.4,
-      ease: 'power3.inOut',
-    }, 0.35);
+    // 2. Cinematic screen shake — very slight, organic
+    tl.to(container.current, {
+      x: -4, duration: 0.06, ease: 'none',
+    }, 0.3);
+    tl.to(container.current, {
+      x: 5, duration: 0.07, ease: 'none',
+    }, 0.36);
+    tl.to(container.current, {
+      x: -3, duration: 0.06, ease: 'none',
+    }, 0.43);
+    tl.to(container.current, {
+      x: 0, duration: 0.1, ease: 'power2.out',
+    }, 0.49);
 
-    // 3. Gold seam line brightens as doors open
-    tl.to('.gate-seam', {
-      boxShadow: '0 0 60px 20px rgba(212,175,55,.9)',
-      duration: 1.5, ease: 'power2.out',
+    // 3. Doors swing open — weighted, cinematic
+    tl.to(leftDoor.current, {
+      rotateY: -122,
+      duration: 3.6,
+      ease: 'power3.inOut',
+    }, 0.38);
+    tl.to(rightDoor.current, {
+      rotateY: 122,
+      duration: 3.6,
+      ease: 'power3.inOut',
+    }, 0.38);
+
+    // 4. Gold seam brightens
+    tl.to(seamRef.current, {
+      boxShadow: '0 0 80px 30px rgba(212,175,55,1)',
+      width: '4px',
+      duration: 1.6, ease: 'power2.out',
     }, 0.5);
 
-    // 4. Light burst from behind
+    // 5. Light rays appear
+    tl.add(() => setShowRays(true), 1.2);
+
+    // 6. Glow burst from behind doors
     tl.fromTo(glowRef.current,
       { scale: 0.2, opacity: 0 },
-      { scale: 8, opacity: 1, duration: 2.0, ease: 'power2.out' },
+      { scale: 10, opacity: 1, duration: 2.2, ease: 'power2.out' },
       1.8
     );
 
-    // 5. Top/bottom bars slide out
-    tl.to(topBarRef.current, { y: '-100%', duration: 1, ease: 'power2.inOut' }, 2.2);
-    tl.to(botBarRef.current, { y: '100%',  duration: 1, ease: 'power2.inOut' }, 2.2);
+    // 7. Top/bottom bars slide out
+    tl.to(topBarRef.current, { y: '-100%', duration: 1.1, ease: 'power2.inOut' }, 2.3);
+    tl.to(botBarRef.current, { y: '100%',  duration: 1.1, ease: 'power2.inOut' }, 2.3);
 
-    // 6. Fade whole screen
-    tl.to(container.current, { opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 2.6);
+    // 8. Fade whole screen
+    tl.to(container.current, { opacity: 0, duration: 0.9, ease: 'power2.inOut' }, 2.9);
     tl.set(container.current, { display: 'none' });
   };
 
@@ -401,23 +645,26 @@ export default function GateIntro({ onOpen }) {
         position: 'fixed', inset: 0, zIndex: 9999,
         perspective: '3200px',
         perspectiveOrigin: '50% 50%',
-        // Deep cinematic background — not pitch black, has rich dark-red warmth
-        background: 'radial-gradient(ellipse 110% 110% at 50% 60%, #2A0408 0%, #120002 50%, #050001 100%)',
+        background: 'radial-gradient(ellipse 120% 110% at 50% 60%, #2A0408 0%, #120002 45%, #060001 80%, #030000 100%)',
         overflow: 'hidden',
       }}
     >
       <style>{`
         @keyframes haloPulse {
-          0%,100% { transform: scale(1);   opacity: .7; }
-          50%      { transform: scale(1.4); opacity: .2; }
+          0%,100% { transform: scale(1);   opacity: .65; }
+          50%      { transform: scale(1.5); opacity: .15; }
         }
         @keyframes hintBlink {
           0%,100% { opacity: 0; }
-          50%      { opacity: .7; }
+          50%      { opacity: .75; }
         }
         @keyframes musicPulse {
-          0%,100% { transform: scale(1); }
-          50%      { transform: scale(1.12); }
+          0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212,175,55,.4); }
+          50%      { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(212,175,55,0); }
+        }
+        @keyframes sealPulse {
+          0%,100% { box-shadow: 0 0 0 2px rgba(212,175,55,.8), 0 0 0 6px rgba(212,175,55,.15), 0 30px 80px rgba(0,0,0,.98), 0 8px 24px rgba(0,0,0,.7), inset 0 3px 8px rgba(255,255,255,.7), inset 0 -5px 16px rgba(0,0,0,.8); }
+          50%      { box-shadow: 0 0 0 2px rgba(212,175,55,.8), 0 0 0 10px rgba(212,175,55,.08), 0 30px 80px rgba(0,0,0,.98), 0 8px 24px rgba(0,0,0,.7), inset 0 3px 8px rgba(255,255,255,.7), inset 0 -5px 16px rgba(0,0,0,.8), 0 0 60px rgba(212,175,55,.55); }
         }
       `}</style>
 
@@ -426,7 +673,7 @@ export default function GateIntro({ onOpen }) {
         <div ref={ytContainerRef} />
       </div>
 
-      {/* Music toggle button — shown after gate opens */}
+      {/* Music toggle button */}
       {interacted && (
         <button
           onClick={toggleMusic}
@@ -439,7 +686,7 @@ export default function GateIntro({ onOpen }) {
             background: 'rgba(10,0,0,.75)',
             backdropFilter: 'blur(10px)',
             cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 4px 20px rgba(0,0,0,.5), 0 0 12px rgba(212,175,55,.2)',
+            boxShadow: '0 4px 20px rgba(0,0,0,.5)',
             animation: musicPlaying ? 'musicPulse 1.8s ease-in-out infinite' : 'none',
             transition: 'border-color .3s',
           }}
@@ -457,17 +704,19 @@ export default function GateIntro({ onOpen }) {
         </button>
       )}
 
-      {/* Canvas gold dust */}
-      <GoldDust />
+      {/* Canvas gold dust + burst */}
+      <GoldDust burst={burst} burstOrigin={burstOrigin} />
 
-      {/* Ambient radial glow behind center */}
+      {/* Light rays — appear on door open */}
+      <LightRays visible={showRays} />
+
+      {/* Ambient radial glow */}
       <div className="gate-bg-glow" style={{
         position: 'absolute', top: '50%', left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: '60%', height: '80%',
-        borderRadius: '50%',
-        background: 'radial-gradient(ellipse, rgba(160,30,30,.35) 0%, transparent 70%)',
-        pointerEvents: 'none', zIndex: 1, opacity: 0.08,
+        width: '65%', height: '85%', borderRadius: '50%',
+        background: 'radial-gradient(ellipse, rgba(170,35,35,.38) 0%, transparent 70%)',
+        pointerEvents: 'none', zIndex: 1, opacity: 0.1,
       }} />
 
       {/* Gold burst revealed on open */}
@@ -475,7 +724,7 @@ export default function GateIntro({ onOpen }) {
         position: 'absolute', top: '50%', left: '50%',
         width: '100px', height: '100px', borderRadius: '50%',
         transform: 'translate(-50%, -50%) scale(0.2)',
-        background: 'radial-gradient(circle, rgba(255,253,230,.98) 0%, rgba(230,195,90,.6) 35%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(255,253,220,1) 0%, rgba(230,195,90,.7) 30%, rgba(212,175,55,.2) 55%, transparent 70%)',
         opacity: 0, pointerEvents: 'none', zIndex: 2,
       }} />
 
@@ -484,29 +733,36 @@ export default function GateIntro({ onOpen }) {
       <DoorPanel side="right" name="Thị Nhung"  panelRef={rightDoor} />
 
       {/* Center gold seam */}
-      <div className="gate-seam" style={{
+      <div ref={seamRef} className="gate-seam" style={{
         position: 'absolute', top: 0, left: '50%', width: '2px', height: '100%',
-        background: 'linear-gradient(to bottom, transparent 2%, #7A5800 8%, #D4AF37 25%, #FFF3A0 50%, #D4AF37 75%, #7A5800 92%, transparent 98%)',
+        background: 'linear-gradient(to bottom, transparent 1%, #6A4A00 6%, #D4AF37 22%, #FFF3A0 50%, #D4AF37 78%, #6A4A00 94%, transparent 99%)',
         transform: 'translateX(-50%)',
         zIndex: 10, pointerEvents: 'none',
-        boxShadow: '0 0 16px 4px rgba(212,175,55,.55)',
+        boxShadow: '0 0 20px 5px rgba(212,175,55,.65)',
       }} />
 
       {/* TOP cinematic letterbox bar */}
       <div ref={topBarRef} style={{
         position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20,
-        background: 'rgba(0,0,0,.88)',
+        background: 'rgba(0,0,0,.9)',
+        backdropFilter: 'blur(2px)',
         padding: '18px 0 14px',
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{ width: '70px', height: '1px', background: 'linear-gradient(to right, transparent, #D4AF37)' }} />
-          <span style={{ fontFamily: '"Montserrat",sans-serif', fontSize: '9px', letterSpacing: '.65em', color: '#D4AF37', textTransform: 'uppercase' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ width: '80px', height: '1px', background: 'linear-gradient(to right, transparent, #D4AF37)' }} />
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <polygon points="5,0 10,5 5,10 0,5" fill="rgba(212,175,55,.5)"/>
+          </svg>
+          <span style={{ fontFamily: '"Montserrat",sans-serif', fontSize: '9px', letterSpacing: '.7em', color: '#D4AF37', textTransform: 'uppercase' }}>
             Lễ Thành Hôn
           </span>
-          <div style={{ width: '70px', height: '1px', background: 'linear-gradient(to left, transparent, #D4AF37)' }} />
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <polygon points="5,0 10,5 5,10 0,5" fill="rgba(212,175,55,.5)"/>
+          </svg>
+          <div style={{ width: '80px', height: '1px', background: 'linear-gradient(to left, transparent, #D4AF37)' }} />
         </div>
-        <span style={{ fontFamily: '"Playfair Display",serif', fontSize: '10px', letterSpacing: '.3em', color: 'rgba(243,229,171,.5)', fontStyle: 'italic' }}>
+        <span style={{ fontFamily: '"Playfair Display",serif', fontSize: '10px', letterSpacing: '.35em', color: 'rgba(243,229,171,.55)', fontStyle: 'italic' }}>
           20 · 10 · 2026
         </span>
       </div>
@@ -514,27 +770,27 @@ export default function GateIntro({ onOpen }) {
       {/* BOTTOM bar */}
       <div ref={botBarRef} style={{
         position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 20,
-        background: 'rgba(0,0,0,.88)',
-        padding: '14px 0 18px',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
+        background: 'rgba(0,0,0,.9)',
+        backdropFilter: 'blur(2px)',
+        padding: '16px 0 20px',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px',
       }}>
-        {/* Hint */}
         {!interacted && (
           <p style={{
             fontFamily: '"Montserrat",sans-serif',
-            fontSize: '9px', letterSpacing: '.55em', textTransform: 'uppercase',
-            color: 'rgba(212,175,55,.65)', margin: 0,
-            animation: 'hintBlink 2.4s 1.5s ease-in-out infinite',
+            fontSize: '9px', letterSpacing: '.6em', textTransform: 'uppercase',
+            color: 'rgba(212,175,55,.7)', margin: 0,
+            animation: 'hintBlink 2.4s 1.2s ease-in-out infinite',
           }}>
             Chạm phong ấn để mở cổng
           </p>
         )}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ width: '40px', height: '1px', background: 'linear-gradient(to right, transparent, rgba(212,175,55,.5))' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div style={{ width: '48px', height: '1px', background: 'linear-gradient(to right, transparent, rgba(212,175,55,.5))' }} />
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <polygon points="6,0 12,6 6,12 0,6" stroke="rgba(212,175,55,.5)" strokeWidth=".8" fill="rgba(212,175,55,.08)" />
           </svg>
-          <div style={{ width: '40px', height: '1px', background: 'linear-gradient(to left, transparent, rgba(212,175,55,.5))' }} />
+          <div style={{ width: '48px', height: '1px', background: 'linear-gradient(to left, transparent, rgba(212,175,55,.5))' }} />
         </div>
       </div>
 
@@ -543,6 +799,7 @@ export default function GateIntro({ onOpen }) {
         sealRef={sealRef}
         ring1Ref={ring1Ref}
         ring2Ref={ring2Ref}
+        ring3Ref={ring3Ref}
         onClick={handleOpen}
       />
     </div>
