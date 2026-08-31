@@ -303,70 +303,90 @@ export default function Gallery() {
           })}
         </div>
 
-        {/* ── True CSS masonry grid — editorial proportions ──
-             Uses CSS columns for real masonry on desktop,
-             falls back to auto rows on mobile */}
-        <div style={{
-          columns: 'clamp(200px, 30%, 400px)',
-          columnGap: 'clamp(8px, 1.5vw, 16px)',
-        }}>
-          {filtered.map((photo, idx) => (
-            <div
-              key={photo.id}
-              onClick={() => setActiveIdx(idx)}
-              tabIndex={0}
-              role="button"
-              aria-label={`Xem ảnh: ${photo.title}`}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setActiveIdx(idx); }}
-              style={{
-                marginBottom: 'clamp(8px, 1.5vw, 16px)',
-                breakInside: 'avoid',
-                cursor: 'pointer',
-                overflow: 'hidden',
-                position: 'relative',
-                display: 'block',
-                lineHeight: 0,
-              }}
-            >
-              <img
-                src={photo.src}
-                alt={photo.alt}
-                loading="lazy"
-                decoding="async"
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  display: 'block',
-                  transition: 'transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)',
-                }}
-                onMouseEnter={e => { e.target.style.transform = 'scale(1.04)'; }}
-                onMouseLeave={e => { e.target.style.transform = 'scale(1)'; }}
-                onError={e => { e.target.src = photo.fallback; }}
-              />
-
-              {/* Minimal hover caption — appears on hover only */}
+        {/* ── CSS Grid — editorial 2-col mobile, 3-col desktop ──
+             Visual rhythm: alternating portrait/landscape ratios
+             Mobile:  2 columns, 10px gap — deliberate editorial rhythm
+             Desktop: 3 columns, 14px gap — masonry-like variety */}
+        <div
+          className="gallery-grid"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '10px',
+          }}
+        >
+          <style>{`
+            .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            @media (min-width: 640px) {
+              .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+            }
+          `}</style>
+          {filtered.map((photo, idx) => {
+            /*
+             * Aspect ratio per item for visual rhythm:
+             * Odd items (0,2,4,...) — portrait  4:5
+             * Even items (1,3,5,...) — landscape 4:3
+             * tall:true override keeps portrait items taller
+             */
+            const aspectRatio = photo.tall ? '3/4' : (idx % 2 === 1 ? '4/3' : '3/4');
+            return (
               <div
-                className="photo-caption"
+                key={photo.id}
+                onClick={() => setActiveIdx(idx)}
+                tabIndex={0}
+                role="button"
+                aria-label={`Xem ảnh: ${photo.title}`}
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setActiveIdx(idx); }}
                 style={{
-                  position: 'absolute', bottom: 0, left: 0, right: 0,
-                  padding: '20px 16px 14px',
-                  background: 'linear-gradient(to top, rgba(18,10,6,0.55) 0%, transparent 100%)',
-                  opacity: 0,
-                  transition: 'opacity 0.3s ease',
-                  pointerEvents: 'none',
+                  cursor: 'pointer',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  lineHeight: 0,
+                  /* Controlled aspect ratio — no image dominates entire screen */
+                  aspectRatio,
                 }}
               >
-                <p style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: '0.88rem', fontStyle: 'italic',
-                  color: 'rgba(248,244,236,0.9)',
-                  margin: 0, lineHeight: 1,
-                }}>
-                  {photo.title}
-                </p>
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  loading="lazy"
+                  decoding="async"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'block',
+                    objectFit: 'cover',
+                    objectPosition: 'center 25%',
+                    transition: 'transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)',
+                  }}
+                  onMouseEnter={e => { e.target.style.transform = 'scale(1.04)'; }}
+                  onMouseLeave={e => { e.target.style.transform = 'scale(1)'; }}
+                  onError={e => { e.target.src = photo.fallback; }}
+                />
+                {/* Hover caption */}
+                <div
+                  className="photo-caption"
+                  style={{
+                    position: 'absolute', bottom: 0, left: 0, right: 0,
+                    padding: '16px 12px 10px',
+                    background: 'linear-gradient(to top, rgba(18,10,6,0.55) 0%, transparent 100%)',
+                    opacity: 0,
+                    transition: 'opacity 0.3s ease',
+                    pointerEvents: 'none',
+                  }}
+                >
+                  <p style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: '0.82rem', fontStyle: 'italic',
+                    color: 'rgba(248,244,236,0.9)',
+                    margin: 0, lineHeight: 1,
+                  }}>
+                    {photo.title}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
       </div>

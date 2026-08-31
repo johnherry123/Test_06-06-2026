@@ -232,13 +232,15 @@ export default function IntroShader({ onComplete }) {
       ═══════════════════════════════════════════════════ */}
       <div aria-hidden="true" style={{
         position: 'absolute',
-        left: 'clamp(-20px, -1vw, -8px)',
+        left: 'clamp(-12px, -0.8vw, -4px)',
         top: '50%',
         transform: 'translateY(-50%)',
-        width: 'clamp(130px, 18vw, 220px)',
-        height: 'clamp(380px, 60vh, 560px)',
+        /* Mobile: 68px (17% of 390px) — frames without competing
+           Desktop: 170px (12% of 1440px) — elegant presence */
+        width: 'clamp(68px, 11vw, 170px)',
+        height: 'clamp(260px, 46vh, 480px)',
         zIndex: 2,
-        opacity: entered ? 0.88 : 0,
+        opacity: entered ? 0.72 : 0,
         transition: 'opacity 1.4s 0.5s ease',
         pointerEvents: 'none',
       }}>
@@ -248,13 +250,14 @@ export default function IntroShader({ onComplete }) {
       {/* ── Mirrored botanical on right (subtle, lower contrast) ── */}
       <div aria-hidden="true" style={{
         position: 'absolute',
-        right: 'clamp(-20px, -1vw, -8px)',
+        right: 'clamp(-12px, -0.8vw, -4px)',
         top: '50%',
         transform: 'translateY(-52%) scaleX(-1)',
-        width: 'clamp(110px, 15vw, 185px)',
-        height: 'clamp(320px, 50vh, 480px)',
+        /* Right botanical is secondary — smaller and more transparent */
+        width: 'clamp(54px, 9vw, 136px)',
+        height: 'clamp(220px, 38vh, 400px)',
         zIndex: 2,
-        opacity: entered ? 0.72 : 0,
+        opacity: entered ? 0.50 : 0,
         transition: 'opacity 1.4s 0.8s ease',
         pointerEvents: 'none',
       }}>
@@ -370,9 +373,13 @@ export default function IntroShader({ onComplete }) {
         <div style={{
           position: 'relative',
           zIndex: 8,
-          /* PORTRAIT dimensions — needs visual weight and presence */
-          width: 'clamp(268px, 54vw, 390px)',
-          aspectRatio: 'unset',
+          /*
+           * Scale target:
+           *   390px mobile  → 62vw = ~242px  (elegant, not giant)
+           *   1440px desktop → max 348px     (luxury stationery proportion)
+           * min 228px ensures legibility on 360px viewport
+           */
+          width: 'clamp(228px, 62vw, 348px)',
           borderRadius: '2px',
           overflow: 'hidden',
           background: '#FDFBF7',
@@ -532,33 +539,56 @@ export default function IntroShader({ onComplete }) {
         </div>
       </div>
 
-      {/* ── FULLSCREEN PHOTO OVERLAY ──
-          When phase=fullscreen the couple photo FILLS the viewport.
-          This is the cinematic moment: 'opening the invitation reveals the couple.'
-          It transitions in via scale(1.04)→scale(1) + opacity,
-          then the entire intro fades to ivory on exit. */}
+      {/* ── FULLSCREEN PHOTO REVEAL ──
+          Cinematic moment: invitation opens → couple is revealed.
+          Design intent:
+            Mobile:  photo contained (no aggressive face crop) — max 88vw × 72vh
+            Desktop: photo more editorial — max 620px, cover at good proportions
+          Background: warm espresso so "outside" the photo doesn't look empty. */}
       <div style={{
         position: 'fixed', inset: 0, zIndex: 20,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        /* Warm dark background — espresso — shows behind photo on mobile */
+        backgroundColor: '#1A120D',
         opacity: isFullscreen ? 1 : 0,
         pointerEvents: 'none',
         transition: isFullscreen
-          ? 'opacity 0.45s cubic-bezier(0.4,0,0.2,1)'
-          : 'opacity 0.2s ease',
+          ? 'opacity 0.42s cubic-bezier(0.4,0,0.2,1)'
+          : 'opacity 0.18s ease',
       }}>
-        <img src={COUPLE_PHOTO.src} alt={COUPLE_PHOTO.alt}
+        {/* Subtle warm overlay on background */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'radial-gradient(ellipse 70% 70% at 50% 45%, rgba(139,30,34,0.08) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }}/>
+        {/* Photo — contained on mobile, editorial on desktop */}
+        <img
+          src={COUPLE_PHOTO.src}
+          alt={COUPLE_PHOTO.alt}
           style={{
-            width: '100%', height: '100%',
-            objectFit: 'cover', objectPosition: 'center 25%',
             display: 'block',
-            transform: isFullscreen ? 'scale(1)' : 'scale(1.06)',
-            transition: 'transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)',
+            /*
+             * Mobile (< 600px):  contain — full photo visible, no crop
+             * Desktop (≥ 600px): cover within constrained box — editorial
+             */
+            width: 'min(88vw, 620px)',
+            height: 'min(72vh, 480px)',
+            objectFit: 'cover',
+            objectPosition: 'center 20%',
+            transform: isFullscreen ? 'scale(1)' : 'scale(1.04)',
+            transition: 'transform 0.65s cubic-bezier(0.25,0.46,0.45,0.94)',
+            /* Subtle warm glow on image edges */
+            boxShadow: '0 0 80px rgba(18,10,6,0.5)',
           }}
           onError={e => { if (e.target.src !== COUPLE_PHOTO.fallback) e.target.src = COUPLE_PHOTO.fallback; }}
         />
-        {/* Subtle warm overlay so the transition to hero feels natural */}
+        {/* Bottom fade */}
         <div style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(to bottom, rgba(18,10,6,0.08) 0%, rgba(18,10,6,0.18) 100%)',
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: '30%',
+          background: 'linear-gradient(to top, rgba(26,18,13,0.6) 0%, transparent 100%)',
           pointerEvents: 'none',
         }}/>
       </div>

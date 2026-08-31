@@ -282,11 +282,18 @@ export default function Hero() {
               zIndex: 2,
             }} />
 
-            <div style={{
-              aspectRatio: 'clamp(4/5, 3/2, 16/9)',
-              overflow: 'hidden',
-              lineHeight: 0,
-            }}>
+            <div
+              style={{
+                /* Centered, max 600px — editorial stationery proportion
+                   NOT a full-bleed hero that overwhelms the page */
+                maxWidth: '600px',
+                width: '92vw',
+                margin: '0 auto',
+                overflow: 'hidden',
+                lineHeight: 0,
+                aspectRatio: '3/2',
+              }}
+            >
               <img
                 src={EDITORIAL_PHOTOS.hero.src}
                 alt={EDITORIAL_PHOTOS.hero.alt}
@@ -296,7 +303,7 @@ export default function Hero() {
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  objectPosition: 'center 25%',
+                  objectPosition: 'center 30%',
                   display: 'block',
                 }}
                 onError={e => { e.target.src = EDITORIAL_PHOTOS.hero.fallback; }}
