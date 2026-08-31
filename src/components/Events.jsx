@@ -108,7 +108,7 @@ export default function Events() {
           {EVENTS.map((item, idx) => (
             <div
               key={idx}
-              className="glass-luxury-card"
+              className="glass-card"
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -253,7 +253,8 @@ export default function Events() {
                   href={item.mapUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={item.isMain ? 'btn-luxury-crimson' : 'btn-luxury-gold'}
+                  className={item.isMain ? 'btn-crimson' : 'btn-gold-outline'}
+                  data-cursor-hover
                   style={{
                     width: '100%',
                     padding: '10px 16px',
