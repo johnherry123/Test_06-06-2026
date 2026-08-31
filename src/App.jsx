@@ -43,6 +43,8 @@ const NAV_LINKS = [
 
 export default function App() {
   const [hasOpened, setHasOpened]         = useState(false);
+  /* introDone: intro fully faded, safe to remove from DOM */
+  const [introDone, setIntroDone]         = useState(false);
   const [scrolled, setScrolled]           = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [mobileMenu, setMobileMenu]       = useState(false);
@@ -153,15 +155,38 @@ export default function App() {
   const navBorder = scrolled ? '1px solid rgba(35,27,21,0.1)' : '1px solid transparent';
   const navPad    = scrolled ? '10px 32px' : '20px 32px';
 
+  /* When onComplete fires: mark as open. After extra 200ms (intro fully gone
+     from DOM perspective), mark introDone so we can unmount IntroShader.
+     This prevents ANY possibility of a flash between unmount/mount cycles. */
+  const handleIntroComplete = useCallback(() => {
+    setHasOpened(true);
+    setTimeout(() => setIntroDone(true), 200);
+  }, []);
+
   return (
     <div style={{ backgroundColor: '#F8F4EC', color: '#231B15', minHeight: '100vh' }}>
 
-      {/* 1. Intro */}
-      {!hasOpened && (
-        <IntroShader onComplete={() => setHasOpened(true)} />
+      {/* ── 1. Intro — position:fixed covers main content below.
+           Stays mounted until introDone so main content pre-paints underneath.
+           This eliminates the flash: fonts/images are ready when intro fades. */}
+      {!introDone && (
+        <IntroShader onComplete={handleIntroComplete} />
       )}
 
-      {/* 2. Navigation */}
+      {/* ── 2. Main content — always in DOM.
+           Before hasOpened: invisible + no pointer-events (covered by intro).
+           After hasOpened: fades in over 0.5s. Lenis/GSAP init via hasOpened dep. */}
+      <div
+        aria-hidden={!hasOpened}
+        style={{
+          opacity: hasOpened ? 1 : 0,
+          transition: hasOpened ? 'opacity 0.5s ease 0.1s' : 'none',
+          pointerEvents: hasOpened ? 'auto' : 'none',
+          userSelect: hasOpened ? 'auto' : 'none',
+        }}
+      >
+
+      {/* 3. Navigation */}
       {hasOpened && (
         <header style={{
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 8000,
@@ -441,6 +466,7 @@ export default function App() {
           .mobile-hamburger { display: flex !important; }
         }
       `}</style>
+      </div>{/* end fade wrapper */}
     </div>
   );
 }
