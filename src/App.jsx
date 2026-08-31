@@ -434,8 +434,9 @@ export default function App() {
         </main>
       )}
 
-      {/* Audio player */}
-      <AudioPlayer autoPlay={hasOpened} />
+      {/* Audio player — autoPlay=false: oscillator melody is a placeholder.
+           When real music (e.g. /public/music.mp3) is added, set autoPlay={hasOpened}. */}
+      <AudioPlayer autoPlay={false} />
 
       {/* Scroll to top */}
       {showScrollTop && (

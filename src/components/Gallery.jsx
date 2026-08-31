@@ -160,14 +160,47 @@ export default function Gallery() {
       id="gallery"
       aria-label="Album ảnh cưới"
       style={{
-        padding: 'clamp(80px, 12vw, 120px) 0',
-        /* DARK MOMENT — near-black for immersive editorial photo story */
+        /* No top padding — featured photo sits flush at top of section */
+        paddingBottom: 'clamp(64px, 10vw, 96px)',
         backgroundColor: '#0E0905',
+        overflow: 'hidden',
       }}
     >
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 clamp(16px, 3vw, 32px)' }}>
+      {/* ── Featured editorial photo — full-bleed, no max-width constraint ──
+           Breaks the grid before the grid starts. Visual impact. */}
+      {GALLERY_PHOTOS[0] && (
+        <div
+          style={{
+            width: '100%',
+            height: 'clamp(200px, 40vw, 480px)',
+            overflow: 'hidden',
+            position: 'relative',
+          }}
+        >
+          <img
+            src={GALLERY_PHOTOS[0].src}
+            alt={GALLERY_PHOTOS[0].alt}
+            loading="eager"
+            decoding="async"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center 35%',
+              display: 'block',
+              filter: 'brightness(0.75) contrast(1.07)',
+            }}
+            onError={e => { e.currentTarget.parentElement.style.display = 'none'; }}
+          />
+          <div aria-hidden="true" style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(to top, rgba(14,9,5,0.82) 0%, transparent 55%)',
+            pointerEvents: 'none',
+          }} />
+        </div>
+      )}
 
-        {/* Header */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'clamp(56px, 8vw, 80px) clamp(16px, 3vw, 32px) clamp(48px, 7vw, 72px)' }}>
         <div style={{ marginBottom: 'clamp(36px, 5vw, 52px)', padding: '0 clamp(4px, 1vw, 16px)' }}>
           <p style={{
             fontFamily: "'Be Vietnam Pro', sans-serif",

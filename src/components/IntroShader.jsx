@@ -1,114 +1,63 @@
 /* ══════════════════════════════════════════════════════════════════════
-   INTRO — Soft Editorial Stationery
+   INTRO — Atmospheric Wedding Experience  [REBUILT]
    ──────────────────────────────────────────────────────────────────────
-   Art direction: A beautiful physical wedding invitation, photographed
-   in soft natural daylight on warm ivory paper.
+   ART DIRECTION:
+   The intro IS a photographic moment — a beautifully photographed
+   invitation card resting in a warm, atmospheric environment.
 
-   Concept: NOT a cinematic intro. NOT a website hero. NOT a movie trailer.
-   It should feel like: opening an envelope and finding this inside.
+   Visual composition:
+     [full-screen atmospheric photo — darkened, cinematic warm]
+     [warm espresso color overlay — creates physical depth]
+     [lotus botanical — large, partially off-screen, upper-left]
+     [invitation card — off-center, slightly tilted, physical paper]
+     [CTA — barely visible, inviting]
 
-   Animation sequence:
-     1. Warm ivory background fades in (instant, no flash)
-     2. Invitation card drifts up gently + fades in (1.8s)
-     3. "Chạm để mở" CTA fades in after card (delay 1.2s)
-     4. On click anywhere: card softly scales + fades → onComplete()
+   Animation:
+     1. Photo fades in slowly (2.0s — creates atmosphere before anything)
+     2. Botanical drifts in from upper-left (1.8s, delay 0.3s)
+     3. Card rises into position (1.4s, delay 0.5s)
+     4. CTA fades in last (0.8s, delay 1.8s)
+     5. Click: card lifts + scene fades → Hero emerges beneath
 
-   Removed from previous version:
-     - CSS polygon envelope (synthetic-looking)
-     - Multiple botanical SVG layers (geometric, artificial)
-     - Complex phase machine (lifting/revealing/fullscreen/exit)
-     - Fullscreen photo reveal (wrong emotional tone)
-     - Dark espresso background moments
-     - Multiple grain/noise layers
-     - Giant wax seal SVG
-     - Heavy radial vignettes
-     - Dramatic cinematic zoom
+   Design decisions:
+   • Photo IS the background — not decoration, it's the scene
+   • Card tilt (-0.8deg) gives physicality vs. UI flatness
+   • Envelope texture at 5.5% — feel paper, don't see texture
+   • Botanical: mix-blend-mode screen on dark photo = luminous illustration
+   • No chevron CTA — a growing thin line is more elegant
+   • Warm overlay: keeps card warm even on cool-toned photos
 
-   Accessibility: prefers-reduced-motion supported — fades only, no motion.
+   Previous version problems fixed:
+   • Was: developer SVG botanical paths on plain beige
+   • Was: small card (56vw = 218px on mobile) — too safe, too empty
+   • Was: boring fade-only entrance with no scene-setting
 ══════════════════════════════════════════════════════════════════════ */
 import { useState, useEffect, useCallback } from 'react';
-import { COUPLE, WEDDING } from '../weddingData';
-
-/* ── Delicate organic botanical — hand-drawn feeling SVG ──
-   Asymmetric, small, top-left of card.
-   Uses a single curved branch with simple leaves — restrained. */
-function DelicateBotanical() {
-  return (
-    <svg
-      viewBox="0 0 120 160"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      style={{ width: '100%', height: '100%', display: 'block' }}
-    >
-      {/* Main stem — organic curve */}
-      <path
-        d="M 60 155 C 58 130 54 110 48 90 C 42 70 32 52 24 38 C 18 28 14 18 18 8"
-        stroke="rgba(120,95,55,0.45)"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* Left branch */}
-      <path
-        d="M 42 82 C 30 76 20 72 10 74"
-        stroke="rgba(120,95,55,0.38)"
-        strokeWidth="0.9"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* Right branch */}
-      <path
-        d="M 46 68 C 56 60 62 54 66 46"
-        stroke="rgba(120,95,55,0.35)"
-        strokeWidth="0.9"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* Small leaves on left branch */}
-      <ellipse cx="14" cy="71" rx="6" ry="3.5" transform="rotate(-20 14 71)" fill="rgba(100,130,80,0.28)" />
-      <ellipse cx="22" cy="69" rx="5" ry="3" transform="rotate(-35 22 69)" fill="rgba(100,130,80,0.24)" />
-      <ellipse cx="8"  cy="76" rx="4" ry="2.5" transform="rotate(10 8 76)"  fill="rgba(100,130,80,0.20)" />
-      {/* Leaves on right branch */}
-      <ellipse cx="63" cy="49" rx="6" ry="3"   transform="rotate(50 63 49)" fill="rgba(100,130,80,0.25)" />
-      <ellipse cx="56" cy="55" rx="5" ry="3"   transform="rotate(30 56 55)" fill="rgba(100,130,80,0.22)" />
-      {/* Small leaves on main stem */}
-      <ellipse cx="28" cy="40" rx="7" ry="3.5" transform="rotate(-60 28 40)" fill="rgba(100,130,80,0.22)" />
-      <ellipse cx="36" cy="60" rx="6" ry="3"   transform="rotate(-45 36 60)" fill="rgba(100,130,80,0.18)" />
-      <ellipse cx="50" cy="100" rx="7" ry="3"  transform="rotate(-30 50 100)" fill="rgba(100,130,80,0.18)" />
-      {/* Tiny flower bud at top */}
-      <circle cx="18" cy="8" r="3" fill="rgba(184,149,85,0.30)" />
-      <circle cx="18" cy="8" r="1.5" fill="rgba(184,149,85,0.45)" />
-    </svg>
-  );
-}
-
-/* ── Thin champagne rule ── */
-function GoldRule({ width = '32px', opacity = 0.5 }) {
-  return (
-    <div aria-hidden="true" style={{
-      width, height: '0.6px',
-      background: `linear-gradient(to right, transparent, rgba(184,149,85,${opacity}), transparent)`,
-      margin: '0 auto',
-    }} />
-  );
-}
+import { COUPLE, WEDDING, INTRO_PHOTO } from '../weddingData';
 
 export default function IntroShader({ onComplete }) {
-  /* Single simple state: idle → opening → done */
-  const [phase, setPhase] = useState('idle'); // idle | opening | done
-  const [entered, setEntered] = useState(false);
+  const [entered, setEntered]       = useState(false);
+  const [photoReady, setPhotoReady] = useState(false);
+  const [phase, setPhase]           = useState('idle'); // idle | opening
 
-  /* Entrance animation — card drifts in from below */
+  /* Preload photo — start entrance only after photo loads */
   useEffect(() => {
-    const t = setTimeout(() => setEntered(true), 80);
-    return () => clearTimeout(t);
+    const img = new Image();
+    const done = () => {
+      setPhotoReady(true);
+      setTimeout(() => setEntered(true), 80);
+    };
+    img.addEventListener('load', done);
+    img.addEventListener('error', done); // Fail gracefully
+    img.src = INTRO_PHOTO.src;
+    if (img.complete) done();
+    return () => { img.removeEventListener('load', done); img.removeEventListener('error', done); };
   }, []);
 
-  /* prefers-reduced-motion — skip animation entirely */
+  /* prefers-reduced-motion — skip all animation */
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mq.matches) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setPhotoReady(true);
       setEntered(true);
     }
   }, []);
@@ -116,233 +65,297 @@ export default function IntroShader({ onComplete }) {
   const handleOpen = useCallback(() => {
     if (phase !== 'idle') return;
     setPhase('opening');
-    /* After fade-out completes → notify parent */
-    setTimeout(() => {
-      setPhase('done');
-      onComplete?.();
-    }, 820);
+    setTimeout(() => onComplete?.(), 820);
   }, [phase, onComplete]);
 
-  /* Keyboard support */
+  /* Keyboard: Enter or Space opens */
   useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === 'Enter' || e.key === ' ') handleOpen();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    const h = (e) => { if (e.key === 'Enter' || e.key === ' ') handleOpen(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
   }, [handleOpen]);
 
-  /* Derived visual states */
   const isOpening = phase === 'opening';
 
-  /* ── Root container ──
-     Full-viewport warm ivory. Click anywhere triggers opening. */
   return (
     <div
       onClick={handleOpen}
       role="button"
       tabIndex={0}
-      aria-label="Chạm để mở thiệp cưới"
+      aria-label="Chạm để xem thiệp cưới"
       style={{
         position: 'fixed', inset: 0, zIndex: 9999,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        /* Warm ivory — clean, natural, paper-like */
-        backgroundColor: '#F5EDE0',
-        /* Fade out entire intro on opening */
-        opacity: isOpening ? 0 : 1,
-        transition: isOpening
-          ? 'opacity 0.72s cubic-bezier(0.4, 0, 0.6, 1)'
-          : 'none',
-        cursor: phase === 'idle' ? 'pointer' : 'default',
+        /* Dark warm base — visible before photo loads */
+        backgroundColor: '#16100A',
+        cursor: 'pointer',
         userSelect: 'none',
         WebkitUserSelect: 'none',
-        /* Very subtle warm vignette — almost invisible */
-        background: `
-          radial-gradient(ellipse 90% 80% at 50% 45%,
-            #FAF4E8 0%,
-            #F3E9D4 55%,
-            #EAD9BE 100%
-          )
-        `,
+        overflow: 'hidden',
+        /* Opening: whole scene fades to reveal Hero below */
+        opacity: isOpening ? 0 : 1,
+        transition: isOpening ? 'opacity 0.8s cubic-bezier(0.4,0,1,1)' : 'none',
       }}
     >
-      {/* ── Botanical element — top-left, asymmetric, small ──
-           Positioned outside the card, framing it from upper-left. */}
+
+      {/* ── Layer 1: Atmospheric photo background ──
+           Darkened and desaturated. Creates the physical "scene" environment.
+           Photo fades in slowly — atmosphere builds before card appears. */}
       <div
         aria-hidden="true"
         style={{
           position: 'absolute',
-          /* Positioned relative to card — upper left corner area */
-          top: 'clamp(12%, 16vh, 18%)',
-          left: 'clamp(4%, 6vw, 10%)',
-          /* Small: frames without competing — ~72px mobile */
-          width:  'clamp(52px, 8vw, 88px)',
-          height: 'clamp(72px, 11vh, 120px)',
-          opacity: entered ? 0.88 : 0,
-          transform: entered ? 'translateY(0) rotate(-6deg)' : 'translateY(12px) rotate(-6deg)',
-          transition: 'opacity 2.2s 0.6s ease, transform 2.2s 0.6s ease',
+          inset: '-6px', /* Prevent subpixel white edge on some browsers */
+          backgroundImage: photoReady ? `url("${INTRO_PHOTO.src}")` : 'none',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 35%',
+          opacity: (photoReady && entered) ? 1 : 0,
+          transition: 'opacity 2.0s ease',
+          /* Dark, warm, slightly desaturated — creates paper/candlelight environment */
+          /* Keep photo in separate preload reference — avoid re-render flicker */
+          filter: 'brightness(0.38) saturate(0.68) sepia(0.12)',
           pointerEvents: 'none',
         }}
-      >
-        <DelicateBotanical />
-      </div>
+      />
 
-      {/* ── Mirrored smaller botanical — bottom-right ── */}
+      {/* ── Layer 2: Warm color atmosphere overlay ──
+           Deep warm espresso with subtle radial warmth in the center.
+           This gives the card a "warm spotlight" feel — as if the invitation
+           is illuminated by window light or candlelight. */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute', inset: 0,
+          background: `
+            radial-gradient(ellipse 100% 90% at 45% 55%,
+              rgba(72,35,10,0.38) 0%,
+              rgba(26,13,4,0.62) 55%,
+              rgba(14,7,2,0.80) 100%
+            )
+          `,
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* ── Layer 3: Lotus botanical — upper left, large ──
+           Uses mix-blend-mode:screen on the dark photo background.
+           Result: looks like a luminous botanical illustration in natural light.
+           Positioned partially off-screen for asymmetry + editorial feel. */}
       <div
         aria-hidden="true"
         style={{
           position: 'absolute',
-          bottom: 'clamp(10%, 14vh, 16%)',
-          right: 'clamp(4%, 6vw, 10%)',
-          width:  'clamp(36px, 5vw, 60px)',
-          height: 'clamp(50px, 8vh, 82px)',
-          opacity: entered ? 0.55 : 0,
-          transform: entered ? 'translateY(0) rotate(168deg) scaleX(-1)' : 'translateY(8px) rotate(168deg) scaleX(-1)',
-          transition: 'opacity 2.2s 0.9s ease, transform 2.2s 0.9s ease',
+          top: 'clamp(-70px, -7vh, -30px)',
+          left: 'clamp(-55px, -5vw, -20px)',
+          width: 'clamp(190px, 30vw, 320px)',
+          opacity: entered ? 0.62 : 0,
+          transform: entered
+            ? 'translate(0,0) rotate(-10deg)'
+            : 'translate(-28px,-28px) rotate(-10deg)',
+          transition: 'opacity 1.8s 0.35s ease, transform 1.8s 0.35s cubic-bezier(0.16,1,0.3,1)',
           pointerEvents: 'none',
+          filter: 'sepia(55%) saturate(0.75) brightness(1.55)',
+          mixBlendMode: 'screen',
         }}
       >
-        <DelicateBotanical />
+        <img
+          src="/Test_06-06-2026/lotus-botanical.svg"
+          alt=""
+          role="presentation"
+          style={{ width: '100%', height: 'auto', display: 'block' }}
+          onError={e => { e.target.style.display = 'none'; }}
+        />
       </div>
 
-      {/* ══ INVITATION CARD ══
-          Portrait, small, elegant — like holding an actual card.
-          Mobile 390px: ~56vw = ~218px wide. Not a poster. Not a banner.
-          Natural ambient shadow — paper sitting on a surface. */}
+      {/* ── Secondary botanical — bottom right, mirrored, smaller ── */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          bottom: 'clamp(-35px, -3.5vh, -15px)',
+          right: 'clamp(-35px, -3.5vw, -15px)',
+          width: 'clamp(120px, 18vw, 210px)',
+          opacity: entered ? 0.36 : 0,
+          transform: entered
+            ? 'rotate(174deg) scaleX(-1)'
+            : 'translate(20px, 20px) rotate(174deg) scaleX(-1)',
+          transition: 'opacity 1.8s 0.65s ease, transform 1.8s 0.65s cubic-bezier(0.16,1,0.3,1)',
+          pointerEvents: 'none',
+          filter: 'sepia(55%) saturate(0.75) brightness(1.55)',
+          mixBlendMode: 'screen',
+        }}
+      >
+        <img
+          src="/Test_06-06-2026/lotus-botanical.svg"
+          alt=""
+          role="presentation"
+          style={{ width: '100%', height: 'auto', display: 'block' }}
+          onError={e => { e.target.style.display = 'none'; }}
+        />
+      </div>
+
+      {/* ══ INVITATION CARD ══════════════════════════════════════
+           Physical paper invitation resting in the scene.
+           Key details that make it feel physical vs. UI:
+           • Slight tilt (-0.8deg) — real cards aren't perfectly straight
+           • Multi-layer shadow — depth from ambient + direct light
+           • Envelope_back.png at 5.5% — feel texture, don't see it
+           • SVG noise layer — paper grain (imperceptible but felt)
+           • borderRadius: 1.5px — real paper has slightly soft edges
+      ══════════════════════════════════════════════════════════ */}
       <div
         style={{
-          /*
-           * Size: small enough to feel like a real card held in hand.
-           *   390px mobile → 56vw = ~218px
-           *   1440px desktop → max 300px
-           */
-          width: 'clamp(200px, 56vw, 300px)',
           position: 'relative',
-          /* Gentle drift-up entrance */
+          zIndex: 2,
+          width: 'clamp(252px, 68vw, 340px)',
           opacity: entered ? 1 : 0,
           transform: entered
-            ? (isOpening ? 'translateY(-6px) scale(1.015)' : 'translateY(0) scale(1)')
-            : 'translateY(18px) scale(0.98)',
+            ? (isOpening
+                ? 'translateY(-22px) rotate(-0.8deg) scale(1.022)'
+                : 'translateY(0) rotate(-0.8deg) scale(1)')
+            : 'translateY(40px) rotate(-0.8deg) scale(0.95)',
           transition: entered
             ? (isOpening
-                ? 'transform 0.6s cubic-bezier(0.4,0,0.2,1)'
+                ? 'transform 0.68s cubic-bezier(0.4,0,0.2,1)'
                 : 'none')
-            : 'opacity 1.8s ease, transform 1.8s cubic-bezier(0.16,1,0.3,1)',
-          /* Natural paper shadow */
+            : 'opacity 1.4s 0.5s ease, transform 1.4s 0.5s cubic-bezier(0.16,1,0.3,1)',
+          /* Realistic paper shadow — simulates ambient + raked light */
           boxShadow: [
-            '0 2px 4px rgba(60,40,20,0.06)',
-            '0 8px 24px rgba(60,40,20,0.09)',
-            '0 20px 56px rgba(60,40,20,0.08)',
-            '0 1px 0px rgba(255,255,255,0.7) inset',
+            '0 1px 2px rgba(6,3,1,0.30)',
+            '0 4px 14px rgba(6,3,1,0.25)',
+            '0 16px 44px rgba(6,3,1,0.30)',
+            '0 44px 90px rgba(6,3,1,0.22)',
+            'inset 0 0 0 0.5px rgba(240,215,160,0.20)',
           ].join(', '),
-          /* Thin champagne border — stationery aesthetic */
-          border: '0.8px solid rgba(184,149,85,0.28)',
-          borderRadius: '1px',
+          borderRadius: '1.5px',
           overflow: 'hidden',
-          backgroundColor: '#FDFBF6',
+          /* Warm cotton paper base */
+          backgroundColor: '#FDFAF3',
         }}
       >
-        {/* Very subtle paper texture — FEEL it, don't SEE it */}
+
+        {/* Envelope texture — warmth and botanical letterpress at micro-opacity */}
         <div
           aria-hidden="true"
           style={{
-            position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0,
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23p)' opacity='0.018'/%3E%3C/svg%3E")`,
-            backgroundRepeat: 'repeat',
-            backgroundSize: '180px 180px',
+            position: 'absolute', inset: 0,
+            backgroundImage: 'url("/Test_06-06-2026/envelope_back.png")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.055,
+            pointerEvents: 'none',
+            zIndex: 0,
           }}
         />
 
-        {/* Card inner padding */}
+        {/* SVG paper grain — tactile without visible noise */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute', inset: 0,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E")`,
+            backgroundRepeat: 'repeat',
+            backgroundSize: '200px 200px',
+            pointerEvents: 'none',
+            zIndex: 0,
+          }}
+        />
+
+        {/* ── Card content ── */}
         <div style={{
-          position: 'relative', zIndex: 1,
-          padding: 'clamp(28px, 7vw, 44px) clamp(20px, 5vw, 32px)',
+          position: 'relative',
+          zIndex: 1,
+          /* Vertical padding > horizontal = portrait invitation proportions */
+          padding: 'clamp(48px, 11vw, 72px) clamp(28px, 6vw, 44px)',
           textAlign: 'center',
         }}>
 
-          {/* ── Monogram / Initials ── */}
-          <div style={{
+          {/* Header — smallest, most discreet */}
+          <p style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
+            fontSize: 'clamp(0.64rem, 1.4vw, 0.76rem)',
             fontStyle: 'italic',
             fontWeight: 400,
-            color: '#B89555',
-            letterSpacing: '0.08em',
-            marginBottom: 'clamp(10px, 2.5vw, 16px)',
+            color: 'rgba(75,55,32,0.52)',
+            letterSpacing: '0.10em',
+            marginBottom: 'clamp(24px, 5.5vw, 36px)',
             lineHeight: 1,
           }}>
-            ĐN
+            Trân trọng kính mời
+          </p>
+
+          {/* Groom — dominant typography */}
+          <div style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: 'clamp(1.55rem, 4.6vw, 2.25rem)',
+            fontWeight: 500,
+            color: '#19100A',
+            lineHeight: 1.1,
+            letterSpacing: '-0.01em',
+          }}>
+            {COUPLE.groom.firstName}
           </div>
 
-          {/* Top thin rule */}
-          <GoldRule width="clamp(24px,5vw,36px)" opacity={0.4} />
-
-          {/* Couple names — the dominant typographic element */}
-          <div style={{ margin: 'clamp(16px, 4vw, 24px) 0' }}>
-            <div style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(1.15rem, 3.2vw, 1.7rem)',
-              fontWeight: 500,
-              color: '#231B15',
-              lineHeight: 1.15,
-              letterSpacing: '-0.01em',
-            }}>
-              {COUPLE.groom.firstName}
-            </div>
-
-            <div style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 'clamp(0.85rem, 2vw, 1.1rem)',
-              fontStyle: 'italic',
-              fontWeight: 300,
-              color: '#B89555',
-              lineHeight: 1,
-              margin: 'clamp(6px, 1.5vw, 10px) 0',
-            }}>
-              &amp;
-            </div>
-
-            <div style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(1.15rem, 3.2vw, 1.7rem)',
-              fontWeight: 500,
-              color: '#231B15',
-              lineHeight: 1.15,
-              letterSpacing: '-0.01em',
-            }}>
-              {COUPLE.bride.firstName}
-            </div>
+          {/* Ampersand — champagne, italic, breathes */}
+          <div style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(1.05rem, 2.6vw, 1.5rem)',
+            fontStyle: 'italic',
+            fontWeight: 300,
+            color: '#B89555',
+            lineHeight: 1,
+            margin: 'clamp(7px, 1.3vw, 11px) 0',
+          }}>
+            &amp;
           </div>
 
-          {/* Bottom thin rule */}
-          <GoldRule width="clamp(24px,5vw,36px)" opacity={0.35} />
+          {/* Bride — same weight as groom */}
+          <div style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: 'clamp(1.55rem, 4.6vw, 2.25rem)',
+            fontWeight: 500,
+            color: '#19100A',
+            lineHeight: 1.1,
+            letterSpacing: '-0.01em',
+            marginBottom: 'clamp(22px, 5vw, 32px)',
+          }}>
+            {COUPLE.bride.firstName}
+          </div>
 
-          {/* Date */}
+          {/* Champagne rule — narrow, centered */}
+          <div style={{
+            width: 'clamp(32px, 8vw, 46px)',
+            height: '0.7px',
+            background: 'linear-gradient(to right, transparent, rgba(184,149,85,0.65), transparent)',
+            margin: '0 auto clamp(18px, 4vw, 26px)',
+          }} />
+
+          {/* Date — small caps */}
           <p style={{
             fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: 'clamp(0.56rem, 1.2vw, 0.66rem)',
-            fontWeight: 500,
-            letterSpacing: '0.24em',
+            fontSize: 'clamp(0.58rem, 1.2vw, 0.68rem)',
+            fontWeight: 600,
+            letterSpacing: '0.25em',
             textTransform: 'uppercase',
-            color: '#9E8E7E',
-            marginTop: 'clamp(12px, 3vw, 18px)',
-            marginBottom: 0,
+            color: 'rgba(62,45,25,0.60)',
+            marginBottom: 'clamp(6px, 1.2vw, 9px)',
+            lineHeight: 1,
           }}>
             {WEDDING.date}
           </p>
 
-          {/* Venue — smallest, most discreet */}
+          {/* Venue — softest element */}
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(0.66rem, 1.4vw, 0.78rem)',
+            fontSize: 'clamp(0.68rem, 1.4vw, 0.80rem)',
             fontStyle: 'italic',
             fontWeight: 400,
-            color: '#B0A090',
-            marginTop: 'clamp(4px, 1vw, 7px)',
-            marginBottom: 0,
+            color: 'rgba(75,55,32,0.48)',
+            lineHeight: 1,
+            margin: 0,
           }}>
             {WEDDING.venue}
           </p>
@@ -350,54 +363,53 @@ export default function IntroShader({ onComplete }) {
         </div>
       </div>
 
-      {/* ── CTA — below the card, restrained ──
-           Fades in after card. Simple, not demanding. */}
+      {/* ── CTA — minimal, below card ──
+           A growing line is more elegant than a chevron or button.
+           Color: warm ivory at low opacity — invites without demanding. */}
       <div
         aria-hidden="true"
         style={{
-          marginTop: 'clamp(20px, 3.5vw, 28px)',
+          position: 'relative',
+          zIndex: 2,
+          marginTop: 'clamp(24px, 5vw, 36px)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '8px',
+          gap: '10px',
           opacity: entered ? 1 : 0,
-          transition: 'opacity 1.2s 1.4s ease',
+          transition: 'opacity 0.8s 1.8s ease',
           pointerEvents: 'none',
         }}
       >
         <p style={{
           fontFamily: "'Be Vietnam Pro', sans-serif",
-          fontSize: 'clamp(0.60rem, 1.2vw, 0.68rem)',
+          fontSize: 'clamp(0.56rem, 1.1vw, 0.64rem)',
           fontWeight: 400,
-          letterSpacing: '0.18em',
+          letterSpacing: '0.24em',
           textTransform: 'uppercase',
-          color: 'rgba(90,75,62,0.55)',
+          color: 'rgba(240,218,182,0.48)',
           margin: 0,
         }}>
-          Chạm để mở
+          Chạm để xem
         </p>
-        {/* Small animated chevron */}
-        <svg
-          width="12" height="7" viewBox="0 0 12 7"
-          fill="none" stroke="rgba(90,75,62,0.35)"
-          strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"
+        <div
           style={{
-            animation: 'introChevronFloat 2s ease-in-out infinite',
+            width: '1px',
+            height: '24px',
+            background: 'linear-gradient(to bottom, rgba(236,212,168,0.48), transparent)',
+            transformOrigin: 'top center',
+            animation: 'introLinePulse 2.4s ease-in-out infinite',
           }}
-          aria-hidden="true"
-        >
-          <path d="M1 1l5 5 5-5" />
-        </svg>
+        />
       </div>
 
-      {/* Chevron float animation */}
       <style>{`
-        @keyframes introChevronFloat {
-          0%, 100% { transform: translateY(0); opacity: 0.5; }
-          50%       { transform: translateY(3px); opacity: 0.9; }
+        @keyframes introLinePulse {
+          0%, 100% { transform: scaleY(0.35); opacity: 0.30; }
+          55%       { transform: scaleY(1.00); opacity: 0.85; }
         }
         @media (prefers-reduced-motion: reduce) {
-          @keyframes introChevronFloat { 0%, 100% { transform: none; } }
+          @keyframes introLinePulse { 0%, 100% { transform: none; opacity: 0.5; } }
         }
       `}</style>
     </div>
