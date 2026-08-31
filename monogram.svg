@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" fill="none">
+  <!-- Fine horizontal rule above -->
+  <line x1="10" y1="18" x2="110" y2="18" stroke="#B89555" stroke-width="0.5" opacity="0.5"/>
+  <!-- Monogram text -->
+  <text x="60" y="55" font-family="'Playfair Display', Georgia, 'Times New Roman', serif" font-size="36" font-style="italic" font-weight="400" fill="#231B15" text-anchor="middle" letter-spacing="2" opacity="0.92">ĐN</text>
+  <!-- Fine horizontal rule below -->
+  <line x1="10" y1="65" x2="110" y2="65" stroke="#B89555" stroke-width="0.5" opacity="0.5"/>
+  <!-- Tiny champagne gold dot center -->
+  <circle cx="60" cy="18" r="1.5" fill="#B89555" opacity="0.6"/>
+  <circle cx="60" cy="65" r="1.5" fill="#B89555" opacity="0.6"/>
+</svg>

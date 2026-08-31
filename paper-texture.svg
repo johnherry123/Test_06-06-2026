@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400">
+  <filter id="paper">
+    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="4" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+    <feBlend in="SourceGraphic" mode="multiply"/>
+    <feComposite in2="SourceGraphic" operator="in"/>
+  </filter>
+  <rect width="400" height="400" fill="#F8F4EC" filter="url(#paper)" opacity="0.04"/>
+</svg>
