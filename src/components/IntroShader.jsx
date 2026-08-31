@@ -539,56 +539,109 @@ export default function IntroShader({ onComplete }) {
         </div>
       </div>
 
-      {/* ── FULLSCREEN PHOTO REVEAL ──
-          Cinematic moment: invitation opens → couple is revealed.
-          Design intent:
-            Mobile:  photo contained (no aggressive face crop) — max 88vw × 72vh
-            Desktop: photo more editorial — max 620px, cover at good proportions
-          Background: warm espresso so "outside" the photo doesn't look empty. */}
+      {/* ── PHOTO REVEAL ──
+          Narrative: invitation opens → couple appears in the invitation's visual language
+          Design rules:
+            • Background stays WARM (ivory), not dark — connected to stationery
+            • Photo keeps its natural 3:2 ratio — height:auto, no forced crop
+            • Max width 86vw mobile / 600px desktop — elegant, not cinematic
+            • Breathing room: photo floats centered with space above and below
+            • Transition: fade + gentle scale → leads naturally into Hero's warm palette */}
       <div style={{
         position: 'fixed', inset: 0, zIndex: 20,
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        /* Warm dark background — espresso — shows behind photo on mobile */
-        backgroundColor: '#1A120D',
+        /* ── Warm ivory background — same palette as invitation ── */
+        background: `
+          radial-gradient(ellipse 80% 70% at 50% 42%,
+            #FFF8E8 0%,
+            #F5EDD8 50%,
+            #EDE0C4 100%
+          )
+        `,
+        backgroundColor: '#F0E4C4',
         opacity: isFullscreen ? 1 : 0,
         pointerEvents: 'none',
         transition: isFullscreen
-          ? 'opacity 0.42s cubic-bezier(0.4,0,0.2,1)'
-          : 'opacity 0.18s ease',
+          ? 'opacity 0.40s cubic-bezier(0.4,0,0.2,1)'
+          : 'opacity 0.16s ease',
       }}>
-        {/* Subtle warm overlay on background */}
+
+        {/* Warm vignette — same as main intro background */}
         <div style={{
-          position: 'absolute', inset: 0,
-          background: 'radial-gradient(ellipse 70% 70% at 50% 45%, rgba(139,30,34,0.08) 0%, transparent 70%)',
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(140,108,60,0.12) 100%)',
+        }}/>
+
+        {/* ── Photo frame — editorial stationery aesthetic ── */}
+        <div style={{
+          position: 'relative',
+          /*
+           * Width: 86vw on mobile (390px → ~335px), max 600px on desktop
+           * NO fixed height — image determines its own height from natural 3:2 ratio
+           * Result at 390px: 335 × 223px — full couple visible, faces never cropped
+           */
+          width: 'min(86vw, 600px)',
+          transform: isFullscreen ? 'scale(1) translateY(0)' : 'scale(0.97) translateY(8px)',
+          transition: 'transform 0.65s cubic-bezier(0.25,0.46,0.45,0.94)',
+          /* Soft paper shadow — editorial print aesthetic */
+          boxShadow: '0 8px 40px rgba(35,27,21,0.16), 0 2px 8px rgba(35,27,21,0.08)',
+        }}>
+          {/* Thin champagne frame line */}
+          <div style={{
+            position: 'absolute', inset: '-1px',
+            border: '0.8px solid rgba(184,149,85,0.30)',
+            pointerEvents: 'none', zIndex: 2,
+          }}/>
+
+          {/* The actual photo — height:auto preserves natural 3:2 ratio */}
+          <img
+            src={COUPLE_PHOTO.src}
+            alt={COUPLE_PHOTO.alt}
+            style={{
+              display: 'block',
+              width: '100%',
+              height: 'auto',           /* ← critical: no height force, no crop */
+              objectFit: 'unset',       /* not needed when height:auto */
+              verticalAlign: 'bottom',  /* removes inline baseline gap */
+            }}
+            onError={e => { if (e.target.src !== COUPLE_PHOTO.fallback) e.target.src = COUPLE_PHOTO.fallback; }}
+          />
+
+          {/* Very subtle bottom gradient on the photo itself */}
+          <div style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0,
+            height: '25%',
+            background: 'linear-gradient(to top, rgba(35,27,21,0.12) 0%, transparent 100%)',
+            pointerEvents: 'none', zIndex: 1,
+          }}/>
+        </div>
+
+        {/* Date caption below photo — keeps warm editorial tone */}
+        <p style={{
+          marginTop: '14px',
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: 'clamp(0.72rem, 1.5vw, 0.88rem)',
+          fontStyle: 'italic',
+          color: 'rgba(90,78,68,0.75)',
+          letterSpacing: '0.06em',
+          opacity: isFullscreen ? 1 : 0,
+          transition: 'opacity 0.4s 0.25s ease',
+        }}>
+          Đại Nghĩa &amp; Thị Nhung — 20.10.2026
+        </p>
+
+        {/* Warm fade-to-ivory at bottom edges — bridges to Hero */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: '18%',
+          background: 'linear-gradient(to top, #F0E4C4 0%, transparent 100%)',
           pointerEvents: 'none',
         }}/>
-        {/* Photo — contained on mobile, editorial on desktop */}
-        <img
-          src={COUPLE_PHOTO.src}
-          alt={COUPLE_PHOTO.alt}
-          style={{
-            display: 'block',
-            /*
-             * Mobile (< 600px):  contain — full photo visible, no crop
-             * Desktop (≥ 600px): cover within constrained box — editorial
-             */
-            width: 'min(88vw, 620px)',
-            height: 'min(72vh, 480px)',
-            objectFit: 'cover',
-            objectPosition: 'center 20%',
-            transform: isFullscreen ? 'scale(1)' : 'scale(1.04)',
-            transition: 'transform 0.65s cubic-bezier(0.25,0.46,0.45,0.94)',
-            /* Subtle warm glow on image edges */
-            boxShadow: '0 0 80px rgba(18,10,6,0.5)',
-          }}
-          onError={e => { if (e.target.src !== COUPLE_PHOTO.fallback) e.target.src = COUPLE_PHOTO.fallback; }}
-        />
-        {/* Bottom fade */}
         <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: '30%',
-          background: 'linear-gradient(to top, rgba(26,18,13,0.6) 0%, transparent 100%)',
+          position: 'absolute', top: 0, left: 0, right: 0, height: '12%',
+          background: 'linear-gradient(to bottom, #FFF8E8 0%, transparent 100%)',
           pointerEvents: 'none',
         }}/>
       </div>
