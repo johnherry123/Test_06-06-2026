@@ -149,22 +149,35 @@ export default function IntroShader({ onComplete }) {
       setTimeout(onComplete, 450);
       return;
     }
-    /* Animation timeline */
+    /*
+     * Animation timeline:
+     *   lifting    0ms   — card nudges forward (scale + shadow)
+     *   revealing  320ms — text fades, couple photo fades in inside card
+     *   fullscreen 850ms — card/photo EXPANDS to fill entire viewport
+     *   exit       1250ms — whole screen fades to ivory
+     *   onComplete 1700ms
+     */
     setPhase('lifting');
-    setTimeout(() => setPhase('revealing'), 300);
-    setTimeout(() => setPhase('exit'),      1000);
-    setTimeout(() => onComplete(),          1650);
+    setTimeout(() => setPhase('revealing'),  320);
+    setTimeout(() => setPhase('fullscreen'), 850);
+    setTimeout(() => setPhase('exit'),       1250);
+    setTimeout(() => onComplete(),           1700);
   };
 
-  const isLifting   = phase === 'lifting';
-  const isRevealing = phase === 'revealing' || phase === 'exit';
-  const isExit      = phase === 'exit';
+  const isLifting    = phase === 'lifting';
+  const isRevealing  = phase === 'revealing' || phase === 'fullscreen' || phase === 'exit';
+  const isFullscreen = phase === 'fullscreen' || phase === 'exit';
+  const isExit       = phase === 'exit';
 
   return (
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Thiệp cưới Đại Nghĩa & Thị Nhung — bấm Mở Thiệp để xem"
+      aria-label="Thiệp cưới Đại Nghĩa & Thị Nhung — bấm bất kỳ đâu để mở"
+      /* ── Click ANYWHERE to open ── */
+      onClick={handleOpen}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleOpen(); }}
+      tabIndex={phase === 'idle' ? 0 : -1}
       style={{
         position: 'fixed', inset: 0, zIndex: 99999,
         display: 'flex',
@@ -172,7 +185,9 @@ export default function IntroShader({ onComplete }) {
         alignItems: 'center',
         justifyContent: 'center',
         overflow: 'hidden',
-        /* ── Warm ivory background ── hard warm base to kill any browser edge bleed */
+        /* Pointer so user knows it's interactive */
+        cursor: phase === 'idle' ? 'pointer' : 'default',
+        /* ── Warm ivory background ── */
         background: `
           radial-gradient(ellipse 70% 65% at 50% 40%,
             #FFF8E8 0%,
@@ -181,9 +196,9 @@ export default function IntroShader({ onComplete }) {
           )
         `,
         backgroundColor: '#F0E4C4',
-        /* Fade-out transition */
+        /* Fade-out on exit */
         opacity: isExit ? 0 : 1,
-        transition: isExit ? 'opacity 0.6s cubic-bezier(0.65,0,0.35,1)' : 'none',
+        transition: isExit ? 'opacity 0.45s cubic-bezier(0.65,0,0.35,1)' : 'none',
       }}
     >
       {/* ── Very subtle warm vignette at edges (not blue — warm brown) ── */}
@@ -251,12 +266,23 @@ export default function IntroShader({ onComplete }) {
           Portrait orientation: like a real wedding invitation
       ═══════════════════════════════════════════════════ */}
       <div style={{
-        position: 'relative',
+        position: isFullscreen ? 'fixed' : 'relative',
+        inset: isFullscreen ? 0 : 'auto',
         zIndex: 10,
-        /* Card lifts on open */
-        transform: isLifting || isRevealing
-          ? 'translateY(-10px) scale(1.022)'
-          : entered ? 'translateY(0) scale(1)' : 'translateY(28px) scale(0.96)',
+        /*
+         * Fullscreen phase: card expands to fill viewport.
+         * This creates the 'opening the invitation reveals the couple' moment.
+         */
+        transform: isFullscreen
+          ? 'translateY(0) scale(1)'
+          : (isLifting || isRevealing)
+            ? 'translateY(-10px) scale(1.022)'
+            : entered ? 'translateY(0) scale(1)' : 'translateY(28px) scale(0.96)',
+        width:  isFullscreen ? '100vw' : 'auto',
+        height: isFullscreen ? '100vh' : 'auto',
+        display: isFullscreen ? 'flex' : 'relative',
+        alignItems: isFullscreen ? 'center' : undefined,
+        justifyContent: isFullscreen ? 'center' : undefined,
         opacity: entered ? 1 : 0,
         transition: entered
           ? (isLifting || isRevealing
@@ -492,28 +518,49 @@ export default function IntroShader({ onComplete }) {
             </p>
           </div>
 
-          {/* ── Couple photo — revealed on open ── */}
+          {/* ── Couple photo inside card (revealing phase) ── */}
           <div style={{
             position: 'absolute', inset: 0, zIndex: 6,
-            opacity: isRevealing ? 1 : 0,
-            transition: 'opacity 0.5s 0.15s ease',
-            transform: phase === 'exit' ? 'scale(1.06)' : 'scale(1)',
-            transitionProperty: 'opacity, transform',
-            transitionDuration: isRevealing ? '0.5s, 0.9s' : '0.3s, 0s',
-            transitionDelay: isRevealing ? '0.15s, 0.35s' : '0s, 0s',
-            transitionTimingFunction: 'ease, cubic-bezier(0.25,0.46,0.45,0.94)',
+            opacity: isRevealing && !isFullscreen ? 1 : 0,
+            transition: 'opacity 0.45s 0.15s ease',
           }}>
             <img src={COUPLE_PHOTO.src} alt={COUPLE_PHOTO.alt}
               style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center 20%', display:'block' }}
               onError={e => { if (e.target.src !== COUPLE_PHOTO.fallback) e.target.src = COUPLE_PHOTO.fallback; }}
             />
-            <div style={{
-              position:'absolute', inset: 0,
-              background: 'linear-gradient(to bottom, transparent 55%, rgba(18,10,6,0.22) 100%)',
-              pointerEvents: 'none',
-            }}/>
           </div>
         </div>
+      </div>
+
+      {/* ── FULLSCREEN PHOTO OVERLAY ──
+          When phase=fullscreen the couple photo FILLS the viewport.
+          This is the cinematic moment: 'opening the invitation reveals the couple.'
+          It transitions in via scale(1.04)→scale(1) + opacity,
+          then the entire intro fades to ivory on exit. */}
+      <div style={{
+        position: 'fixed', inset: 0, zIndex: 20,
+        opacity: isFullscreen ? 1 : 0,
+        pointerEvents: 'none',
+        transition: isFullscreen
+          ? 'opacity 0.45s cubic-bezier(0.4,0,0.2,1)'
+          : 'opacity 0.2s ease',
+      }}>
+        <img src={COUPLE_PHOTO.src} alt={COUPLE_PHOTO.alt}
+          style={{
+            width: '100%', height: '100%',
+            objectFit: 'cover', objectPosition: 'center 25%',
+            display: 'block',
+            transform: isFullscreen ? 'scale(1)' : 'scale(1.06)',
+            transition: 'transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)',
+          }}
+          onError={e => { if (e.target.src !== COUPLE_PHOTO.fallback) e.target.src = COUPLE_PHOTO.fallback; }}
+        />
+        {/* Subtle warm overlay so the transition to hero feels natural */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(to bottom, rgba(18,10,6,0.08) 0%, rgba(18,10,6,0.18) 100%)',
+          pointerEvents: 'none',
+        }}/>
       </div>
 
       {/* ═══════════════════════════════════════════════════
@@ -521,7 +568,7 @@ export default function IntroShader({ onComplete }) {
           Integrated, understated, clearly separate
       ═══════════════════════════════════════════════════ */}
       <button
-        onClick={handleOpen}
+        onClick={e => { e.stopPropagation(); handleOpen(); }}
         aria-label="Mở thiệp cưới và xem toàn bộ nội dung"
         style={{
           position: 'relative', zIndex: 10,
