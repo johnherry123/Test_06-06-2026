@@ -1,51 +1,25 @@
 /* ══════════════════════════════════════════════════════════════════════
-   COUPLE — Fine Art Editorial Photography Layout
-   Direction: Asymmetric photo-dominant composition
-   Photos: Curated Unsplash editorial portraits (free license)
-   Design: Overlapping composition, large portraits, italic quote
-   Replace: src URLs with real couple photographs when available
-   Specs: Portrait 3:4 ratio, editorial/cinematic light, warm tones
+   COUPLE / HAI CHÚNG MÌNH
+   ──────────────────────────────────────────────────────────────────────
+   Art direction: Editorial photography, asymmetric, light ivory.
+   Data: sourced from centralized weddingData.js.
+
+   Removed:
+   - Invented personal quotes
+   - Fragile aria-label CSS selector for mobile
+
+   Added:
+   - Personal detail fields (placeholders in weddingData.js)
+   - Proper className-based mobile CSS
 ══════════════════════════════════════════════════════════════════════ */
 import React from 'react';
-
-/* ── Photography specifications ──
-   Recommended: 3:4 portrait orientation
-   Style: editorial, natural light, intimate, sophisticated
-   NOT: cheesy studio backgrounds, heavy retouching, bright white
-   Source: Unsplash free license — replace with real photos
-*/
-const COUPLE_DATA = [
-  {
-    id:        'groom',
-    role:      'Chú Rể',
-    nameLabel: 'Trưởng Nam',
-    name:      'Nguyễn Đại Nghĩa',
-    photo: {
-      src:      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&q=90&fm=webp',
-      fallback: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=900&q=85',
-      alt:      'Chú rể Nguyễn Đại Nghĩa — ảnh minh họa, thay thế bằng ảnh thật',
-    },
-    quote: 'Em là bến đỗ bình yên nhất sau mọi bộn bề cuộc sống. Cảm ơn em đã bước vào cuộc đời anh và biến mỗi ngày thành một niềm hạnh phúc.',
-  },
-  {
-    id:        'bride',
-    role:      'Cô Dâu',
-    nameLabel: 'Út Nữ',
-    name:      'Lê Thị Nhung',
-    photo: {
-      src:      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&q=90&fm=webp',
-      fallback: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=900&q=85',
-      alt:      'Cô dâu Lê Thị Nhung — ảnh minh họa, thay thế bằng ảnh thật',
-    },
-    quote: 'Cảm ơn anh vì luôn kiên nhẫn, yêu thương và chở che. Bên anh, em được là chính mình dịu dàng và hạnh phúc nhất.',
-  },
-];
+import { COUPLE } from '../weddingData';
 
 function PersonCard({ person, reversed }) {
   return (
     <article
-      className="gsap-reveal"
-      aria-label={`Thông tin về ${person.role}: ${person.name}`}
+      className="couple-card gsap-reveal"
+      aria-label={`Giới thiệu ${person.role}: ${person.fullName}`}
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
@@ -56,6 +30,7 @@ function PersonCard({ person, reversed }) {
     >
       {/* ── Portrait photograph ── */}
       <div
+        className="couple-photo-col"
         style={{
           order: reversed ? 2 : 1,
           overflow: 'hidden',
@@ -63,7 +38,6 @@ function PersonCard({ person, reversed }) {
           lineHeight: 0,
         }}
       >
-        {/* Aspect ratio container — 3:4 portrait */}
         <div style={{ aspectRatio: '3/4', overflow: 'hidden', position: 'relative' }}>
           <img
             src={person.photo.src}
@@ -82,8 +56,7 @@ function PersonCard({ person, reversed }) {
             onMouseLeave={e => { e.target.style.transform = 'scale(1)'; }}
             onError={e => { e.target.src = person.photo.fallback; }}
           />
-
-          {/* Very subtle warm overlay — creates cohesion */}
+          {/* Subtle warm overlay */}
           <div style={{
             position: 'absolute', inset: 0,
             background: 'linear-gradient(to bottom, transparent 60%, rgba(35,27,21,0.08) 100%)',
@@ -91,7 +64,7 @@ function PersonCard({ person, reversed }) {
           }} />
         </div>
 
-        {/* Thin champagne line — runs along right edge */}
+        {/* Thin champagne accent line */}
         <div style={{
           position: 'absolute',
           top: '8%', bottom: '8%',
@@ -104,69 +77,90 @@ function PersonCard({ person, reversed }) {
 
       {/* ── Text content ── */}
       <div
+        className="couple-text-col"
         style={{
           order: reversed ? 1 : 2,
           paddingTop: 'clamp(8px, 2vw, 24px)',
           alignSelf: 'center',
         }}
       >
-        {/* Role label */}
+        {/* Role labels */}
         <p style={{
           fontFamily: "'Be Vietnam Pro', sans-serif",
-          fontSize: '0.65rem',
+          fontSize: '0.60rem',
           fontWeight: 600,
-          letterSpacing: '0.2em',
+          letterSpacing: '0.22em',
           textTransform: 'uppercase',
           color: '#8B1E22',
-          marginBottom: '6px',
+          marginBottom: '4px',
         }}>
           {person.role}
         </p>
-
         <p style={{
           fontFamily: "'Be Vietnam Pro', sans-serif",
-          fontSize: '0.65rem',
+          fontSize: '0.60rem',
           fontWeight: 400,
-          letterSpacing: '0.12em',
+          letterSpacing: '0.14em',
           textTransform: 'uppercase',
           color: '#9E9188',
           marginBottom: '18px',
         }}>
-          {person.nameLabel}
+          {person.roleLabel}
         </p>
 
-        {/* Name — elegant serif */}
+        {/* Name */}
         <h3 style={{
           fontFamily: "'Playfair Display', serif",
-          fontSize: 'clamp(1.6rem, 3.2vw, 2.3rem)',
+          fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
           fontWeight: 500,
           color: '#231B15',
           lineHeight: 1.1,
-          marginBottom: '24px',
+          marginBottom: '20px',
           letterSpacing: '-0.01em',
         }}>
-          {person.name}
+          {person.fullName}
         </h3>
 
-        {/* Champagne accent rule */}
+        {/* Champagne rule */}
         <div style={{
           width: '28px', height: '1px',
           backgroundColor: '#B89555',
           marginBottom: '22px',
-          opacity: 0.8,
+          opacity: 0.7,
         }} />
 
-        {/* Quote — intimate, literary */}
-        <blockquote style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 'clamp(1.05rem, 1.8vw, 1.2rem)',
-          fontStyle: 'italic',
-          color: '#4A3F38',
-          lineHeight: 1.85,
-          margin: 0,
-        }}>
-          "{person.quote}"
-        </blockquote>
+        {/* Personal details — from weddingData.js */}
+        {person.details && person.details.length > 0 && (
+          <dl style={{ margin: 0 }}>
+            {person.details.map((detail, i) => (
+              <div key={i} style={{
+                marginBottom: i < person.details.length - 1 ? '12px' : 0,
+              }}>
+                <dt style={{
+                  fontFamily: "'Be Vietnam Pro', sans-serif",
+                  fontSize: '0.62rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  color: '#9E9188',
+                  marginBottom: '3px',
+                }}>
+                  {detail.label}
+                </dt>
+                <dd style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: 'clamp(0.95rem, 1.6vw, 1.1rem)',
+                  fontStyle: 'italic',
+                  color: detail.value.startsWith('[') ? 'rgba(120,100,80,0.45)' : '#4A3F38',
+                  lineHeight: 1.6,
+                  margin: 0,
+                }}>
+                  {detail.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
       </div>
     </article>
   );
@@ -183,45 +177,45 @@ export default function Couple() {
         overflow: 'hidden',
       }}
     >
-      {/* Section header */}
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 clamp(20px, 4vw, 48px)' }}>
+      <div style={{ maxWidth: '1080px', margin: '0 auto', padding: '0 clamp(20px, 4vw, 48px)' }}>
+
+        {/* Section header */}
         <div style={{ marginBottom: 'clamp(48px, 7vw, 72px)' }}>
           <p className="section-label gsap-reveal" style={{ marginBottom: '14px' }}>
             Đôi Uyên Ương
           </p>
-          <h2
-            className="gsap-reveal"
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(2rem, 4vw, 2.8rem)',
-              fontWeight: 500,
-              color: '#231B15',
-              lineHeight: 1.1,
-              letterSpacing: '-0.01em',
-            }}
-          >
-            Cô Dâu &amp; Chú Rể
+          <h2 className="gsap-reveal" style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: 'clamp(2rem, 4vw, 2.8rem)',
+            fontWeight: 500,
+            color: '#231B15',
+            lineHeight: 1.1,
+            letterSpacing: '-0.01em',
+          }}>
+            Hai Chúng Mình
           </h2>
         </div>
 
         {/* Couple portraits — alternating layout */}
-        {COUPLE_DATA.map((person, i) => (
+        {[COUPLE.groom, COUPLE.bride].map((person, i) => (
           <PersonCard key={person.id} person={person} reversed={i % 2 !== 0} />
         ))}
       </div>
 
-      {/* Responsive: stack on mobile */}
+      {/* Responsive: stack on mobile using className */}
       <style>{`
         @media (max-width: 640px) {
-          article[aria-label*="Thông tin"] {
+          .couple-card {
             grid-template-columns: 1fr !important;
           }
-          article[aria-label*="Thông tin"] > div {
+          .couple-photo-col,
+          .couple-text-col {
             order: unset !important;
           }
-          article[aria-label*="Thông tin"] > div:first-child {
-            max-width: 320px;
+          .couple-photo-col {
+            max-width: 300px;
             margin: 0 auto;
+            width: 100%;
           }
         }
       `}</style>

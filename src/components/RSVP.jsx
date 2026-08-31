@@ -150,7 +150,7 @@ export default function RSVP() {
               marginBottom: '12px',
             }}
           >
-            RSVP
+            Bạn có đến không?
           </h2>
           <p
             className="gsap-reveal"
@@ -159,9 +159,20 @@ export default function RSVP() {
               fontSize: '1.15rem',
               fontStyle: 'italic',
               color: '#4A3F38',
+              marginBottom: '12px',
             }}
           >
-            Bạn sẽ đến chung vui cùng chúng mình chứ?
+            Sự hiện diện của bạn là món quà ý nghĩa nhất với chúng mình.
+          </p>
+          {/* localStorage notice — honest documentation of limitation */}
+          <p className="gsap-reveal" style={{
+            fontFamily: "'Be Vietnam Pro', sans-serif",
+            fontSize: '0.70rem',
+            color: 'rgba(120,100,80,0.55)',
+            fontStyle: 'italic',
+            lineHeight: 1.6,
+          }}>
+            ✶ Lưu ý: Xác nhận và lời chúc được lưu trên thiết bị của bạn. Liên hệ trực tiếp với gia đình để xác nhận chính thức.
           </p>
         </div>
 

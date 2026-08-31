@@ -1,34 +1,22 @@
 /* ══════════════════════════════════════════════════════════════════════
-   INVITATION / LỜI NGỎ — Premium Wedding Stationery
-   Direction: Physical wedding invitation feeling on screen
-   Assets: Wax seal monogram, botanical branch, subtle paper texture
-   Design: Warm ivory paper + espresso typography + champagne gold accents
-   Vietnamese: Understated elegance, family lineage in editorial layout
+   INVITATION / LỜI NGỎ
+   ──────────────────────────────────────────────────────────────────────
+   Art direction: Warm ivory, stationery aesthetic, family lineage.
+   Reduced decorative elements vs previous version.
+   Data: from weddingData.js (family names clearly marked as placeholders).
+
+   Removed:
+   - Wax seal image from top (redundant decoration)
+   - Bottom lotus SVG ornament (redundant)
+   - Kept: family lineage grid, couple names, invitation message, branch-divider
 ══════════════════════════════════════════════════════════════════════ */
 import React from 'react';
-
-/* Inline paper texture component — avoids extra HTTP request for tiny decorative element */
-function PaperTexture() {
-  return (
-    <div
-      aria-hidden="true"
-      style={{
-        position: 'absolute', inset: 0,
-        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E")`,
-        backgroundRepeat: 'repeat',
-        backgroundSize: '200px 200px',
-        pointerEvents: 'none',
-        zIndex: 0,
-        opacity: 0.8,
-      }}
-    />
-  );
-}
+import { COUPLE, FAMILY, WEDDING } from '../weddingData';
 
 export default function Invitation() {
   return (
     <section
-      id="invitation"
+      id="loi-ngo"
       aria-label="Lời ngỏ và thông tin gia đình"
       style={{
         position: 'relative',
@@ -37,22 +25,7 @@ export default function Invitation() {
         overflow: 'hidden',
       }}
     >
-      <PaperTexture />
-
-      <div style={{ maxWidth: '760px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-
-        {/* ── Wax seal — visual centerpiece of invitation ── */}
-        <div className="gsap-reveal" style={{ textAlign: 'center', marginBottom: 'clamp(28px, 4vw, 40px)' }}>
-          <img
-            src="/Test_06-06-2026/wax-seal.svg"
-            alt="Dấu phong bì ĐN"
-            aria-hidden="true"
-            width="72"
-            height="72"
-            style={{ display: 'inline-block', opacity: 0.92 }}
-            onError={e => { e.target.style.display = 'none'; }}
-          />
-        </div>
+      <div style={{ maxWidth: '720px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
 
         {/* ── Section label ── */}
         <p className="section-label gsap-reveal" style={{ textAlign: 'center', marginBottom: '16px' }}>
@@ -60,40 +33,25 @@ export default function Invitation() {
         </p>
 
         {/* ── Main heading ── */}
-        <h2
-          className="gsap-reveal"
-          style={{
-            fontFamily: "'Playfair Display', serif",
-            fontSize: 'clamp(2rem, 5vw, 3rem)',
-            fontWeight: 500,
-            color: '#231B15',
-            textAlign: 'center',
-            marginBottom: 'clamp(24px, 4vw, 36px)',
-            lineHeight: 1.1,
-          }}
-        >
+        <h2 className="gsap-reveal" style={{
+          fontFamily: "'Playfair Display', serif",
+          fontSize: 'clamp(2rem, 5vw, 3rem)',
+          fontWeight: 500,
+          color: '#231B15',
+          textAlign: 'center',
+          marginBottom: 'clamp(32px, 5vw, 48px)',
+          lineHeight: 1.1,
+        }}>
           Trân trọng kính mời
         </h2>
 
-        {/* ── Botanical branch — center divider ── */}
-        <div className="gsap-reveal" style={{ textAlign: 'center', marginBottom: 'clamp(32px, 5vw, 48px)', opacity: 0.75 }}>
-          <img
-            src="/Test_06-06-2026/branch-divider.svg"
-            alt=""
-            role="presentation"
-            aria-hidden="true"
-            style={{ width: '100%', maxWidth: '280px', height: '36px', display: 'inline-block' }}
-            onError={e => { e.target.style.display = 'none'; }}
-          />
-        </div>
-
         {/* ── Family lineage — editorial two-column ── */}
         <div
-          className="gsap-stagger"
+          className="gsap-stagger invitation-family-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: 'clamp(32px, 5vw, 56px)',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gap: 'clamp(28px, 5vw, 52px)',
             marginBottom: 'clamp(40px, 6vw, 56px)',
           }}
         >
@@ -101,9 +59,9 @@ export default function Invitation() {
           <div>
             <p style={{
               fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: '0.65rem',
+              fontSize: '0.62rem',
               fontWeight: 600,
-              letterSpacing: '0.2em',
+              letterSpacing: '0.22em',
               textTransform: 'uppercase',
               color: '#8B1E22',
               marginBottom: '14px',
@@ -114,31 +72,23 @@ export default function Invitation() {
             </p>
             <p style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: '1.05rem',
-              fontWeight: 500,
-              color: '#231B15',
-              lineHeight: 1.5,
-              marginBottom: '3px',
+              fontSize: '1.05rem', fontWeight: 500,
+              color: '#231B15', lineHeight: 1.5, marginBottom: '2px',
             }}>
-              Ông Nguyễn Văn Hùng
+              {FAMILY.groom.father}
             </p>
             <p style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: '1.05rem',
-              fontWeight: 500,
-              color: '#231B15',
-              lineHeight: 1.5,
-              marginBottom: '10px',
+              fontSize: '1.05rem', fontWeight: 500,
+              color: '#231B15', lineHeight: 1.5, marginBottom: '10px',
             }}>
-              Bà Trần Thị Mai
+              {FAMILY.groom.mother}
             </p>
             <p style={{
               fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: '0.8rem',
-              color: '#756B63',
-              lineHeight: 1.5,
+              fontSize: '0.78rem', color: '#9E9188', lineHeight: 1.5,
             }}>
-              Tân Bình, TP. Hồ Chí Minh
+              {FAMILY.groom.address}
             </p>
           </div>
 
@@ -146,9 +96,9 @@ export default function Invitation() {
           <div>
             <p style={{
               fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: '0.65rem',
+              fontSize: '0.62rem',
               fontWeight: 600,
-              letterSpacing: '0.2em',
+              letterSpacing: '0.22em',
               textTransform: 'uppercase',
               color: '#8B1E22',
               marginBottom: '14px',
@@ -159,31 +109,23 @@ export default function Invitation() {
             </p>
             <p style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: '1.05rem',
-              fontWeight: 500,
-              color: '#231B15',
-              lineHeight: 1.5,
-              marginBottom: '3px',
+              fontSize: '1.05rem', fontWeight: 500,
+              color: '#231B15', lineHeight: 1.5, marginBottom: '2px',
             }}>
-              Ông Lê Văn Thành
+              {FAMILY.bride.father}
             </p>
             <p style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: '1.05rem',
-              fontWeight: 500,
-              color: '#231B15',
-              lineHeight: 1.5,
-              marginBottom: '10px',
+              fontSize: '1.05rem', fontWeight: 500,
+              color: '#231B15', lineHeight: 1.5, marginBottom: '10px',
             }}>
-              Bà Phạm Thị Lan
+              {FAMILY.bride.mother}
             </p>
             <p style={{
               fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: '0.8rem',
-              color: '#756B63',
-              lineHeight: 1.5,
+              fontSize: '0.78rem', color: '#9E9188', lineHeight: 1.5,
             }}>
-              Quận 3, TP. Hồ Chí Minh
+              {FAMILY.bride.address}
             </p>
           </div>
         </div>
@@ -191,86 +133,82 @@ export default function Invitation() {
         {/* ── Champagne rule ── */}
         <div className="gsap-line" style={{
           height: '1px',
-          background: 'linear-gradient(to right, transparent, rgba(184,149,85,0.5) 20%, rgba(184,149,85,0.5) 80%, transparent)',
+          background: 'linear-gradient(to right, transparent, rgba(184,149,85,0.45) 20%, rgba(184,149,85,0.45) 80%, transparent)',
           marginBottom: 'clamp(32px, 5vw, 48px)',
         }} />
 
-        {/* ── Couple names — elegant centered ── */}
-        <div className="gsap-reveal" style={{ textAlign: 'center', marginBottom: 'clamp(32px, 5vw, 44px)' }}>
+        {/* ── Couple names ── */}
+        <div className="gsap-reveal" style={{ textAlign: 'center', marginBottom: 'clamp(28px, 4.5vw, 40px)' }}>
           <p style={{
             fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.62rem',
-            fontWeight: 500,
-            letterSpacing: '0.18em',
-            textTransform: 'uppercase',
-            color: '#756B63',
-            marginBottom: '16px',
+            fontSize: '0.60rem', fontWeight: 500,
+            letterSpacing: '0.18em', textTransform: 'uppercase',
+            color: '#9E9188', marginBottom: '14px',
           }}>
             Trưởng Nam &nbsp;·&nbsp; Út Nữ
           </p>
           <div style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(1.9rem, 4.5vw, 2.9rem)',
-            fontStyle: 'italic',
-            fontWeight: 400,
-            color: '#231B15',
-            lineHeight: 1.15,
+            fontSize: 'clamp(1.7rem, 4vw, 2.7rem)',
+            fontStyle: 'italic', fontWeight: 400,
+            color: '#231B15', lineHeight: 1.15,
           }}>
-            Nguyễn Đại Nghĩa{' '}
+            {COUPLE.groom.fullName}{' '}
             <span style={{ color: '#B89555', fontWeight: 300 }}>&amp;</span>{' '}
-            Lê Thị Nhung
+            {COUPLE.bride.fullName}
           </div>
         </div>
 
-        {/* ── Second champagne rule ── */}
+        {/* ── Second rule ── */}
         <div className="gsap-line" style={{
           height: '1px',
-          background: 'linear-gradient(to right, transparent, rgba(35,27,21,0.12) 20%, rgba(35,27,21,0.12) 80%, transparent)',
+          background: 'linear-gradient(to right, transparent, rgba(35,27,21,0.1) 20%, rgba(35,27,21,0.1) 80%, transparent)',
           marginBottom: 'clamp(28px, 4vw, 40px)',
         }} />
 
-        {/* ── Invitation message — literary quality ── */}
-        <div className="gsap-reveal">
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(1.1rem, 2.2vw, 1.35rem)',
-            fontStyle: 'italic',
-            color: '#4A3F38',
-            lineHeight: 1.9,
-            textAlign: 'center',
-            marginBottom: '20px',
-          }}>
-            "Tình yêu không chỉ là nhìn nhau, mà là cùng nhau nhìn về một hướng.
-            Sau hành trình tìm hiểu và gắn kết, chúng tôi quyết định nắm tay nhau
-            bước vào chương mới của cuộc đời."
-          </p>
-          <p style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.9rem',
-            color: '#756B63',
-            lineHeight: 1.8,
-            textAlign: 'center',
-          }}>
-            Sự hiện diện và lời chúc phúc của Quý khách là niềm vinh hạnh
-            và món quà quý giá nhất trong ngày trọng đại này.
-          </p>
-        </div>
-
-        {/* ── Botanical lotus — subtle bottom ornament ── */}
-        <div className="gsap-reveal" style={{ textAlign: 'center', marginTop: 'clamp(36px, 5vw, 52px)', opacity: 0.5 }}>
+        {/* ── Botanical branch divider ── */}
+        <div className="gsap-reveal" style={{ textAlign: 'center', marginBottom: 'clamp(28px, 4vw, 38px)', opacity: 0.65 }}>
           <img
-            src="/Test_06-06-2026/lotus-botanical.svg"
-            alt=""
-            role="presentation"
-            aria-hidden="true"
-            width="64"
-            height="64"
-            style={{ display: 'inline-block', opacity: 0.8 }}
+            src="/Test_06-06-2026/branch-divider.svg"
+            alt="" role="presentation" aria-hidden="true"
+            style={{ width: '100%', maxWidth: '240px', height: '32px', display: 'inline-block' }}
             onError={e => { e.target.style.display = 'none'; }}
           />
         </div>
 
+        {/* ── Invitation message ── */}
+        <div className="gsap-reveal" style={{ textAlign: 'center' }}>
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(1.05rem, 2vw, 1.25rem)',
+            fontStyle: 'italic',
+            color: '#4A3F38',
+            lineHeight: 1.9,
+            marginBottom: '16px',
+          }}>
+            Sự hiện diện của Quý khách là niềm vinh hạnh
+            <br />và món quà quý giá nhất trong ngày trọng đại này.
+          </p>
+
+          <p style={{
+            fontFamily: "'Be Vietnam Pro', sans-serif",
+            fontSize: '0.78rem',
+            color: '#9E9188',
+            letterSpacing: '0.04em',
+          }}>
+            {WEDDING.dateDisplay} · {WEDDING.venue}
+          </p>
+        </div>
+
       </div>
+
+      <style>{`
+        @media (max-width: 560px) {
+          .invitation-family-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

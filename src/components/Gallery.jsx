@@ -1,93 +1,16 @@
 /* ══════════════════════════════════════════════════════════════════════
-   GALLERY — Fine Art Wedding Editorial
-   Direction: Editorial magazine layout, varied proportions
-   Photos: Curated Unsplash — cinematic, intimate, Vietnamese aesthetic
-   Layout: CSS masonry columns — true asymmetric composition
-   Preserved: Category filter, lightbox, keyboard navigation, accessibility
-   Performance: lazy loading, WebP format preference
-   Replace: All photo URLs with real couple photos when available
+   GALLERY — Editorial Photo Story
+   ────────────────────────────────────────────────────────────
+   Art direction: DARK BACKGROUND — immersive photo story moment.
+   Near-black background makes photographs feel gallery-quality.
+   Data: from weddingData.js (centralized placeholder photo config).
+   Layout: 2-col mobile, 3-col desktop grid with controlled aspect ratios.
+   Preserved: lightbox, keyboard navigation, accessibility, lazy loading.
 ══════════════════════════════════════════════════════════════════════ */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { GALLERY } from '../weddingData';
 
-/* ── Curated editorial wedding photos ──
-   Source: Unsplash (free license — unsplash.com/license)
-   Art direction: cinematic light, intimate composition, warm tones
-   Aspect ratios varied intentionally for masonry rhythm
-*/
-const GALLERY_PHOTOS = [
-  {
-    id: 1,
-    src: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=900&q=88&fm=webp',
-    fallback: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=900&q=75',
-    alt: 'Khoảnh khắc lãng mạn — cô dâu chú rể nhìn nhau đầy cảm xúc',
-    title: 'Ánh Nhìn Hạnh Phúc',
-    category: 'romance',
-    tall: true,
-  },
-  {
-    id: 2,
-    src: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=900&q=88&fm=webp',
-    fallback: 'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=900&q=75',
-    alt: 'Chi tiết nghi lễ truyền thống — hoa cưới và áo dài',
-    title: 'Nét Truyền Thống',
-    category: 'traditional',
-    tall: false,
-  },
-  {
-    id: 3,
-    src: 'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=900&q=88&fm=webp',
-    fallback: 'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=900&q=75',
-    alt: 'Tiệc cưới — không gian lễ thành hôn ấm cúng',
-    title: 'Không Gian Lễ Cưới',
-    category: 'moments',
-    tall: false,
-  },
-  {
-    id: 4,
-    src: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=900&q=88&fm=webp',
-    fallback: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=900&q=75',
-    alt: 'Áo dài cô dâu truyền thống Việt Nam — thanh lịch và trang nhã',
-    title: 'Áo Dài Truyền Thống',
-    category: 'traditional',
-    tall: true,
-  },
-  {
-    id: 5,
-    src: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=900&q=88&fm=webp',
-    fallback: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=900&q=75',
-    alt: 'Bàn tay nắm chặt — khoảnh khắc giao nhẫn thiêng liêng',
-    title: 'Nguyện Ước Trăm Năm',
-    category: 'moments',
-    tall: false,
-  },
-  {
-    id: 6,
-    src: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=900&q=88&fm=webp',
-    fallback: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=900&q=75',
-    alt: 'Chi tiết nhẫn cưới và hoa cưới — tỉ mỉ và tinh tế',
-    title: 'Chi Tiết Đặc Biệt',
-    category: 'moments',
-    tall: false,
-  },
-  {
-    id: 7,
-    src: 'https://images.unsplash.com/photo-1522413452208-996ff3f3e740?w=900&q=88&fm=webp',
-    fallback: 'https://images.unsplash.com/photo-1522413452208-996ff3f3e740?w=900&q=75',
-    alt: 'Đôi uyên ương dưới ánh hoàng hôn — khoảnh khắc bình yên',
-    title: 'Bên Nhau Bình Yên',
-    category: 'outdoor',
-    tall: true,
-  },
-  {
-    id: 8,
-    src: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=900&q=88&fm=webp',
-    fallback: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=900&q=75',
-    alt: 'Nụ cười hạnh phúc — niềm vui trong ngày cưới',
-    title: 'Niềm Vui Hạnh Phúc',
-    category: 'romance',
-    tall: false,
-  },
-];
+const GALLERY_PHOTOS = GALLERY;
 
 const CATEGORIES = [
   { key: 'all',         label: 'Tất cả' },
@@ -238,14 +161,23 @@ export default function Gallery() {
       aria-label="Album ảnh cưới"
       style={{
         padding: 'clamp(80px, 12vw, 120px) 0',
-        backgroundColor: '#FDFBF7',
+        /* DARK MOMENT — near-black for immersive editorial photo story */
+        backgroundColor: '#0E0905',
       }}
     >
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 clamp(16px, 3vw, 32px)' }}>
 
         {/* Header */}
         <div style={{ marginBottom: 'clamp(36px, 5vw, 52px)', padding: '0 clamp(4px, 1vw, 16px)' }}>
-          <p className="section-label gsap-reveal" style={{ marginBottom: '14px' }}>
+          <p style={{
+            fontFamily: "'Be Vietnam Pro', sans-serif",
+            fontSize: '0.60rem',
+            fontWeight: 500,
+            letterSpacing: '0.22em',
+            textTransform: 'uppercase',
+            color: '#B89555',
+            marginBottom: '14px',
+          }} className="gsap-reveal">
             Album Ảnh
           </p>
           <h2
@@ -253,7 +185,7 @@ export default function Gallery() {
             style={{
               fontFamily: "'Playfair Display', serif",
               fontSize: 'clamp(2rem, 4vw, 2.8rem)',
-              fontWeight: 500, color: '#231B15',
+              fontWeight: 500, color: 'rgba(248,244,236,0.92)',
               lineHeight: 1.1, letterSpacing: '-0.01em',
             }}
           >
@@ -269,7 +201,7 @@ export default function Gallery() {
             display: 'flex', flexWrap: 'wrap', gap: '4px 28px',
             marginBottom: 'clamp(28px, 4vw, 40px)',
             paddingBottom: '16px',
-            borderBottom: '1px solid rgba(35,27,21,0.08)',
+            borderBottom: '1px solid rgba(248,244,236,0.1)',
             padding: '0 clamp(4px, 1vw, 16px)',
           }}
         >
@@ -286,16 +218,16 @@ export default function Gallery() {
                   fontFamily: "'Be Vietnam Pro', sans-serif",
                   fontSize: '0.82rem',
                   fontWeight: isActive ? 600 : 400,
-                  color: isActive ? '#231B15' : '#9E9188',
+                  color: isActive ? 'rgba(248,244,236,0.92)' : 'rgba(248,244,236,0.38)',
                   cursor: 'pointer',
-                  borderBottom: isActive ? '1px solid #8B1E22' : '1px solid transparent',
+                  borderBottom: isActive ? '1px solid #B89555' : '1px solid transparent',
                   paddingBottom: '3px',
                   transition: 'color 0.2s, border-color 0.2s',
                   letterSpacing: '0.02em',
                   marginBottom: '12px',
                 }}
-                onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = '#4A3F38'; }}
-                onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = '#9E9188'; }}
+                onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = 'rgba(248,244,236,0.65)'; }}
+                onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = 'rgba(248,244,236,0.38)'; }}
               >
                 {cat.label}
               </button>

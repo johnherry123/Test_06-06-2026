@@ -1,37 +1,12 @@
 /* ══════════════════════════════════════════════════════════════════════
-   GIFTS / MỪNG CƯỚI — Premium Wedding Stationery
-   Direction: Physical wedding envelope aesthetic — warm ivory, champagne gold
-   Assets: Wax seal, botanical branch, clean QR code display
-   Removed: holographic card, fintech UI, rainbow gradients, 3D effects
-   QR: Remains fully scannable — no visual decoration over QR zone
-   Vietnamese: envelope_back.png botanical frame asset — KEEP (premium quality)
+   GIFTS / MỪ̀NG CƯỚI — Premium Wedding Stationery
+   ────────────────────────────────────────────────────────────
+   Data: from weddingData.js (all bank info clearly marked as placeholder).
+   ⚠️ Bank accounts are PLACEHOLDER until replaced in weddingData.js.
+   QR: remains fully scannable — no visual decoration over QR zone.
 ══════════════════════════════════════════════════════════════════════ */
 import { useState } from 'react';
-
-const BANK_ACCOUNTS = [
-  {
-    id:            'groom',
-    role:          'Chú Rể',
-    name:          'NGUYỄN ĐẠI NGHĨA',
-    bank:          'Vietcombank',
-    bankShort:     'VCB',
-    accountNumber: '1234567890',
-    branch:        'CN Tân Bình, TP.HCM',
-    qrUrl:         'https://img.vietqr.io/image/VCB-1234567890-compact2.png?amount=0&addInfo=Chuc%20Mung%20Dam%20Cuoi%20Dai%20Nghia&accountName=NGUYEN%20DAI%20NGHIA',
-    qrFallback:    'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=Vietcombank-1234567890-NGUYEN%20DAI%20NGHIA',
-  },
-  {
-    id:            'bride',
-    role:          'Cô Dâu',
-    name:          'LÊ THỊ NHUNG',
-    bank:          'Techcombank',
-    bankShort:     'TCB',
-    accountNumber: '0987654321',
-    branch:        'CN Quận 3, TP.HCM',
-    qrUrl:         'https://img.vietqr.io/image/TCB-0987654321-compact2.png?amount=0&addInfo=Chuc%20Mung%20Dam%20Cuoi%20Thi%20Nhung&accountName=LE%20THI%20NHUNG',
-    qrFallback:    'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=Techcombank-0987654321-LE%20THI%20NHUNG',
-  },
-];
+import { BANK_ACCOUNTS } from '../weddingData';
 
 function CopyBtn({ text, label }) {
   const [copied, setCopied] = useState(false);
@@ -116,6 +91,22 @@ function AccountCard({ account }) {
           pointerEvents: 'none',
         }}
       />
+      {/* Placeholder warning banner */}
+      {account.accountNumber.startsWith('[') && (
+        <div style={{
+          backgroundColor: 'rgba(184,149,85,0.12)',
+          border: '1px solid rgba(184,149,85,0.3)',
+          borderRadius: '2px',
+          padding: '8px 14px',
+          marginBottom: '16px',
+          fontFamily: "'Be Vietnam Pro', sans-serif",
+          fontSize: '0.68rem',
+          color: 'rgba(120,80,30,0.7)',
+          fontStyle: 'italic',
+        }}>
+          ⚠️ Số tài khoản chưa cập nhật. Sửa trong <code>src/weddingData.js</code>
+        </div>
+      )}
 
       {/* Role */}
       <p style={{

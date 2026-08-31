@@ -1,10 +1,16 @@
 /* ══════════════════════════════════════════════════════════════════════
    APP.JSX — Vietnamese Editorial Wedding
    Architecture: Lenis smooth scroll + GSAP ScrollTrigger
-   Custom cursor: REMOVED (native cursor restored)
    Navigation: Minimal transparent → solid on scroll
+
+   Technical fixes in this version:
+   ✓ Lenis ticker cleanup: uses stable function reference (fixes memory leak)
+   ✓ Navigation labels match actual section IDs
+   ✓ Story section added (#story)
+   ✓ Couple section added to nav (#couple)
+   ✓ Removed: @react-three/fiber, framer-motion (unused deps)
 ══════════════════════════════════════════════════════════════════════ */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -15,6 +21,7 @@ import './index.css';
 import IntroShader from './components/IntroShader';
 import Hero from './components/Hero';
 import Invitation from './components/Invitation';
+import Story from './components/Story';
 import Couple from './components/Couple';
 import Events from './components/Events';
 import Gallery from './components/Gallery';
@@ -24,12 +31,14 @@ import AudioPlayer from './components/AudioPlayer';
 
 gsap.registerPlugin(ScrollTrigger);
 
+/* Navigation — labels match actual section IDs and content */
 const NAV_LINKS = [
-  { href: '#invitation', label: 'Câu Chuyện'  },
-  { href: '#events',     label: 'Lịch Trình'  },
-  { href: '#gallery',    label: 'Album'        },
-  { href: '#rsvp',       label: 'RSVP'         },
-  { href: '#gifts',      label: 'Mừng Cưới'   },
+  { href: '#loi-ngo',  label: 'Lời Ngỏ'      },
+  { href: '#story',    label: 'Câu Chuyện'    },
+  { href: '#couple',   label: 'Hai Chúng Mình'},
+  { href: '#events',   label: 'Ngày Cưới'     },
+  { href: '#gallery',  label: 'Album'          },
+  { href: '#rsvp',     label: 'RSVP'           },
 ];
 
 export default function App() {
@@ -37,7 +46,9 @@ export default function App() {
   const [scrolled, setScrolled]           = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [mobileMenu, setMobileMenu]       = useState(false);
-  const lenisRef = useRef(null);
+  const lenisRef     = useRef(null);
+  /* Stable ticker reference — prevents memory leak on cleanup */
+  const tickerFnRef  = useRef(null);
 
   /* ── Lenis smooth scroll ── */
   useEffect(() => {
@@ -55,7 +66,13 @@ export default function App() {
 
     lenisRef.current = lenis;
 
-    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+    /* ── Stable ticker fn reference — required for correct cleanup ──
+       Previous code used an anonymous function that created a new reference
+       each time, meaning gsap.ticker.remove() never matched the added fn.
+       This caused the ticker to keep firing after component unmount. */
+    const tickerFn = (time) => { lenis.raf(time * 1000); };
+    tickerFnRef.current = tickerFn;
+    gsap.ticker.add(tickerFn);
     gsap.ticker.lagSmoothing(0);
 
     lenis.on('scroll', () => { ScrollTrigger.update(); });
@@ -66,7 +83,11 @@ export default function App() {
 
     return () => {
       lenis.destroy();
-      gsap.ticker.remove((time) => lenis.raf(time * 1000));
+      /* Use the same reference that was added — correctly removes the listener */
+      if (tickerFnRef.current) {
+        gsap.ticker.remove(tickerFnRef.current);
+        tickerFnRef.current = null;
+      }
     };
   }, [hasOpened]);
 
@@ -107,7 +128,7 @@ export default function App() {
     return () => ctx.revert();
   }, [hasOpened]);
 
-  const handleShare = () => {
+  const handleShare = useCallback(() => {
     if (navigator.share) {
       navigator.share({
         title: 'Thiệp Cưới Đại Nghĩa & Thị Nhung — 20.10.2026',
@@ -115,18 +136,19 @@ export default function App() {
         url: window.location.href,
       }).catch(() => {});
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      navigator.clipboard.writeText(window.location.href).catch(() => {});
     }
-  };
+  }, []);
 
-  const scrollToTop = () => lenisRef.current?.scrollTo(0, { duration: 1.4 });
-  const scrollTo    = (href) => {
+  const scrollToTop = useCallback(() => lenisRef.current?.scrollTo(0, { duration: 1.4 }), []);
+
+  const scrollTo = useCallback((href) => {
     const el = document.querySelector(href);
     if (el && lenisRef.current) lenisRef.current.scrollTo(el, { offset: -72, duration: 1.3 });
     setMobileMenu(false);
-  };
+  }, []);
 
-  /* ── NAV styles ── */
+  /* ── Nav styles ── */
   const navBg     = scrolled ? 'rgba(253,251,247,0.97)' : 'transparent';
   const navBorder = scrolled ? '1px solid rgba(35,27,21,0.1)' : '1px solid transparent';
   const navPad    = scrolled ? '10px 32px' : '20px 32px';
@@ -151,13 +173,13 @@ export default function App() {
         }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
-            {/* Logo — simple text mark */}
+            {/* Logo */}
             <a
               href="#hero"
               onClick={(e) => { e.preventDefault(); scrollTo('#hero'); }}
               style={{
                 fontFamily: "'Playfair Display', serif",
-                fontSize: '1.1rem',
+                fontSize: '1.05rem',
                 fontWeight: 500,
                 fontStyle: 'italic',
                 color: '#231B15',
@@ -169,7 +191,7 @@ export default function App() {
             </a>
 
             {/* Desktop nav */}
-            <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+            <nav className="desktop-nav" aria-label="Điều hướng chính" style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
               {NAV_LINKS.map(link => (
                 <a
                   key={link.href}
@@ -177,7 +199,7 @@ export default function App() {
                   onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
                   style={{
                     fontFamily: "'Be Vietnam Pro', sans-serif",
-                    fontSize: '0.75rem',
+                    fontSize: '0.72rem',
                     fontWeight: 500,
                     letterSpacing: '0.08em',
                     textTransform: 'uppercase',
@@ -197,7 +219,8 @@ export default function App() {
             <button
               onClick={() => setMobileMenu(!mobileMenu)}
               className="mobile-hamburger"
-              aria-label="Menu"
+              aria-label={mobileMenu ? 'Đóng menu' : 'Mở menu'}
+              aria-expanded={mobileMenu}
               style={{
                 display: 'none',
                 background: 'transparent',
@@ -213,14 +236,17 @@ export default function App() {
 
           {/* Mobile dropdown */}
           {mobileMenu && (
-            <div style={{
-              position: 'absolute', top: '100%', left: 0, right: 0,
-              backgroundColor: 'rgba(253,251,247,0.99)',
-              backdropFilter: 'blur(16px)',
-              borderBottom: '1px solid rgba(35,27,21,0.1)',
-              padding: '16px 32px 24px',
-              display: 'flex', flexDirection: 'column', gap: '0',
-            }}>
+            <nav
+              aria-label="Menu di động"
+              style={{
+                position: 'absolute', top: '100%', left: 0, right: 0,
+                backgroundColor: 'rgba(253,251,247,0.99)',
+                backdropFilter: 'blur(16px)',
+                borderBottom: '1px solid rgba(35,27,21,0.1)',
+                padding: '16px 32px 24px',
+                display: 'flex', flexDirection: 'column', gap: '0',
+              }}
+            >
               {NAV_LINKS.map(link => (
                 <a
                   key={link.href}
@@ -240,23 +266,27 @@ export default function App() {
                   {link.label}
                 </a>
               ))}
-            </div>
+            </nav>
           )}
         </header>
       )}
 
-      {/* 3. Main content */}
+      {/* 3. Main content — section rhythm:
+           Hero (light ivory) → Invitation (warm ivory) → Story (dark espresso)
+           → Couple (light) → Events (burgundy) → Gallery (near-black)
+           → RSVP (warm) → Gifts (light) → Footer (dark) */}
       {hasOpened && (
         <main>
           <Hero />
           <Invitation />
+          <Story />
           <Couple />
           <Events />
           <Gallery />
           <RSVP />
           <Gifts />
 
-          {/* Footer — elevated with monogram */}
+          {/* Footer */}
           <footer
             role="contentinfo"
             style={{
@@ -268,7 +298,7 @@ export default function App() {
               overflow: 'hidden',
             }}
           >
-            {/* Subtle botanical bg — envelope_back at very low opacity */}
+            {/* Subtle botanical bg */}
             <div
               aria-hidden="true"
               style={{
@@ -283,13 +313,12 @@ export default function App() {
 
             <div style={{ maxWidth: '480px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
 
-              {/* Monogram SVG — premium brand mark */}
+              {/* Monogram */}
               <div style={{ marginBottom: '28px' }}>
                 <img
                   src="/Test_06-06-2026/monogram.svg"
                   alt="Monogram ĐN — Đại Nghĩa & Thị Nhung"
-                  width="120"
-                  height="80"
+                  width="120" height="80"
                   style={{
                     display: 'inline-block',
                     filter: 'invert(1) sepia(1) saturate(0.5) brightness(0.85)',
@@ -299,49 +328,43 @@ export default function App() {
                 />
               </div>
 
-              {/* Couple names — italic serif */}
+              {/* Names */}
               <p style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 'clamp(1.6rem, 3.5vw, 2.2rem)',
-                fontStyle: 'italic',
-                fontWeight: 400,
+                fontStyle: 'italic', fontWeight: 400,
                 color: 'rgba(248,244,236,0.88)',
-                lineHeight: 1.2,
-                marginBottom: '20px',
+                lineHeight: 1.2, marginBottom: '20px',
                 letterSpacing: '0.01em',
               }}>
                 Đại Nghĩa &amp; Thị Nhung
               </p>
 
-              {/* Champagne thin rule */}
+              {/* Gold rule */}
               <div style={{
                 width: '32px', height: '1px',
                 background: 'linear-gradient(to right, transparent, #B89555, transparent)',
                 margin: '0 auto 20px',
               }} />
 
-              {/* Quote */}
+              {/* Message */}
               <p style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)',
                 fontStyle: 'italic',
                 color: 'rgba(248,244,236,0.5)',
-                lineHeight: 1.85,
-                marginBottom: '28px',
+                lineHeight: 1.85, marginBottom: '28px',
               }}>
                 Cảm ơn bạn đã đến chung vui<br />
                 trong ngày hạnh phúc nhất của chúng tôi.
               </p>
 
-              {/* Date + venue */}
+              {/* Date */}
               <p style={{
                 fontFamily: "'Be Vietnam Pro', sans-serif",
                 fontSize: '0.68rem',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                color: '#B89555',
-                marginBottom: '28px',
-                opacity: 0.85,
+                letterSpacing: '0.2em', textTransform: 'uppercase',
+                color: '#B89555', marginBottom: '28px', opacity: 0.85,
               }}>
                 20 &nbsp;·&nbsp; 10 &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; Gem Center TP.HCM
               </p>
@@ -370,7 +393,7 @@ export default function App() {
                 Chia sẻ thiệp cưới
               </button>
 
-              {/* Credit line */}
+              {/* Credit */}
               <p style={{
                 fontFamily: "'Be Vietnam Pro', sans-serif",
                 fontSize: '0.65rem',

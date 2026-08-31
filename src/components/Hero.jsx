@@ -6,23 +6,15 @@
    Photo: High-quality editorial wedding photography (Unsplash free license)
    Structure: [Names + date] → [Full-bleed photograph] → [CTA]
 ══════════════════════════════════════════════════════════════════════ */
-import { useEffect, useRef, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { COUPLE, WEDDING, INTRO_PHOTO } from '../weddingData';
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* ── Curated editorial wedding photographs ──
-   Source: Unsplash — Free license (unsplash.com/license)
-   Replace with real couple photos when available.
-   Recommended specs: 3:2 or 16:9, min 2000px wide, editorial/cinematic style */
-const EDITORIAL_PHOTOS = {
-  hero: {
-    src: 'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=1800&q=90&fm=webp',
-    alt: 'Không gian hôn lễ — ảnh minh họa. Thay thế bằng ảnh thật của cô dâu chú rể.',
-    fallback: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1800&q=85',
-  },
-};
+/* ── Hero editorial photo — sourced from weddingData.js ── */
+const HERO_PHOTO = INTRO_PHOTO;
 
 /* ── Standalone Countdown ── */
 function CountdownSection() {
@@ -186,7 +178,7 @@ export default function Hero() {
             {/* Save the date eyebrow */}
             <p style={{
               fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: '0.68rem',
+              fontSize: '0.65rem',
               fontWeight: 500,
               letterSpacing: '0.24em',
               textTransform: 'uppercase',
@@ -199,20 +191,20 @@ export default function Hero() {
             {/* Names — primary visual hierarchy */}
             <h1 style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(3.2rem, 9.5vw, 7.5rem)',
+              fontSize: 'clamp(3rem, 9vw, 7rem)',
               fontWeight: 400,
               lineHeight: 1.0,
               color: '#231B15',
               margin: 0,
               letterSpacing: '-0.02em',
             }}>
-              Đại Nghĩa
+              {COUPLE.groom.firstName}
             </h1>
 
-            {/* Ampersand — champagne accent */}
+            {/* Ampersand */}
             <div style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 'clamp(1.5rem, 3.5vw, 2.4rem)',
+              fontSize: 'clamp(1.4rem, 3.2vw, 2.2rem)',
               fontStyle: 'italic',
               fontWeight: 300,
               color: '#B89555',
@@ -224,27 +216,27 @@ export default function Hero() {
 
             <h1 style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(3.2rem, 9.5vw, 7.5rem)',
+              fontSize: 'clamp(3rem, 9vw, 7rem)',
               fontWeight: 400,
               lineHeight: 1.0,
               color: '#231B15',
               margin: '0 0 clamp(20px, 3.5vw, 32px)',
               letterSpacing: '-0.02em',
             }}>
-              Thị Nhung
+              {COUPLE.bride.firstName}
             </h1>
 
-            {/* Date + venue — muted, secondary */}
+            {/* Date + venue */}
             <p style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 'clamp(1rem, 2vw, 1.3rem)',
+              fontSize: 'clamp(1rem, 2vw, 1.25rem)',
               fontStyle: 'italic',
               fontWeight: 400,
               color: '#756B63',
               marginBottom: 'clamp(24px, 4vw, 36px)',
               letterSpacing: '0.02em',
             }}>
-              20 tháng 10, 2026 &nbsp;·&nbsp; Gem Center, TP. Hồ Chí Minh
+              {WEDDING.dateDisplay} &nbsp;·&nbsp; {WEDDING.venue}, TP. Hồ Chí Minh
             </p>
 
             {/* CTAs */}
@@ -284,19 +276,18 @@ export default function Hero() {
 
             <div
               style={{
-                /* Centered, max 600px — editorial stationery proportion
-                   NOT a full-bleed hero that overwhelms the page */
+                /* Fixed valid aspect-ratio CSS */
                 maxWidth: '600px',
                 width: '92vw',
                 margin: '0 auto',
                 overflow: 'hidden',
                 lineHeight: 0,
-                aspectRatio: '3/2',
+                aspectRatio: '3 / 2',
               }}
             >
               <img
-                src={EDITORIAL_PHOTOS.hero.src}
-                alt={EDITORIAL_PHOTOS.hero.alt}
+                src={HERO_PHOTO.src}
+                alt={HERO_PHOTO.alt}
                 loading="eager"
                 decoding="async"
                 style={{
@@ -306,7 +297,7 @@ export default function Hero() {
                   objectPosition: 'center 30%',
                   display: 'block',
                 }}
-                onError={e => { e.target.src = EDITORIAL_PHOTOS.hero.fallback; }}
+                onError={e => { e.target.src = HERO_PHOTO.fallback; }}
               />
             </div>
 
@@ -328,7 +319,7 @@ export default function Hero() {
               marginTop: '10px',
               paddingRight: '2px',
             }}>
-              Hai trái tim, một nhịp đập — 20.10.2026
+              {WEDDING.dateDisplay}
             </p>
           </div>
 
