@@ -256,78 +256,128 @@ export default function App() {
           <RSVP />
           <Gifts />
 
-          {/* Footer */}
-          <footer style={{
-            backgroundColor: '#231B15',
-            color: '#F8F4EC',
-            padding: 'clamp(72px, 10vw, 96px) 24px 48px',
-            textAlign: 'center',
-          }}>
-            <div style={{ maxWidth: '560px', margin: '0 auto' }}>
+          {/* Footer — elevated with monogram */}
+          <footer
+            role="contentinfo"
+            style={{
+              backgroundColor: '#1A120D',
+              color: '#F8F4EC',
+              padding: 'clamp(72px, 10vw, 100px) 24px 48px',
+              textAlign: 'center',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Subtle botanical bg — envelope_back at very low opacity */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: 'absolute', inset: 0,
+                backgroundImage: 'url(/Test_06-06-2026/envelope_back.png)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                opacity: 0.025,
+                pointerEvents: 'none',
+              }}
+            />
 
-              {/* Names */}
-              <div style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
-                fontStyle: 'italic',
-                fontWeight: 400,
-                color: '#F8F4EC',
-                lineHeight: 1.2,
-                marginBottom: '16px',
-              }}>
-                Đại Nghĩa &amp; Thị Nhung
+            <div style={{ maxWidth: '480px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+
+              {/* Monogram SVG — premium brand mark */}
+              <div style={{ marginBottom: '28px' }}>
+                <img
+                  src="/Test_06-06-2026/monogram.svg"
+                  alt="Monogram ĐN — Đại Nghĩa & Thị Nhung"
+                  width="120"
+                  height="80"
+                  style={{
+                    display: 'inline-block',
+                    filter: 'invert(1) sepia(1) saturate(0.5) brightness(0.85)',
+                    opacity: 0.9,
+                  }}
+                  onError={e => { e.target.style.display = 'none'; }}
+                />
               </div>
 
-              {/* Thin champagne line */}
-              <div style={{ width: '32px', height: '1px', background: '#B89555', margin: '0 auto 20px' }} />
+              {/* Couple names — italic serif */}
+              <p style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: 'clamp(1.6rem, 3.5vw, 2.2rem)',
+                fontStyle: 'italic',
+                fontWeight: 400,
+                color: 'rgba(248,244,236,0.88)',
+                lineHeight: 1.2,
+                marginBottom: '20px',
+                letterSpacing: '0.01em',
+              }}>
+                Đại Nghĩa &amp; Thị Nhung
+              </p>
+
+              {/* Champagne thin rule */}
+              <div style={{
+                width: '32px', height: '1px',
+                background: 'linear-gradient(to right, transparent, #B89555, transparent)',
+                margin: '0 auto 20px',
+              }} />
 
               {/* Quote */}
               <p style={{
                 fontFamily: "'Cormorant Garamond', serif",
-                fontSize: '1.05rem',
+                fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)',
                 fontStyle: 'italic',
-                color: 'rgba(248,244,236,0.6)',
-                lineHeight: 1.8,
-                marginBottom: '32px',
+                color: 'rgba(248,244,236,0.5)',
+                lineHeight: 1.85,
+                marginBottom: '28px',
               }}>
-                Cảm ơn bạn đã đến chung vui<br />trong ngày hạnh phúc nhất của chúng tôi.
+                Cảm ơn bạn đã đến chung vui<br />
+                trong ngày hạnh phúc nhất của chúng tôi.
               </p>
 
-              {/* Date/venue */}
+              {/* Date + venue */}
               <p style={{
                 fontFamily: "'Be Vietnam Pro', sans-serif",
-                fontSize: '0.72rem',
-                letterSpacing: '0.18em',
+                fontSize: '0.68rem',
+                letterSpacing: '0.2em',
                 textTransform: 'uppercase',
                 color: '#B89555',
                 marginBottom: '28px',
+                opacity: 0.85,
               }}>
-                20 · 10 · 2026 · Gem Center TP.HCM
+                20 &nbsp;·&nbsp; 10 &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; Gem Center TP.HCM
               </p>
 
-              {/* Share */}
+              {/* Share button */}
               <button
                 onClick={handleShare}
-                className="btn-secondary"
+                aria-label="Chia sẻ thiệp cưới"
                 style={{
-                  borderColor: 'rgba(248,244,236,0.2)',
-                  color: 'rgba(248,244,236,0.7)',
-                  marginBottom: '40px',
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  padding: '11px 28px',
+                  background: 'transparent',
+                  border: '1px solid rgba(248,244,236,0.18)',
+                  color: 'rgba(248,244,236,0.6)',
+                  fontFamily: "'Be Vietnam Pro', sans-serif",
+                  fontSize: '0.72rem', fontWeight: 500,
+                  letterSpacing: '0.08em', textTransform: 'uppercase',
+                  borderRadius: '1px',
+                  cursor: 'pointer', marginBottom: '44px',
+                  transition: 'all 0.25s ease',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(184,149,85,0.6)'; e.currentTarget.style.color = '#B89555'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(248,244,236,0.2)'; e.currentTarget.style.color = 'rgba(248,244,236,0.7)'; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(184,149,85,0.5)'; e.currentTarget.style.color = '#B89555'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(248,244,236,0.18)'; e.currentTarget.style.color = 'rgba(248,244,236,0.6)'; }}
               >
-                <Share2 size={14} />
+                <Share2 size={13} aria-hidden="true" />
                 Chia sẻ thiệp cưới
               </button>
 
-              {/* Copyright */}
+              {/* Credit line */}
               <p style={{
-                fontSize: '0.7rem',
-                color: 'rgba(248,244,236,0.25)',
                 fontFamily: "'Be Vietnam Pro', sans-serif",
-                borderTop: '1px solid rgba(248,244,236,0.08)',
+                fontSize: '0.65rem',
+                color: 'rgba(248,244,236,0.2)',
+                borderTop: '1px solid rgba(248,244,236,0.07)',
                 paddingTop: '20px',
+                letterSpacing: '0.04em',
               }}>
                 Hai họ trân trọng kính báo
               </p>

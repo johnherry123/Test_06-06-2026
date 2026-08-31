@@ -309,3 +309,81 @@ img {
   -webkit-overflow-scrolling: touch;
 }
 .snap-start { scroll-snap-align: start; }
+
+/* ── Champagne gradient rule ──
+   Use as a narrow horizontal rule between sections.
+   Fades to transparent at edges — premium paper stationery feel. */
+.champagne-rule {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(184,149,85,0.5) 20%,
+    rgba(184,149,85,0.5) 80%,
+    transparent 100%
+  );
+  border: none;
+  margin: 0;
+}
+
+/* ── Paper texture ──
+   Applied as ::before pseudo-element.
+   Use on warm-ivory sections to add premium paper feeling.
+   SVG noise filter at ~2.5% intensity — barely perceptible. */
+.paper-texture {
+  position: relative;
+}
+.paper-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23p)' opacity='0.025'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 300px 300px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.9;
+}
+.paper-texture > * { position: relative; z-index: 1; }
+
+/* ── Botanical divider image ── */
+.botanical-divider {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  height: 36px;
+  margin: 0 auto;
+  opacity: 0.7;
+}
+
+/* ── Section separator ── */
+.section-sep {
+  height: 1px;
+  background: var(--border-warm);
+  border: none;
+  margin: 0;
+}
+
+/* ── Editorial photo frame ──
+   Thin champagne lines above and below photos. */
+.photo-frame {
+  position: relative;
+}
+.photo-frame::before,
+.photo-frame::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(184,149,85,0.45) 20%,
+    rgba(184,149,85,0.45) 80%,
+    transparent
+  );
+  z-index: 2;
+}
+.photo-frame::before { top: 0; }
+.photo-frame::after  { bottom: 0; }
+

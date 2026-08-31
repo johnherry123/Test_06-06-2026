@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 60" fill="none" stroke="#B89555" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Main branch from left -->
+  <path d="M0 38 C20 36 40 32 70 30 C100 28 130 30 160 28" stroke-width="0.7" opacity="0.5"/>
+  <!-- Upper sub-branches left -->
+  <path d="M25 35 C28 28 34 22 38 18" stroke-width="0.55" opacity="0.45"/>
+  <path d="M50 32 C54 25 58 19 61 14" stroke-width="0.5" opacity="0.4"/>
+  <!-- Leaves on left branch -->
+  <path d="M28 28 C26 24 30 20 34 22 C32 26 29 28 28 28Z" stroke-width="0.5" opacity="0.5"/>
+  <path d="M37 19 C36 15 40 12 43 15 C41 18 38 20 37 19Z" stroke-width="0.45" opacity="0.45"/>
+  <path d="M53 24 C51 20 55 17 58 19 C57 23 54 25 53 24Z" stroke-width="0.5" opacity="0.45"/>
+  <path d="M60 15 C59 11 63 8 66 11 C64 14 61 16 60 15Z" stroke-width="0.45" opacity="0.4"/>
+  <!-- Upper sub-branches right -->
+  <path d="M90 29 C93 22 97 16 100 12" stroke-width="0.5" opacity="0.35"/>
+  <path d="M120 28 C122 22 125 17 127 13" stroke-width="0.5" opacity="0.35"/>
+  <!-- Leaves right -->
+  <path d="M93 22 C91 18 95 15 98 17 C96 21 93 23 93 22Z" stroke-width="0.45" opacity="0.4"/>
+  <path d="M99 13 C98 9 102 7 104 10 C102 13 99 14 99 13Z" stroke-width="0.4" opacity="0.35"/>
+  <path d="M123 22 C121 18 125 15 128 17 C126 21 123 23 123 22Z" stroke-width="0.45" opacity="0.35"/>
+  <!-- Small botanical dots / berries -->
+  <circle cx="35" cy="23" r="1.2" fill="#B89555" stroke="none" opacity="0.4"/>
+  <circle cx="62" cy="15" r="1" fill="#B89555" stroke="none" opacity="0.35"/>
+  <circle cx="101" cy="13" r="1" fill="#B89555" stroke="none" opacity="0.3"/>
+  <!-- Lower tendrils -->
+  <path d="M40 36 C42 40 40 45 37 47" stroke-width="0.45" opacity="0.35"/>
+  <path d="M75 31 C77 36 75 42 72 44" stroke-width="0.4" opacity="0.3"/>
+  <path d="M110 30 C112 35 110 40 107 42" stroke-width="0.4" opacity="0.3"/>
+</svg>

@@ -1,12 +1,12 @@
 /* ══════════════════════════════════════════════════════════════════════
-   GIFTS / MỪNG CƯỚI — Vietnamese Editorial Wedding
-   Removed: holographic 3D card, gyroscope tilt, conic-gradient shimmer,
-            fintech card UI, framer-motion dependency, gradient backgrounds.
-   Design: Warm Vietnamese wedding aesthetic — cream paper, thin lines,
-           champagne gold, deep burgundy. QR code centered. Clean transfer info.
-   Preserved: QR functionality, copy-to-clipboard, toast notification.
+   GIFTS / MỪNG CƯỚI — Premium Wedding Stationery
+   Direction: Physical wedding envelope aesthetic — warm ivory, champagne gold
+   Assets: Wax seal, botanical branch, clean QR code display
+   Removed: holographic card, fintech UI, rainbow gradients, 3D effects
+   QR: Remains fully scannable — no visual decoration over QR zone
+   Vietnamese: envelope_back.png botanical frame asset — KEEP (premium quality)
 ══════════════════════════════════════════════════════════════════════ */
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 
 const BANK_ACCOUNTS = [
   {
@@ -14,76 +14,73 @@ const BANK_ACCOUNTS = [
     role:          'Chú Rể',
     name:          'NGUYỄN ĐẠI NGHĨA',
     bank:          'Vietcombank',
+    bankShort:     'VCB',
     accountNumber: '1234567890',
     branch:        'CN Tân Bình, TP.HCM',
     qrUrl:         'https://img.vietqr.io/image/VCB-1234567890-compact2.png?amount=0&addInfo=Chuc%20Mung%20Dam%20Cuoi%20Dai%20Nghia&accountName=NGUYEN%20DAI%20NGHIA',
+    qrFallback:    'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=Vietcombank-1234567890-NGUYEN%20DAI%20NGHIA',
   },
   {
     id:            'bride',
     role:          'Cô Dâu',
     name:          'LÊ THỊ NHUNG',
     bank:          'Techcombank',
+    bankShort:     'TCB',
     accountNumber: '0987654321',
     branch:        'CN Quận 3, TP.HCM',
     qrUrl:         'https://img.vietqr.io/image/TCB-0987654321-compact2.png?amount=0&addInfo=Chuc%20Mung%20Dam%20Cuoi%20Thi%20Nhung&accountName=LE%20THI%20NHUNG',
+    qrFallback:    'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=Techcombank-0987654321-LE%20THI%20NHUNG',
   },
 ];
 
-function CopyButton({ text }) {
+function CopyBtn({ text, label }) {
   const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
+  const copy = async () => {
     try {
       await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     } catch {
-      /* fallback for older browsers */
       const el = document.createElement('textarea');
       el.value = text;
       document.body.appendChild(el);
       el.select();
       document.execCommand('copy');
       document.body.removeChild(el);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2200);
   };
-
   return (
     <button
-      onClick={handleCopy}
-      aria-label="Sao chép số tài khoản"
+      onClick={copy}
+      aria-label={`Sao chép ${label}`}
+      title={`Sao chép ${label}`}
       style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px',
-        padding: '7px 14px',
+        display: 'inline-flex', alignItems: 'center', gap: '5px',
+        padding: '6px 12px',
         background: 'transparent',
-        border: `1px solid ${copied ? '#8B1E22' : 'rgba(35,27,21,0.2)'}`,
-        borderRadius: '2px',
+        border: `1px solid ${copied ? 'rgba(139,30,34,0.4)' : 'rgba(35,27,21,0.18)'}`,
+        borderRadius: '1px',
         fontFamily: "'Be Vietnam Pro', sans-serif",
-        fontSize: '0.72rem',
-        fontWeight: 600,
-        letterSpacing: '0.06em',
-        textTransform: 'uppercase',
+        fontSize: '0.68rem', fontWeight: 600,
+        letterSpacing: '0.06em', textTransform: 'uppercase',
         color: copied ? '#8B1E22' : '#756B63',
         cursor: 'pointer',
         transition: 'all 0.2s ease',
-        whiteSpace: 'nowrap',
         flexShrink: 0,
       }}
-      onMouseEnter={e => { if (!copied) { e.currentTarget.style.borderColor = '#8B1E22'; e.currentTarget.style.color = '#8B1E22'; } }}
-      onMouseLeave={e => { if (!copied) { e.currentTarget.style.borderColor = 'rgba(35,27,21,0.2)'; e.currentTarget.style.color = '#756B63'; } }}
+      onMouseEnter={e => { if (!copied) { e.currentTarget.style.borderColor = 'rgba(35,27,21,0.35)'; e.currentTarget.style.color = '#4A3F38'; }}}
+      onMouseLeave={e => { if (!copied) { e.currentTarget.style.borderColor = 'rgba(35,27,21,0.18)'; e.currentTarget.style.color = '#756B63'; }}}
     >
       {copied ? (
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-          <polyline points="2 6 5 9 10 3" />
+        /* Checkmark */
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+          <polyline points="1.5 5.5 4.5 8.5 9.5 2.5"/>
         </svg>
       ) : (
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-          <rect x="3" y="3" width="7" height="8" rx="1"/>
-          <path d="M3 3V2a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v1"/>
+        /* Copy icon */
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="6" height="7" rx="1"/>
+          <path d="M2.5 1.5h5a1 1 0 011 1v1.5"/>
         </svg>
       )}
       {copied ? 'Đã sao chép' : 'Sao chép'}
@@ -91,127 +88,133 @@ function CopyButton({ text }) {
   );
 }
 
+/* Individual account card — premium stationery style */
 function AccountCard({ account }) {
   return (
-    <div style={{
-      padding: 'clamp(28px, 4vw, 40px)',
-      backgroundColor: '#FDFBF7',
-      border: '1px solid rgba(35,27,21,0.1)',
-    }}>
-      {/* Role label */}
+    <article
+      aria-label={`Thông tin chuyển khoản cho ${account.role}: ${account.name}`}
+      style={{
+        backgroundColor: '#FDFBF7',
+        border: '1px solid rgba(35,27,21,0.08)',
+        padding: 'clamp(28px, 4vw, 40px)',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* ── Subtle botanical corner — using envelope_back asset as bg ──
+           The envelope_back.png has a beautiful letterpress frame.
+           Use just the top-left corner area as a very subtle background accent. */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute', top: 0, right: 0,
+          width: '120px', height: '120px',
+          backgroundImage: 'url(/Test_06-06-2026/envelope_back.png)',
+          backgroundSize: '380px 380px',
+          backgroundPosition: 'right top',
+          opacity: 0.07,
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* Role */}
       <p style={{
         fontFamily: "'Be Vietnam Pro', sans-serif",
-        fontSize: '0.68rem',
-        fontWeight: 600,
-        letterSpacing: '0.18em',
-        textTransform: 'uppercase',
-        color: '#8B1E22',
-        marginBottom: '20px',
+        fontSize: '0.62rem', fontWeight: 600,
+        letterSpacing: '0.2em', textTransform: 'uppercase',
+        color: '#8B1E22', marginBottom: '20px',
       }}>
         {account.role}
       </p>
 
-      {/* QR code */}
+      {/* QR code — clean, scannable, no decoration over QR area */}
       <div style={{
         margin: '0 auto 24px',
-        maxWidth: '160px',
-        aspectRatio: '1',
-        overflow: 'hidden',
-        border: '1px solid rgba(35,27,21,0.08)',
-        padding: '8px',
-        backgroundColor: '#FDFBF7',
+        width: '148px', height: '148px',
+        border: '1px solid rgba(35,27,21,0.1)',
+        padding: '10px',
+        backgroundColor: '#fff',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <img
           src={account.qrUrl}
-          alt={`QR chuyển khoản cho ${account.name}`}
-          style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
-          onError={e => { e.target.style.display = 'none'; }}
+          alt={`Mã QR chuyển khoản cho ${account.name} — ${account.bank} ${account.accountNumber}`}
+          width="128"
+          height="128"
+          loading="lazy"
+          style={{ display: 'block', width: '100%', height: '100%', objectFit: 'contain' }}
+          onError={e => {
+            if (e.target.src !== account.qrFallback) e.target.src = account.qrFallback;
+          }}
         />
       </div>
 
-      {/* Bank info */}
+      {/* Bank info — editorial data table style */}
       <div style={{
         borderTop: '1px solid rgba(35,27,21,0.08)',
         paddingTop: '20px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '10px',
       }}>
-        {/* Bank */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <span style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.72rem',
-            fontWeight: 500,
-            color: '#756B63',
-            letterSpacing: '0.04em',
-          }}>Ngân hàng</span>
-          <span style={{
-            fontFamily: "'Playfair Display', serif",
-            fontSize: '0.95rem',
-            fontWeight: 500,
-            color: '#231B15',
+        {[
+          { label: 'Ngân hàng',      value: account.bank,          serif: true },
+          { label: 'Chủ tài khoản',  value: account.name,          serif: false, strong: true },
+        ].map(row => (
+          <div key={row.label} style={{
+            display: 'flex', justifyContent: 'space-between',
+            alignItems: 'baseline', gap: '8px',
+            marginBottom: '10px',
           }}>
-            {account.bank}
-          </span>
-        </div>
-
-        {/* Name */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <span style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.72rem',
-            fontWeight: 500,
-            color: '#756B63',
-            letterSpacing: '0.04em',
-          }}>Chủ tài khoản</span>
-          <span style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.9rem',
-            fontWeight: 600,
-            color: '#231B15',
-          }}>
-            {account.name}
-          </span>
-        </div>
-
-        {/* Account number + copy */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
-          <div>
             <span style={{
-              display: 'block',
               fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: '0.72rem',
-              fontWeight: 500,
-              color: '#756B63',
-              letterSpacing: '0.04em',
-              marginBottom: '2px',
-            }}>Số tài khoản</span>
+              fontSize: '0.7rem', fontWeight: 500,
+              color: '#9E9188', letterSpacing: '0.02em',
+              flexShrink: 0,
+            }}>
+              {row.label}
+            </span>
+            <span style={{
+              fontFamily: row.serif ? "'Playfair Display', serif" : "'Be Vietnam Pro', sans-serif",
+              fontSize: row.serif ? '0.95rem' : '0.88rem',
+              fontWeight: row.strong ? 600 : (row.serif ? 500 : 400),
+              color: '#231B15',
+              textAlign: 'right',
+            }}>
+              {row.value}
+            </span>
+          </div>
+        ))}
+
+        {/* Account number row — larger + copy button */}
+        <div style={{ marginBottom: '8px' }}>
+          <span style={{
+            fontFamily: "'Be Vietnam Pro', sans-serif",
+            fontSize: '0.7rem', fontWeight: 500,
+            color: '#9E9188', display: 'block', marginBottom: '6px',
+          }}>
+            Số tài khoản
+          </span>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
             <span style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: '1.15rem',
-              fontWeight: 500,
-              color: '#231B15',
-              letterSpacing: '0.06em',
+              fontSize: 'clamp(1.1rem, 2.5vw, 1.35rem)',
+              fontWeight: 500, color: '#231B15',
+              letterSpacing: '0.08em',
             }}>
               {account.accountNumber}
             </span>
+            <CopyBtn text={account.accountNumber} label="số tài khoản" />
           </div>
-          <CopyButton text={account.accountNumber} />
         </div>
 
         {/* Branch */}
-        <div style={{ marginTop: '2px' }}>
-          <span style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.78rem',
-            color: '#756B63',
-          }}>
-            {account.branch}
-          </span>
-        </div>
+        <p style={{
+          fontFamily: "'Be Vietnam Pro', sans-serif",
+          fontSize: '0.76rem', color: '#9E9188',
+          marginTop: '8px',
+        }}>
+          {account.branch}
+        </p>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -219,15 +222,18 @@ export default function Gifts() {
   return (
     <section
       id="gifts"
+      aria-label="Mừng cưới — thông tin chuyển khoản"
       style={{
         padding: 'clamp(80px, 12vw, 120px) 24px',
         backgroundColor: '#F8F4EC',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '820px', margin: '0 auto' }}>
 
-        {/* Header */}
-        <div style={{ marginBottom: 'clamp(40px, 6vw, 64px)' }}>
+        {/* ── Header ── */}
+        <div style={{ marginBottom: 'clamp(40px, 6vw, 56px)' }}>
           <p className="section-label gsap-reveal" style={{ marginBottom: '16px' }}>
             Mừng Cưới
           </p>
@@ -236,67 +242,75 @@ export default function Gifts() {
             style={{
               fontFamily: "'Playfair Display', serif",
               fontSize: 'clamp(2rem, 4vw, 2.8rem)',
-              fontWeight: 500,
-              color: '#231B15',
-              lineHeight: 1.15,
+              fontWeight: 500, color: '#231B15',
+              lineHeight: 1.1, letterSpacing: '-0.01em',
               marginBottom: '20px',
             }}
           >
             Chúc Phúc &amp; Tình Cảm
           </h2>
 
-          {/* Thin rule */}
+          {/* Champagne rule */}
           <div className="gsap-line" style={{
-            width: '100%', height: '1px',
-            backgroundColor: 'rgba(184,149,85,0.4)',
+            height: '1px',
+            background: 'linear-gradient(to right, transparent, rgba(184,149,85,0.5) 25%, rgba(184,149,85,0.5) 75%, transparent)',
             marginBottom: '24px',
           }} />
 
-          {/* Editorial message */}
-          <p
-            className="gsap-reveal"
-            style={{
+          {/* Wax seal + message */}
+          <div className="gsap-reveal" style={{ display: 'flex', alignItems: 'flex-start', gap: '20px' }}>
+            <img
+              src="/Test_06-06-2026/wax-seal.svg"
+              alt=""
+              aria-hidden="true"
+              width="52"
+              height="52"
+              style={{ flexShrink: 0, opacity: 0.85, marginTop: '4px' }}
+              onError={e => { e.target.style.display = 'none'; }}
+            />
+            <p style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 'clamp(1.1rem, 2vw, 1.25rem)',
-              fontStyle: 'italic',
-              color: '#4A3F38',
-              lineHeight: 1.85,
-              maxWidth: '560px',
-            }}
-          >
-            "Thay cho những món quà,<br />
-            chúng mình xin nhận những lời chúc<br />
-            yêu thương từ bạn."
-          </p>
+              fontSize: 'clamp(1.05rem, 2vw, 1.2rem)',
+              fontStyle: 'italic', color: '#4A3F38',
+              lineHeight: 1.85, margin: 0,
+            }}>
+              "Thay cho những món quà vật chất,
+              chúng mình xin nhận những lời chúc yêu thương
+              và tình cảm chân thành từ bạn."
+            </p>
+          </div>
         </div>
 
-        {/* Account cards */}
+        {/* ── Account cards ── */}
         <div
           className="gsap-stagger"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: '24px',
+            marginBottom: '32px',
           }}
         >
-          {BANK_ACCOUNTS.map(account => (
-            <AccountCard key={account.id} account={account} />
-          ))}
+          {BANK_ACCOUNTS.map(acc => <AccountCard key={acc.id} account={acc} />)}
         </div>
 
-        {/* Note */}
-        <p
-          className="gsap-reveal"
-          style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.8rem',
-            color: '#756B63',
-            lineHeight: 1.6,
-            textAlign: 'center',
-            marginTop: '32px',
-            fontStyle: 'italic',
-          }}
-        >
+        {/* ── Botanical branch divider ── */}
+        <div className="gsap-reveal" style={{ textAlign: 'center', margin: '12px 0', opacity: 0.55 }}>
+          <img
+            src="/Test_06-06-2026/branch-divider.svg"
+            alt="" aria-hidden="true"
+            style={{ width: '100%', maxWidth: '240px', height: '32px', display: 'inline-block' }}
+            onError={e => { e.target.style.display = 'none'; }}
+          />
+        </div>
+
+        {/* ── Footer note ── */}
+        <p className="gsap-reveal" style={{
+          fontFamily: "'Be Vietnam Pro', sans-serif",
+          fontSize: '0.78rem', color: '#9E9188',
+          lineHeight: 1.65, textAlign: 'center',
+          fontStyle: 'italic',
+        }}>
           Sự hiện diện của bạn trong ngày trọng đại là món quà quý giá nhất với chúng mình.
         </p>
 
