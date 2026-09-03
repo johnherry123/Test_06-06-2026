@@ -155,12 +155,12 @@ export default function App() {
   const navBorder = scrolled ? '1px solid rgba(35,27,21,0.1)' : '1px solid transparent';
   const navPad    = scrolled ? '10px 32px' : '20px 32px';
 
-  /* When onComplete fires: mark as open. After extra 200ms (intro fully gone
-     from DOM perspective), mark introDone so we can unmount IntroShader.
-     This prevents ANY possibility of a flash between unmount/mount cycles. */
+  /* When onComplete fires: mark as open.
+     After 1200ms (card fully exits + hero fades in), unmount IntroShader.
+     Longer delay ensures the card animation fully completes before DOM removal. */
   const handleIntroComplete = useCallback(() => {
     setHasOpened(true);
-    setTimeout(() => setIntroDone(true), 200);
+    setTimeout(() => setIntroDone(true), 1200);
   }, []);
 
   return (
@@ -323,15 +323,12 @@ export default function App() {
               overflow: 'hidden',
             }}
           >
-            {/* Subtle botanical bg */}
+            {/* Very subtle warm vignette texture */}
             <div
               aria-hidden="true"
               style={{
                 position: 'absolute', inset: 0,
-                backgroundImage: 'url(/Test_06-06-2026/envelope_back.png)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                opacity: 0.025,
+                background: 'radial-gradient(ellipse 80% 60% at 50% 100%, rgba(80,40,10,0.12) 0%, transparent 70%)',
                 pointerEvents: 'none',
               }}
             />

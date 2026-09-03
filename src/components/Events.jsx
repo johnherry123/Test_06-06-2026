@@ -1,13 +1,7 @@
 /* ══════════════════════════════════════════════════════════════════════
-   EVENTS / NGÀY TRỌNG ĐẠI
-   ──────────────────────────────────────────────────────────────────────
-   Art direction: BURGUNDY background — the BOLD COLOR moment.
-   This is the most emotionally important section: the actual wedding day.
-   It should feel DIFFERENT from every other section.
-
-   Layout: Vertical timeline on dark burgundy.
-   Main reception receives strongest visual emphasis.
-   Data sourced from weddingData.js.
+   EVENTS — Editorial Invitation Layout  [REDESIGNED]
+   ART DIRECTION: Deep burgundy — the bold emotional color moment.
+   Main event gets visual emphasis. Timeline feels like printed schedule.
 ══════════════════════════════════════════════════════════════════════ */
 import React from 'react';
 import { ExternalLink } from 'lucide-react';
@@ -19,188 +13,205 @@ export default function Events() {
       id="events"
       aria-label="Lịch trình ngày cưới"
       style={{
-        /* BURGUNDY MOMENT — bold color for the most important section */
-        backgroundColor: '#7A1A1E',
-        padding: 'clamp(80px, 12vw, 120px) 24px',
+        backgroundColor: '#6A1518',
+        padding: 'clamp(84px, 13vw, 124px) 24px',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Subtle warm texture on burgundy */}
+      {/* Subtle paper texture on burgundy */}
       <div aria-hidden="true" style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E")`,
-        backgroundRepeat: 'repeat',
-        backgroundSize: '180px 180px',
+        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.020'/%3E%3C/svg%3E")`,
+        backgroundRepeat: 'repeat', backgroundSize: '180px 180px',
       }} />
-      {/* Subtle warm glow at top */}
+
+      {/* Top warm glow */}
       <div aria-hidden="true" style={{
         position: 'absolute',
-        top: 0, left: '50%', transform: 'translateX(-50%)',
-        width: '60%', height: '35%',
-        background: 'radial-gradient(ellipse, rgba(255,200,120,0.06) 0%, transparent 70%)',
+        top: '-80px', left: '50%', transform: 'translateX(-50%)',
+        width: '70%', height: '50%',
+        background: 'radial-gradient(ellipse, rgba(255,210,130,0.04) 0%, transparent 65%)',
         pointerEvents: 'none',
       }} />
 
-      <div style={{ maxWidth: '680px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <div style={{
+        maxWidth: '880px', margin: '0 auto',
+        position: 'relative', zIndex: 1,
+        padding: '0 clamp(0px, 3.5vw, 44px)',
+      }}>
 
-        {/* Section header */}
-        <div style={{ marginBottom: 'clamp(52px, 8vw, 72px)' }}>
-          <p className="gsap-reveal" style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.60rem',
-            fontWeight: 500,
-            letterSpacing: '0.22em',
-            textTransform: 'uppercase',
-            color: 'rgba(248,244,236,0.45)',
-            marginBottom: '16px',
+        {/* Large editorial date — visual anchor */}
+        <div className="gsap-reveal" style={{ marginBottom: 'clamp(48px, 7.5vw, 72px)' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'flex-end',
+            gap: 'clamp(10px, 2vw, 22px)',
+            marginBottom: 'clamp(14px, 2.5vw, 22px)',
+            flexWrap: 'wrap',
           }}>
-            {WEDDING.dateDisplay}
-          </p>
+            {/* Day number — large */}
+            <div style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: 'clamp(4.5rem, 13vw, 10rem)',
+              fontWeight: 400,
+              color: 'rgba(248,244,236,0.96)',
+              lineHeight: 0.85,
+              letterSpacing: '-0.04em',
+              flexShrink: 0,
+            }}>20</div>
 
-          <h2 className="gsap-reveal" style={{
+            {/* Month + year stacked */}
+            <div style={{
+              paddingBottom: 'clamp(8px, 1.6vw, 16px)',
+              display: 'flex', flexDirection: 'column',
+              gap: 'clamp(3px, 0.7vw, 7px)',
+            }}>
+              <div style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: 'clamp(1.25rem, 2.8vw, 2.1rem)',
+                fontStyle: 'italic', fontWeight: 400,
+                color: 'rgba(248,244,236,0.62)',
+                lineHeight: 1,
+              }}>Tháng Mười</div>
+              <div style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: 'clamp(1.25rem, 2.8vw, 2.1rem)',
+                fontWeight: 400,
+                color: 'rgba(248,244,236,0.38)',
+                lineHeight: 1, letterSpacing: '-0.02em',
+              }}>2026</div>
+            </div>
+          </div>
+
+          <h2 style={{
             fontFamily: "'Playfair Display', serif",
-            fontSize: 'clamp(2rem, 4.5vw, 3rem)',
+            fontSize: 'clamp(1.35rem, 2.8vw, 2rem)',
             fontWeight: 500,
-            color: 'rgba(248,244,236,0.95)',
-            lineHeight: 1.1,
-            letterSpacing: '-0.01em',
-            marginBottom: '12px',
-          }}>
-            Ngày Trọng Đại
-          </h2>
+            color: 'rgba(248,244,236,0.88)',
+            lineHeight: 1.2, letterSpacing: '-0.01em',
+            marginBottom: '8px',
+          }}>Ngày Trọng Đại</h2>
 
-          <p className="gsap-reveal" style={{
+          <p style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
+            fontSize: 'clamp(0.92rem, 1.7vw, 1.08rem)',
             fontStyle: 'italic',
-            color: 'rgba(248,244,236,0.50)',
+            color: 'rgba(248,244,236,0.40)',
             margin: 0,
-          }}>
-            {WEDDING.venue} · {WEDDING.venueHall}
-          </p>
+          }}>{WEDDING.venue} · {WEDDING.venueHall}</p>
         </div>
 
-        {/* ── Timeline ── */}
-        <div className="gsap-stagger" style={{ position: 'relative' }}>
+        {/* Timeline */}
+        <div style={{ position: 'relative' }}>
 
-          {/* Vertical line */}
+          {/* Vertical thread */}
           <div aria-hidden="true" style={{
             position: 'absolute',
-            left: '74px',
-            top: '8px',
-            bottom: '8px',
+            left: '88px', top: '6px', bottom: '6px',
             width: '1px',
-            background: 'rgba(248,244,236,0.12)',
+            background: 'rgba(248,244,236,0.09)',
           }} />
 
           {EVENTS.map((event, i) => (
             <div
               key={i}
+              className="gsap-reveal"
               style={{
                 display: 'grid',
-                gridTemplateColumns: '74px 1fr',
-                gap: '0 clamp(20px, 3vw, 32px)',
+                gridTemplateColumns: '88px 1fr',
+                gap: '0 clamp(20px, 3.5vw, 38px)',
                 marginBottom: i < EVENTS.length - 1
-                  ? (event.isMain ? 'clamp(48px,7vw,64px)' : 'clamp(36px,5vw,52px)')
+                  ? (event.isMain ? 'clamp(48px,7.5vw,68px)' : 'clamp(34px,5vw,50px)')
                   : 0,
                 alignItems: 'start',
               }}
             >
               {/* Time column */}
-              <div style={{ textAlign: 'right', paddingTop: '2px', paddingRight: '0' }}>
+              <div style={{
+                textAlign: 'right',
+                paddingTop: event.isMain ? '3px' : '2px',
+              }}>
                 <p style={{
                   fontFamily: "'Playfair Display', serif",
-                  fontSize: event.isMain ? 'clamp(1.2rem, 2.5vw, 1.6rem)' : 'clamp(1rem, 2vw, 1.25rem)',
+                  fontSize: event.isMain
+                    ? 'clamp(1.15rem, 2.2vw, 1.55rem)'
+                    : 'clamp(0.92rem, 1.7vw, 1.15rem)',
                   fontWeight: event.isMain ? 500 : 400,
-                  color: event.isMain ? 'rgba(248,244,236,0.95)' : 'rgba(248,244,236,0.6)',
-                  lineHeight: 1,
-                  margin: 0,
-                }}>
-                  {event.time}
-                </p>
+                  color: event.isMain ? 'rgba(248,244,236,0.96)' : 'rgba(248,244,236,0.50)',
+                  lineHeight: 1, margin: 0,
+                }}>{event.time}</p>
                 <p style={{
                   fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: '0.58rem',
-                  letterSpacing: '0.1em',
+                  fontSize: '0.54rem', letterSpacing: '0.10em',
                   textTransform: 'uppercase',
-                  color: 'rgba(248,244,236,0.30)',
-                  marginTop: '3px',
-                  marginBottom: 0,
-                }}>
-                  {event.period}
-                </p>
+                  color: 'rgba(248,244,236,0.22)',
+                  marginTop: '3px', marginBottom: 0,
+                }}>{event.period}</p>
               </div>
 
               {/* Event content */}
               <div style={{
-                paddingLeft: 'clamp(20px, 3vw, 32px)',
+                paddingLeft: 'clamp(18px, 3vw, 30px)',
                 borderLeft: event.isMain
-                  ? '2px solid rgba(184,149,85,0.65)'
-                  : '1px solid rgba(248,244,236,0.15)',
+                  ? '2px solid rgba(176,140,78,0.68)'
+                  : '1px solid rgba(248,244,236,0.11)',
                 paddingTop: '2px',
-                paddingBottom: 'clamp(20px,3vw,28px)',
+                paddingBottom: 'clamp(18px, 3vw, 30px)',
+                position: 'relative',
               }}>
-                {/* Main event badge */}
+                {/* Gold dot on main event */}
                 {event.isMain && (
-                  <p style={{
-                    fontFamily: "'Be Vietnam Pro', sans-serif",
-                    fontSize: '0.58rem',
-                    fontWeight: 600,
-                    letterSpacing: '0.18em',
-                    textTransform: 'uppercase',
-                    color: '#B89555',
-                    marginBottom: '8px',
-                  }}>
-                    Sự kiện chính
-                  </p>
+                  <div aria-hidden="true" style={{
+                    position: 'absolute',
+                    left: '-5px', top: '10px',
+                    width: '8px', height: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: '#B08C4E',
+                    boxShadow: '0 0 0 2px rgba(106,21,24,0.85)',
+                  }} />
                 )}
 
                 <h3 style={{
                   fontFamily: "'Playfair Display', serif",
                   fontSize: event.isMain
-                    ? 'clamp(1.3rem, 2.8vw, 1.9rem)'
-                    : 'clamp(1.1rem, 2.2vw, 1.45rem)',
+                    ? 'clamp(1.28rem, 2.6vw, 1.88rem)'
+                    : 'clamp(1.05rem, 2vw, 1.35rem)',
                   fontWeight: event.isMain ? 500 : 400,
-                  color: event.isMain ? 'rgba(248,244,236,0.95)' : 'rgba(248,244,236,0.78)',
-                  lineHeight: 1.15,
-                  marginBottom: '6px',
-                }}>
-                  {event.title}
-                </h3>
+                  color: event.isMain ? 'rgba(248,244,236,0.96)' : 'rgba(248,244,236,0.70)',
+                  lineHeight: 1.15, marginBottom: '5px',
+                }}>{event.title}</h3>
 
                 <p style={{
                   fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: 'clamp(0.88rem, 1.5vw, 1rem)',
+                  fontSize: 'clamp(0.86rem, 1.4vw, 0.98rem)',
                   fontStyle: 'italic',
-                  color: 'rgba(248,244,236,0.45)',
-                  marginBottom: event.isMain ? '12px' : '8px',
-                }}>
-                  {event.subtitle}
-                </p>
+                  color: 'rgba(248,244,236,0.38)',
+                  marginBottom: event.isMain ? '12px' : '7px',
+                }}>{event.subtitle}</p>
 
-                {event.isMain && (
+                {event.isMain && event.description && (
                   <p style={{
                     fontFamily: "'Be Vietnam Pro', sans-serif",
                     fontSize: '0.78rem',
-                    color: 'rgba(248,244,236,0.45)',
-                    lineHeight: 1.7,
-                    marginBottom: '16px',
-                  }}>
-                    {event.description}
-                  </p>
+                    color: 'rgba(248,244,236,0.38)',
+                    lineHeight: 1.74,
+                    marginBottom: '14px',
+                    maxWidth: '420px',
+                  }}>{event.description}</p>
                 )}
 
-                {/* Location + Map link */}
-                <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px 16px' }}>
+                {/* Location + map */}
+                <div style={{
+                  display: 'flex', alignItems: 'center',
+                  flexWrap: 'wrap', gap: '7px 16px',
+                }}>
                   <p style={{
                     fontFamily: "'Be Vietnam Pro', sans-serif",
                     fontSize: '0.72rem',
-                    color: 'rgba(248,244,236,0.38)',
+                    color: 'rgba(248,244,236,0.32)',
                     margin: 0,
-                  }}>
-                    {event.locationName}
-                  </p>
+                  }}>{event.locationName}</p>
 
                   {event.mapUrl && event.mapUrl !== '#' && (
                     <a
@@ -209,20 +220,16 @@ export default function Events() {
                       rel="noopener noreferrer"
                       aria-label={`Xem bản đồ: ${event.locationName}`}
                       style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px',
+                        display: 'inline-flex', alignItems: 'center', gap: '4px',
                         fontFamily: "'Be Vietnam Pro', sans-serif",
-                        fontSize: '0.65rem',
-                        fontWeight: 500,
-                        letterSpacing: '0.08em',
-                        textTransform: 'uppercase',
-                        color: 'rgba(184,149,85,0.65)',
+                        fontSize: '0.64rem', fontWeight: 500,
+                        letterSpacing: '0.08em', textTransform: 'uppercase',
+                        color: 'rgba(176,140,78,0.58)',
                         textDecoration: 'none',
                         transition: 'color 0.2s ease',
                       }}
-                      onMouseEnter={e => { e.currentTarget.style.color = '#B89555'; }}
-                      onMouseLeave={e => { e.currentTarget.style.color = 'rgba(184,149,85,0.65)'; }}
+                      onMouseEnter={e => { e.currentTarget.style.color = '#B08C4E'; }}
+                      onMouseLeave={e => { e.currentTarget.style.color = 'rgba(176,140,78,0.58)'; }}
                     >
                       <ExternalLink size={10} aria-hidden="true" />
                       Bản đồ
@@ -233,7 +240,6 @@ export default function Events() {
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );

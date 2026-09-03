@@ -1,176 +1,157 @@
 /* ══════════════════════════════════════════════════════════════════════
-   HERO — Full-Bleed Editorial [REWORKED]
+   HERO — Editorial Magazine Opening  [REDESIGNED]
    ──────────────────────────────────────────────────────────────────────
    ART DIRECTION:
-   The photograph IS the hero. Names emerge FROM within the photograph —
-   not placed beside it. This creates cinema, not layout.
+   After the intimate paper invitation opens, the Hero is the CINEMATIC REVEAL.
+   Mood shift: warm paper → dark cinema → photographic world.
 
-   Structure:
-   [full-bleed photo — 100% wide, ~72vh tall, cover]
-   [gradient overlay — bottom third, dark espresso → transparent]
-   [names + date — absolute, overlaid on bottom of photo, large]
-   [CTAs — below photo, on ivory background]
-   [Countdown — typographic, no boxes]
+   The composition:
+   - Photo fills left ~65% on desktop, full on mobile
+   - Names emerge from the dark, LEFT-ALIGNED editorial style
+   - Right side: minimal editorial metadata (date, venue, role labels)
+   - Below photo: clean typographic date + 2 CTAs — NOT a separate "section"
+   - Countdown: integrated below the date, not a separate floating section
 
-   Previous version problems:
-   • Photo was capped at 600px centered — felt like a thumbnail
-   • Names were above the photo — disconnected from image
-   • Countdown used generic dashboard boxes with borders
-   • Section felt like a SaaS landing page with a wedding photo attached
-
-   New version:
-   • Photo: 100% width, clamp(58vh, 72vh, 720px) height
-   • Names: absolute overlay, lower third, large Playfair Display
-   • Text-shadow for photo legibility (not a card, not a box — just shadow)
-   • Countdown: pure typography, colon separators, no unit containers
+   What was REMOVED:
+   - Countdown as a separate full-width section with its own bg — felt like widget
+   - Overly large names that crushed the composition
+   - The "below photo" panel feeling disconnected from Hero
+   - Two h1 tags (accessibility problem)
+   
+   Mobile:
+   - Photo is 70vh tall, names overlay at bottom-left
+   - No sidebar — full bleed
 ══════════════════════════════════════════════════════════════════════ */
 import { useState, useEffect, useRef, Fragment } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { COUPLE, WEDDING, INTRO_PHOTO } from '../weddingData';
+import { COUPLE, WEDDING } from '../weddingData';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const HERO_PHOTO = INTRO_PHOTO;
+const HERO_PHOTO = {
+  src:      'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=1600&q=90&fm=webp',
+  fallback: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80',
+  alt:      'Đại Nghĩa & Thị Nhung — thay thế bằng ảnh thật',
+};
 
-/* ── Typographic Countdown — no boxes, pure numbers ── */
-function CountdownSection() {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+/* Elegant inline countdown */
+function Countdown() {
+  const [t, setT] = useState({ d: 0, h: 0, m: 0, s: 0 });
 
   useEffect(() => {
     const target = new Date(WEDDING.calendarTarget).getTime();
-    const update = () => {
+    const tick = () => {
       const dist = target - Date.now();
       if (dist > 0) {
-        setTimeLeft({
-          days:    Math.floor(dist / 86400000),
-          hours:   Math.floor((dist % 86400000) / 3600000),
-          minutes: Math.floor((dist % 3600000) / 60000),
-          seconds: Math.floor((dist % 60000) / 1000),
+        setT({
+          d: Math.floor(dist / 86400000),
+          h: Math.floor((dist % 86400000) / 3600000),
+          m: Math.floor((dist % 3600000) / 60000),
+          s: Math.floor((dist % 60000) / 1000),
         });
       }
     };
-    update();
-    const id = setInterval(update, 1000);
+    tick();
+    const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, []);
 
   const units = [
-    { label: 'Ngày',  value: timeLeft.days },
-    { label: 'Giờ',   value: timeLeft.hours },
-    { label: 'Phút',  value: timeLeft.minutes },
-    { label: 'Giây',  value: timeLeft.seconds },
+    { v: t.d, l: 'ngày' },
+    { v: t.h, l: 'giờ' },
+    { v: t.m, l: 'phút' },
+    { v: t.s, l: 'giây' },
   ];
 
   return (
-    <section
+    <div
       aria-label="Đếm ngược đến ngày cưới"
-      style={{
-        backgroundColor: '#F8F4EC',
-        padding: 'clamp(48px, 7vw, 72px) 24px',
-        borderTop: '1px solid rgba(35,27,21,0.06)',
-      }}
+      style={{ display: 'flex', alignItems: 'baseline', gap: 0, flexWrap: 'wrap' }}
     >
-      <div style={{ maxWidth: '560px', margin: '0 auto', textAlign: 'center' }}>
-
-        {/* Numbers — large, typographic, with colon separators */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'flex-end',
-          justifyContent: 'center',
-          gap: 0,
-        }}>
-          {units.map((u, i) => (
-            <Fragment key={i}>
-              <div style={{ textAlign: 'center', padding: '0 clamp(6px, 1.5vw, 14px)' }}>
-                <div style={{
-                  fontFamily: "'Playfair Display', serif",
-                  fontSize: 'clamp(2.6rem, 6.5vw, 5rem)',
-                  fontWeight: 400,
-                  color: '#231B15',
-                  lineHeight: 1,
-                  letterSpacing: '-0.02em',
-                  fontVariantNumeric: 'tabular-nums',
-                  minWidth: 'clamp(44px, 8vw, 80px)',
-                }}>
-                  {String(u.value).padStart(2, '0')}
-                </div>
-                <div style={{
-                  fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: '0.56rem',
-                  fontWeight: 600,
-                  letterSpacing: '0.18em',
-                  textTransform: 'uppercase',
-                  color: '#9E9188',
-                  marginTop: '8px',
-                }}>
-                  {u.label}
-                </div>
-              </div>
-              {i < 3 && (
-                <div style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: 'clamp(2rem, 5vw, 4rem)',
-                  fontWeight: 300,
-                  color: 'rgba(184,149,85,0.40)',
-                  lineHeight: 1,
-                  /* Vertically align with numbers top, not bottom */
-                  alignSelf: 'flex-start',
-                  paddingTop: '2px',
-                }}>
-                  ·
-                </div>
-              )}
-            </Fragment>
-          ))}
-        </div>
-
-        {/* Single thin champagne rule — the only decoration */}
-        <div style={{
-          width: '28px',
-          height: '1px',
-          background: 'linear-gradient(to right, transparent, rgba(184,149,85,0.55), transparent)',
-          margin: 'clamp(20px, 3vw, 28px) auto 0',
-        }} />
-
-      </div>
-    </section>
+      {units.map((u, i) => (
+        <Fragment key={i}>
+          <span style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(1.9rem, 4.8vw, 3.6rem)',
+            fontWeight: 300,
+            color: '#1E1410',
+            letterSpacing: '-0.03em',
+            lineHeight: 0.9,
+            fontVariantNumeric: 'tabular-nums',
+            minWidth: 'clamp(32px, 6vw, 58px)',
+            textAlign: 'center',
+          }}>
+            {String(u.v).padStart(2, '0')}
+          </span>
+          <span style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(0.68rem, 1.3vw, 0.85rem)',
+            fontStyle: 'italic',
+            color: '#9E8E82',
+            marginBottom: '3px',
+            marginLeft: '2px',
+            marginRight: i < 3 ? 'clamp(4px, 0.8vw, 8px)' : 0,
+            lineHeight: 1,
+          }}>
+            {u.l}
+          </span>
+          {i < 3 && (
+            <span style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: 'clamp(1.3rem, 2.8vw, 2.2rem)',
+              fontWeight: 300,
+              color: 'rgba(176,140,78,0.35)',
+              lineHeight: 1,
+              marginBottom: '1px',
+              marginRight: 'clamp(3px, 0.6vw, 8px)',
+              alignSelf: 'flex-start',
+              paddingTop: '3px',
+            }}>
+              ·
+            </span>
+          )}
+        </Fragment>
+      ))}
+    </div>
   );
 }
 
-/* ── Main Hero ── */
 export default function Hero() {
-  const sectionRef  = useRef(null);
-  const photoRef    = useRef(null);
-  const overlayRef  = useRef(null);
-  const nameRef     = useRef(null);
-  const belowRef    = useRef(null);
+  const sectionRef = useRef(null);
+  const photoRef   = useRef(null);
+  const namesRef   = useRef(null);
+  const infoRef    = useRef(null);
+  const belowRef   = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-
-      /* Name reveal — staggered from bottom */
-      if (nameRef.current) {
+      /* Names reveal from left */
+      if (namesRef.current?.children) {
         gsap.fromTo(
-          nameRef.current.children,
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1.1, stagger: 0.1, ease: 'power3.out', delay: 0.15 }
+          Array.from(namesRef.current.children),
+          { x: -24, opacity: 0 },
+          { x: 0, opacity: 1, duration: 1.4, stagger: 0.1, ease: 'power3.out', delay: 0.15 }
         );
       }
-
-      /* CTA row below photo */
-      if (belowRef.current) {
-        gsap.fromTo(
-          belowRef.current,
+      /* Info sidebar */
+      if (infoRef.current) {
+        gsap.fromTo(infoRef.current,
           { y: 16, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1.0, ease: 'power3.out', delay: 0.55 }
+          { y: 0, opacity: 1, duration: 1.2, ease: 'power3.out', delay: 0.5 }
         );
       }
-
-      /* Very subtle parallax on the photo — adds depth while scrolling */
+      /* Below panel */
+      if (belowRef.current) {
+        gsap.fromTo(belowRef.current,
+          { y: 18, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1.0, ease: 'power3.out', delay: 0.7 }
+        );
+      }
+      /* Photo parallax */
       if (photoRef.current) {
         gsap.to(photoRef.current, {
-          yPercent: -8,
+          yPercent: -6,
           ease: 'none',
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -185,7 +166,7 @@ export default function Hero() {
   }, []);
 
   const addToCalendar = () => {
-    const t = encodeURIComponent('Lễ Thành Hôn: Đại Nghĩa & Thị Nhung');
+    const t = encodeURIComponent(`Lễ Thành Hôn: ${COUPLE.groom.firstName} & ${COUPLE.bride.firstName}`);
     const l = encodeURIComponent(WEDDING.venueAddress);
     window.open(
       `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${t}&dates=20261020T103000Z/20261020T143000Z&location=${l}`,
@@ -195,29 +176,23 @@ export default function Hero() {
 
   return (
     <>
+      {/* ── Hero cinematic section ── */}
       <section
         id="hero"
         ref={sectionRef}
-        aria-label="Thiệp cưới Đại Nghĩa và Thị Nhung"
-        style={{
-          position: 'relative',
-          /* Dark base — photo is the first thing you see, edge to edge */
-          backgroundColor: '#1A100A',
-          overflow: 'hidden',
-        }}
+        aria-label={`Thiệp cưới ${COUPLE.groom.firstName} và ${COUPLE.bride.firstName}`}
+        style={{ position: 'relative', backgroundColor: '#100C08', overflow: 'hidden' }}
       >
 
-        {/* ── Full-bleed hero photograph ──
-             100% wide, tall enough to be cinematic.
-             Photo scales down gracefully on mobile via clamp on height. */}
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            height: 'clamp(58vh, 72vh, 720px)',
-            overflow: 'hidden',
-          }}
-        >
+        {/* Photo + names overlay */}
+        <div style={{
+          position: 'relative',
+          width: '100%',
+          height: 'clamp(65vh, 78vh, 820px)',
+          overflow: 'hidden',
+        }}>
+
+          {/* Full-bleed photo */}
           <img
             ref={photoRef}
             src={HERO_PHOTO.src}
@@ -226,170 +201,309 @@ export default function Hero() {
             decoding="async"
             style={{
               position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
+              inset: '-10px',
+              width: 'calc(100% + 20px)',
+              height: 'calc(100% + 20px)',
               objectFit: 'cover',
               objectPosition: 'center 28%',
               display: 'block',
-              /* Will-change for smooth parallax */
               willChange: 'transform',
             }}
             onError={e => { e.currentTarget.src = HERO_PHOTO.fallback; }}
           />
 
-          {/* ── Gradient overlay — bottom 2/3 darkening ──
-               Strong enough for white names to be legible,
-               Soft enough that photo still reads as the subject. */}
-          <div
-            ref={overlayRef}
-            aria-hidden="true"
-            style={{
-              position: 'absolute', inset: 0,
-              background: `
-                linear-gradient(
-                  to top,
-                  rgba(20,12,6,0.92) 0%,
-                  rgba(20,12,6,0.70) 22%,
-                  rgba(20,12,6,0.30) 45%,
-                  rgba(20,12,6,0.08) 65%,
-                  transparent 80%
-                )
-              `,
-              pointerEvents: 'none',
-            }}
-          />
+          {/* Bottom gradient — very deep, for name legibility */}
+          <div aria-hidden="true" style={{
+            position: 'absolute', inset: 0,
+            background: `
+              linear-gradient(
+                to top,
+                rgba(10,6,3,0.97) 0%,
+                rgba(10,6,3,0.76) 18%,
+                rgba(10,6,3,0.30) 44%,
+                rgba(10,6,3,0.06) 65%,
+                transparent 80%
+              )
+            `,
+            pointerEvents: 'none',
+          }} />
 
-          {/* ── Names overlay — absolute, lower third of photo ──
-               Large editorial serif. Names emerge FROM within the photograph.
-               This is the hero typographic moment. */}
+          {/* Left vignette — for editorial left-aligned text */}
+          <div aria-hidden="true" style={{
+            position: 'absolute', inset: 0,
+            background: `
+              linear-gradient(
+                to right,
+                rgba(10,6,3,0.52) 0%,
+                rgba(10,6,3,0.24) 28%,
+                rgba(10,6,3,0.06) 52%,
+                transparent 68%
+              )
+            `,
+            pointerEvents: 'none',
+          }} />
+
+          {/* Top gradient — subtle fade for nav breathing room */}
+          <div aria-hidden="true" style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(to bottom, rgba(10,6,3,0.28) 0%, transparent 22%)',
+            pointerEvents: 'none',
+          }} />
+
+          {/* ── Names — bottom-left editorial ── */}
           <div
-            ref={nameRef}
+            ref={namesRef}
             style={{
               position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              padding: 'clamp(20px, 4vw, 48px) clamp(20px, 5vw, 64px) clamp(28px, 5vw, 48px)',
-              textAlign: 'center',
+              bottom: 0, left: 0, right: 0,
+              padding: 'clamp(80px, 12vw, 110px) clamp(28px, 5vw, 68px) clamp(32px, 5vw, 52px)',
             }}
           >
-
-            {/* Save the date eyebrow */}
+            {/* Role label */}
             <p style={{
               fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: 'clamp(0.60rem, 1.1vw, 0.68rem)',
-              fontWeight: 500,
+              fontSize: '0.60rem',
+              fontWeight: 600,
               letterSpacing: '0.26em',
               textTransform: 'uppercase',
-              color: 'rgba(196,168,100,0.80)',
-              marginBottom: 'clamp(10px, 2vw, 16px)',
+              color: 'rgba(176,140,78,0.82)',
+              marginBottom: 'clamp(12px, 2vw, 18px)',
             }}>
-              Save the Date
+              {COUPLE.groom.roleLabel} &amp; {COUPLE.bride.roleLabel}
             </p>
 
-            {/* Groom — large, warm white */}
+            {/* Groom name — h1 for SEO */}
             <h1 style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(3.2rem, 9.5vw, 8rem)',
+              fontSize: 'clamp(3rem, 9.5vw, 8rem)',
               fontWeight: 400,
-              lineHeight: 0.95,
+              lineHeight: 0.90,
               color: 'rgba(253,248,240,0.97)',
               margin: 0,
               letterSpacing: '-0.025em',
-              /* Subtle text shadow — photo legibility without hard border */
-              textShadow: '0 2px 32px rgba(0,0,0,0.32), 0 1px 8px rgba(0,0,0,0.24)',
+              textShadow: '0 2px 40px rgba(0,0,0,0.25), 0 1px 6px rgba(0,0,0,0.18)',
             }}>
               {COUPLE.groom.firstName}
             </h1>
 
-            {/* Ampersand — champagne, italic, smaller */}
+            {/* Ampersand */}
             <div style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 'clamp(1.5rem, 3.5vw, 3rem)',
+              fontSize: 'clamp(1.3rem, 3.2vw, 2.8rem)',
               fontStyle: 'italic',
               fontWeight: 300,
-              color: 'rgba(196,168,100,0.85)',
+              color: 'rgba(190,158,90,0.78)',
               lineHeight: 1,
-              margin: 'clamp(2px, 0.5vw, 6px) 0',
+              margin: 'clamp(1px, 0.2vw, 4px) 0 clamp(1px, 0.2vw, 4px) clamp(6px, 1.5vw, 18px)',
             }}>
               &amp;
             </div>
 
-            {/* Bride — same scale */}
-            <h1 style={{
+            {/* Bride name */}
+            <p aria-label={`Cô dâu: ${COUPLE.bride.firstName}`} style={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(3.2rem, 9.5vw, 8rem)',
+              fontSize: 'clamp(3rem, 9.5vw, 8rem)',
               fontWeight: 400,
-              lineHeight: 0.95,
+              lineHeight: 0.90,
               color: 'rgba(253,248,240,0.97)',
               margin: 0,
               letterSpacing: '-0.025em',
-              textShadow: '0 2px 32px rgba(0,0,0,0.32), 0 1px 8px rgba(0,0,0,0.24)',
+              textShadow: '0 2px 40px rgba(0,0,0,0.25), 0 1px 6px rgba(0,0,0,0.18)',
             }}>
               {COUPLE.bride.firstName}
-            </h1>
+            </p>
+          </div>
 
+          {/* ── Right side: editorial metadata — desktop only ── */}
+          <div
+            ref={infoRef}
+            className="desktop-only"
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              right: 'clamp(28px, 4vw, 56px)',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              gap: '20px',
+            }}
+          >
+            {/* Vertical date */}
+            <div style={{
+              writingMode: 'vertical-rl',
+              textOrientation: 'mixed',
+              transform: 'rotate(180deg)',
+              fontFamily: "'Be Vietnam Pro', sans-serif",
+              fontSize: '0.60rem',
+              fontWeight: 500,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: 'rgba(253,248,240,0.25)',
+            }}>
+              20 · 10 · 2026
+            </div>
+            {/* Thin line */}
+            <div style={{
+              width: '1px',
+              height: '48px',
+              background: 'linear-gradient(to bottom, transparent, rgba(176,140,78,0.30))',
+            }} />
+            {/* Venue abbrev */}
+            <div style={{
+              writingMode: 'vertical-rl',
+              textOrientation: 'mixed',
+              transform: 'rotate(180deg)',
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: '0.72rem',
+              fontStyle: 'italic',
+              color: 'rgba(253,248,240,0.18)',
+            }}>
+              Gem Center
+            </div>
           </div>
         </div>
 
-        {/* ── Below photo: date + CTAs on ivory ──
-             Ivory background immediately below photo — rhythm shift from dark to light.
-             Clean transition. No decorative elements — just date, place, actions. */}
+        {/* ── Below photo: date info + CTAs ── */}
         <div
           ref={belowRef}
           style={{
-            backgroundColor: '#F8F4EC',
-            padding: 'clamp(28px, 4.5vw, 44px) clamp(20px, 5vw, 64px)',
-            textAlign: 'center',
+            backgroundColor: '#F5EFE3',
+            padding: 'clamp(32px, 5.5vw, 56px) clamp(28px, 5vw, 68px)',
           }}
         >
-          {/* Date + Venue */}
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(1rem, 2vw, 1.2rem)',
-            fontStyle: 'italic',
-            fontWeight: 400,
-            color: '#756B63',
-            marginBottom: 'clamp(20px, 3.5vw, 30px)',
-            letterSpacing: '0.02em',
-          }}>
-            {WEDDING.dateDisplay}&nbsp;·&nbsp;{WEDDING.venue}, TP. Hồ Chí Minh
-          </p>
-
-          {/* CTAs */}
           <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '10px',
-          }}>
-            <a
-              href="#rsvp"
-              className="btn-primary"
-              onClick={e => {
-                e.preventDefault();
-                document.querySelector('#rsvp')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              aria-label="Xác nhận tham dự đám cưới Đại Nghĩa và Thị Nhung"
-            >
-              Xác nhận tham dự
-            </a>
-            <button
-              onClick={addToCalendar}
-              className="btn-secondary"
-              aria-label="Lưu ngày cưới vào Google Calendar"
-            >
-              Lưu vào lịch
-            </button>
+            display: 'grid',
+            gridTemplateColumns: '1fr auto',
+            gap: 'clamp(20px, 4vw, 48px)',
+            alignItems: 'end',
+          }}
+          className="hero-below-grid"
+          >
+            {/* Left: Date */}
+            <div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                gap: 'clamp(12px, 2vw, 24px)',
+                marginBottom: 'clamp(12px, 2vw, 18px)',
+              }}>
+                <div style={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontSize: 'clamp(4rem, 9.5vw, 7.5rem)',
+                  fontWeight: 400,
+                  color: '#1E1410',
+                  lineHeight: 0.85,
+                  letterSpacing: '-0.04em',
+                  flexShrink: 0,
+                }}>
+                  20
+                </div>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'clamp(3px, 0.6vw, 7px)',
+                  paddingBottom: 'clamp(7px, 1.2vw, 12px)',
+                }}>
+                  <div style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: 'clamp(1.1rem, 1.9vw, 1.55rem)',
+                    fontStyle: 'italic',
+                    fontWeight: 400,
+                    color: '#3D3228',
+                    lineHeight: 1.1,
+                  }}>
+                    Tháng Mười,<br/>2026
+                  </div>
+                </div>
+              </div>
+              <p style={{
+                fontFamily: "'Be Vietnam Pro', sans-serif",
+                fontSize: 'clamp(0.68rem, 1.1vw, 0.78rem)',
+                fontWeight: 400,
+                color: '#9E8E82',
+                letterSpacing: '0.03em',
+              }}>
+                {WEDDING.venue} · {WEDDING.venueHall}
+              </p>
+            </div>
+
+            {/* Right: CTAs */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'flex-end' }}>
+              <a
+                href="#rsvp"
+                className="btn-primary"
+                onClick={e => {
+                  e.preventDefault();
+                  document.querySelector('#rsvp')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                aria-label="Xác nhận tham dự"
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                Xác nhận tham dự
+              </a>
+              <button
+                onClick={addToCalendar}
+                className="btn-secondary"
+                aria-label="Lưu ngày cưới vào Google Calendar"
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                Lưu vào lịch
+              </button>
+            </div>
           </div>
         </div>
-
       </section>
 
-      {/* Countdown — separate section, typographic redesign */}
-      <CountdownSection />
+      {/* ── Countdown — quiet, integrated, not widget-like ── */}
+      <section
+        aria-label="Đếm ngược đến ngày cưới"
+        style={{
+          backgroundColor: '#F5EFE3',
+          padding: 'clamp(28px, 4.5vw, 44px) 24px',
+          borderTop: '1px solid rgba(30,20,16,0.06)',
+          borderBottom: '1px solid rgba(30,20,16,0.06)',
+        }}
+      >
+        <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
+          <p style={{
+            fontFamily: "'Be Vietnam Pro', sans-serif",
+            fontSize: '0.60rem',
+            fontWeight: 600,
+            letterSpacing: '0.24em',
+            textTransform: 'uppercase',
+            color: '#B08C4E',
+            marginBottom: 'clamp(14px, 2.2vw, 22px)',
+          }}>
+            20 · 10 · 2026
+          </p>
+          <Countdown />
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(0.82rem, 1.4vw, 0.95rem)',
+            fontStyle: 'italic',
+            color: 'rgba(62,50,40,0.45)',
+            marginTop: 'clamp(10px, 1.8vw, 16px)',
+            letterSpacing: '0.02em',
+          }}>
+            còn lại cho đến ngày trọng đại
+          </p>
+        </div>
+      </section>
+
+      <style>{`
+        @media (max-width: 580px) {
+          .hero-below-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .hero-below-grid > div:last-child {
+            align-items: flex-start !important;
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+          }
+        }
+      `}</style>
     </>
   );
 }

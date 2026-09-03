@@ -1,71 +1,46 @@
 /* ══════════════════════════════════════════════════════════════════════
-   RSVP — Vietnamese Editorial Wedding
-   Removed: eyebrow-luxury, divider-luxury 囍, gold-frame, glassmorphism,
-            btn-luxury-crimson / btn-luxury-gold classes.
-   Design: Clean warm form. Burgundy for primary action. Simple typography.
-   Preserved: RSVP form, guestbook tab, localStorage persistence, presets.
+   RSVP — Part of the Invitation  [REDESIGNED]
+   ART DIRECTION: Return to warmth. Intimate, invitation-like.
+   Form feels like writing back to the couple, not filling a web form.
+   Guestbook: localStorage only — clearly indicated. No fake messages.
 ══════════════════════════════════════════════════════════════════════ */
 import React, { useState, useEffect } from 'react';
-import { Send, CheckCircle2, MessageSquareHeart } from 'lucide-react';
-
-const INITIAL_WISHES = [
-  {
-    id: 1,
-    name: 'Gia đình Bác Hai',
-    side: 'Nhà Trai',
-    message: 'Chúc hai cháu Đại Nghĩa & Thị Nhung trăm năm hạnh phúc, răng long đầu bạc, vạn sự như ý!',
-    time: 'Vừa xong',
-  },
-  {
-    id: 2,
-    name: 'Thu Trang & Minh Hoàng',
-    side: 'Bạn Cô Dâu',
-    message: 'Chúc mừng cô dâu xinh đẹp nhất trần đời! Chúc hai bạn luôn ngập tràn tiếng cười và tình yêu!',
-    time: '1 giờ trước',
-  },
-  {
-    id: 3,
-    name: 'Nhóm Bạn Cấp 3',
-    side: 'Bạn Chú Rể',
-    message: 'Cuối cùng anh Nghĩa cũng rước được nàng về dinh! Chúc mừng hạnh phúc hai bạn nhé!',
-    time: '3 giờ trước',
-  },
-];
+import { CheckCircle2, Heart } from 'lucide-react';
 
 const WISH_PRESETS = [
-  'Trăm năm hạnh phúc! 💍',
-  'Chúc mừng hạnh phúc hai bạn! 🎉',
-  'Chúc đôi uyên ương sớm sinh quý tử! 👶',
-  'Vạn sự như ý, trọn đời bên nhau! ❤️',
+  'Trăm năm hạnh phúc!',
+  'Chúc mừng hạnh phúc hai bạn!',
+  'Vạn sự như ý, trọn đời bên nhau!',
 ];
 
-/* Shared input style */
-const INPUT = {
+const INPUT_STYLE = {
   width: '100%',
-  padding: '12px 16px',
-  backgroundColor: '#FDFBF7',
-  border: '1px solid rgba(35,27,21,0.15)',
-  borderRadius: '2px',
-  fontSize: '0.92rem',
-  color: '#231B15',
+  padding: '13px 16px',
+  backgroundColor: '#FDFBF5',
+  border: '1px solid rgba(30,20,16,0.13)',
+  borderRadius: '1px',
+  fontSize: '0.90rem',
+  color: '#1E1410',
   outline: 'none',
   fontFamily: "'Be Vietnam Pro', sans-serif",
   transition: 'border-color 0.2s ease',
+  WebkitAppearance: 'none',
 };
-const LABEL = {
+
+const LABEL_STYLE = {
   display: 'block',
   fontFamily: "'Be Vietnam Pro', sans-serif",
-  fontSize: '0.76rem',
+  fontSize: '0.68rem',
   fontWeight: 600,
-  letterSpacing: '0.05em',
+  letterSpacing: '0.07em',
   textTransform: 'uppercase',
-  color: '#4A3F38',
-  marginBottom: '7px',
+  color: '#3D3228',
+  marginBottom: '8px',
 };
 
-export default function RSVP() {
-  const [activeTab, setActiveTab] = useState('rsvp');
+const SELECT_BG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B5D52' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`;
 
+export default function RSVP() {
   const [formData, setFormData] = useState({
     name: '', phone: '', side: 'Nhà Trai',
     attend: 'yes', guests: '1', message: '',
@@ -74,15 +49,17 @@ export default function RSVP() {
 
   const [wishes, setWishes] = useState(() => {
     try {
-      const saved = localStorage.getItem('wedding_wishes_db');
-      return saved ? JSON.parse(saved) : INITIAL_WISHES;
-    } catch { return INITIAL_WISHES; }
+      const saved = localStorage.getItem('wedding_wishes_v2');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
   });
 
   const [wishInput, setWishInput] = useState({ name: '', side: 'Bạn Bè', message: '' });
+  const [wishSubmitted, setWishSubmitted] = useState(false);
+  const [showGuestbook, setShowGuestbook] = useState(false);
 
   useEffect(() => {
-    try { localStorage.setItem('wedding_wishes_db', JSON.stringify(wishes)); } catch {}
+    try { localStorage.setItem('wedding_wishes_v2', JSON.stringify(wishes)); } catch {}
   }, [wishes]);
 
   const handleRsvpSubmit = (e) => {
@@ -105,375 +82,422 @@ export default function RSVP() {
       message: wishInput.message, time: 'Vừa xong',
     }, ...prev]);
     setWishInput({ name: '', side: 'Bạn Bè', message: '' });
+    setWishSubmitted(true);
+    setTimeout(() => setWishSubmitted(false), 3000);
   };
 
-  /* Tab button style */
-  const tabStyle = (isActive) => ({
-    padding: '10px 24px',
-    fontFamily: "'Be Vietnam Pro', sans-serif",
-    fontSize: '0.78rem',
-    fontWeight: 500,
-    letterSpacing: '0.06em',
-    textTransform: 'uppercase',
-    background: 'transparent',
-    border: 'none',
-    borderBottom: isActive ? '2px solid #8B1E22' : '2px solid transparent',
-    color: isActive ? '#8B1E22' : '#756B63',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    marginBottom: '-1px',
-  });
+  const focusBorder = e => { e.target.style.borderColor = '#7C1D21'; };
+  const blurBorder  = e => { e.target.style.borderColor = 'rgba(30,20,16,0.13)'; };
 
   return (
     <section
       id="rsvp"
+      aria-label="Xác nhận tham dự và lời chúc"
       style={{
-        padding: 'clamp(80px, 12vw, 120px) 24px',
-        backgroundColor: '#FDFBF7',
+        padding: 'clamp(84px, 13vw, 116px) clamp(24px, 5vw, 48px)',
+        backgroundColor: '#F5EFE3',
+        position: 'relative',
       }}
     >
-      <div style={{ maxWidth: '680px', margin: '0 auto' }}>
+      {/* Subtle warm texture */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.016'/%3E%3C/svg%3E")`,
+        backgroundRepeat: 'repeat', backgroundSize: '220px 220px',
+      }} />
 
-        {/* Header */}
-        <div style={{ marginBottom: 'clamp(36px, 5vw, 52px)' }}>
-          <p className="section-label gsap-reveal" style={{ marginBottom: '16px' }}>
-            Phúc Đáp
-          </p>
-          <h2
-            className="gsap-reveal"
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(2rem, 4vw, 2.8rem)',
-              fontWeight: 500,
-              color: '#231B15',
-              lineHeight: 1.15,
-              marginBottom: '12px',
-            }}
-          >
-            Bạn có đến không?
+      <div style={{ maxWidth: '620px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+
+        {/* Section header */}
+        <div className="gsap-reveal" style={{ marginBottom: 'clamp(40px, 6.5vw, 56px)' }}>
+          <h2 style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: 'clamp(2.3rem, 5.2vw, 3.8rem)',
+            fontWeight: 500, color: '#1E1410',
+            lineHeight: 1.05, letterSpacing: '-0.02em',
+            marginBottom: 'clamp(12px, 2.2vw, 18px)',
+          }}>
+            Bạn sẽ đến<br/>
+            <span style={{ fontStyle: 'italic', fontWeight: 400, color: '#7C1D21' }}>
+              cùng vui chứ?
+            </span>
           </h2>
-          <p
-            className="gsap-reveal"
-            style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: '1.15rem',
-              fontStyle: 'italic',
-              color: '#4A3F38',
-              marginBottom: '12px',
-            }}
-          >
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(1.02rem, 1.9vw, 1.22rem)',
+            fontStyle: 'italic', color: '#6B5D52',
+            lineHeight: 1.82, marginBottom: '10px',
+          }}>
             Sự hiện diện của bạn là món quà ý nghĩa nhất với chúng mình.
           </p>
-          {/* localStorage notice — honest documentation of limitation */}
-          <p className="gsap-reveal" style={{
+          <p style={{
             fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.70rem',
-            color: 'rgba(120,100,80,0.55)',
-            fontStyle: 'italic',
-            lineHeight: 1.6,
+            fontSize: '0.66rem',
+            color: 'rgba(107,93,82,0.48)',
+            fontStyle: 'italic', lineHeight: 1.6,
           }}>
-            ✶ Lưu ý: Xác nhận và lời chúc được lưu trên thiết bị của bạn. Liên hệ trực tiếp với gia đình để xác nhận chính thức.
+            ✶ Xác nhận được lưu trên thiết bị của bạn. Vui lòng liên hệ trực tiếp để xác nhận chính thức.
           </p>
         </div>
 
-        {/* Tab navigation */}
-        <div style={{
-          display: 'flex',
-          borderBottom: '1px solid rgba(35,27,21,0.1)',
-          marginBottom: '36px',
-        }}>
-          <button onClick={() => setActiveTab('rsvp')} style={tabStyle(activeTab === 'rsvp')}>
-            Xác nhận tham dự
-          </button>
-          <button onClick={() => setActiveTab('wishes')} style={tabStyle(activeTab === 'wishes')}>
-            Sổ lưu bút ({wishes.length})
-          </button>
-        </div>
-
-        {/* RSVP Form */}
-        {activeTab === 'rsvp' && (
-          isSubmitted ? (
-            <div style={{ textAlign: 'center', padding: '40px 0' }}>
-              <CheckCircle2 size={40} color="#8B1E22" style={{ margin: '0 auto 16px', display: 'block' }} />
-              <h3 style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: '1.6rem',
-                fontWeight: 500,
-                color: '#231B15',
-                marginBottom: '12px',
-              }}>
-                Cảm ơn, {formData.name}!
-              </h3>
-              <p style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: '1.1rem',
-                fontStyle: 'italic',
-                color: '#4A3F38',
-                lineHeight: 1.7,
-                marginBottom: '28px',
-              }}>
-                Gia đình chúng tôi rất vinh hạnh được đón tiếp bạn<br />vào ngày 20.10.2026.
-              </p>
-              <button
-                onClick={() => setIsSubmitted(false)}
-                className="btn-secondary"
-              >
-                Gửi lại
-              </button>
+        {/* RSVP Form / Success */}
+        {isSubmitted ? (
+          <div style={{
+            textAlign: 'center',
+            padding: 'clamp(36px, 6.5vw, 60px) clamp(22px, 4vw, 38px)',
+            backgroundColor: '#FDFBF5',
+            border: '1px solid rgba(30,20,16,0.07)',
+          }}>
+            <div style={{
+              width: '50px', height: '50px',
+              margin: '0 auto clamp(18px, 3vw, 26px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(124,29,33,0.06)',
+              border: '1px solid rgba(124,29,33,0.12)',
+            }}>
+              <Heart size={22} color="#7C1D21" fill="rgba(124,29,33,0.14)" />
             </div>
-          ) : (
-            <form onSubmit={handleRsvpSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-              {/* Name + Phone */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
-                <div>
-                  <label style={LABEL}>Họ và Tên *</label>
-                  <input
-                    type="text" required placeholder="Nguyễn Văn An"
-                    value={formData.name}
-                    onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    style={INPUT}
-                    onFocus={e => { e.target.style.borderColor = '#8B1E22'; }}
-                    onBlur={e => { e.target.style.borderColor = 'rgba(35,27,21,0.15)'; }}
-                  />
-                </div>
-                <div>
-                  <label style={LABEL}>Số điện thoại</label>
-                  <input
-                    type="tel" placeholder="0901 234 567"
-                    value={formData.phone}
-                    onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                    style={INPUT}
-                    onFocus={e => { e.target.style.borderColor = '#8B1E22'; }}
-                    onBlur={e => { e.target.style.borderColor = 'rgba(35,27,21,0.15)'; }}
-                  />
-                </div>
-              </div>
+            <h3 style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: 'clamp(1.65rem, 3.2vw, 2.1rem)',
+              fontWeight: 500, color: '#1E1410',
+              marginBottom: 'clamp(9px, 1.8vw, 14px)',
+              letterSpacing: '-0.01em',
+            }}>Cảm ơn, {formData.name}!</h3>
 
-              {/* Side */}
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: 'clamp(1.02rem, 1.8vw, 1.18rem)',
+              fontStyle: 'italic', color: '#3D3228',
+              lineHeight: 1.80,
+              marginBottom: formData.attend !== 'no' ? 'clamp(5px, 1vw, 9px)' : 'clamp(22px, 3.8vw, 30px)',
+            }}>
+              {formData.attend === 'no'
+                ? 'Chúng mình rất tiếc khi không được gặp bạn. Tình cảm của bạn luôn ở đây.'
+                : 'Gia đình rất vui khi được đón tiếp bạn vào ngày 20.10.2026.'}
+            </p>
+
+            {formData.attend !== 'no' && (
+              <p style={{
+                fontFamily: "'Be Vietnam Pro', sans-serif",
+                fontSize: '0.76rem', color: '#9E8E82',
+                marginBottom: 'clamp(22px, 3.8vw, 30px)',
+                letterSpacing: '0.02em',
+              }}>
+                Gem Center · Sảnh Castor · 17:30
+              </p>
+            )}
+
+            <button onClick={() => setIsSubmitted(false)} className="btn-secondary">
+              Gửi lại
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleRsvpSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }} noValidate>
+
+            {/* Name + Phone */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '14px' }}>
               <div>
-                <label style={LABEL}>Bạn là khách mời của</label>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  {['Nhà Trai', 'Nhà Gái', 'Bạn Chung'].map(side => (
-                    <label
-                      key={side}
-                      style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '8px',
-                        padding: '9px 16px',
-                        border: `1px solid ${formData.side === side ? '#8B1E22' : 'rgba(35,27,21,0.15)'}`,
-                        backgroundColor: formData.side === side ? 'rgba(139,30,34,0.06)' : 'transparent',
-                        borderRadius: '2px', cursor: 'pointer',
-                        fontFamily: "'Be Vietnam Pro', sans-serif",
-                        fontSize: '0.86rem',
-                        color: formData.side === side ? '#8B1E22' : '#4A3F38',
-                        fontWeight: formData.side === side ? 600 : 400,
-                        transition: 'all 0.2s ease',
-                      }}
-                    >
-                      <input
-                        type="radio" name="side"
-                        checked={formData.side === side}
-                        onChange={() => setFormData({ ...formData, side })}
-                        style={{ accentColor: '#8B1E22', width: '14px', height: '14px' }}
-                      />
-                      {side}
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Attend + Guests */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
-                <div>
-                  <label style={LABEL}>Xác nhận tham dự</label>
-                  <select
-                    value={formData.attend}
-                    onChange={e => setFormData({ ...formData, attend: e.target.value })}
-                    className="form-input"
-                    style={INPUT}
-                  >
-                    <option value="yes">Chắc chắn tham dự</option>
-                    <option value="maybe">Có thể tham dự</option>
-                    <option value="no">Rất tiếc không thể</option>
-                  </select>
-                </div>
-                <div>
-                  <label style={LABEL}>Số người đi cùng</label>
-                  <select
-                    value={formData.guests}
-                    onChange={e => setFormData({ ...formData, guests: e.target.value })}
-                    style={INPUT}
-                  >
-                    <option value="1">1 người</option>
-                    <option value="2">2 người</option>
-                    <option value="3">3 người</option>
-                    <option value="4+">4 người trở lên</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Message */}
-              <div>
-                <label style={LABEL}>Lời chúc gửi đến đôi uyên ương</label>
-                <textarea
-                  rows={3}
-                  placeholder="Gửi lời chúc phúc yêu thương của bạn..."
-                  value={formData.message}
-                  onChange={e => setFormData({ ...formData, message: e.target.value })}
-                  style={{ ...INPUT, resize: 'none' }}
-                  onFocus={e => { e.target.style.borderColor = '#8B1E22'; }}
-                  onBlur={e => { e.target.style.borderColor = 'rgba(35,27,21,0.15)'; }}
+                <label style={LABEL_STYLE}>Họ và Tên *</label>
+                <input
+                  type="text" required placeholder="Tên của bạn"
+                  value={formData.name}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  style={INPUT_STYLE}
+                  onFocus={focusBorder} onBlur={blurBorder}
                 />
               </div>
+              <div>
+                <label style={LABEL_STYLE}>Điện thoại</label>
+                <input
+                  type="tel" placeholder="0901 234 567"
+                  value={formData.phone}
+                  onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                  style={INPUT_STYLE}
+                  onFocus={focusBorder} onBlur={blurBorder}
+                />
+              </div>
+            </div>
 
-              <button type="submit" className="btn-primary" style={{ width: '100%', padding: '15px', justifyContent: 'center' }}>
-                <Send size={15} />
-                Gửi xác nhận
-              </button>
-            </form>
-          )
-        )}
-
-        {/* Guestbook */}
-        {activeTab === 'wishes' && (
-          <div>
-            {/* Write wish */}
-            <div style={{
-              padding: 'clamp(20px, 3vw, 28px)',
-              backgroundColor: '#F8F4EC',
-              border: '1px solid rgba(35,27,21,0.1)',
-              borderRadius: '2px',
-              marginBottom: '28px',
-            }}>
-              <p style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: '1rem',
-                color: '#231B15',
-                marginBottom: '12px',
-                fontWeight: 500,
-              }}>
-                Để lại lời chúc phúc
-              </p>
-
-              {/* Preset chips */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
-                {WISH_PRESETS.map((preset, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setWishInput(prev => ({ ...prev, message: preset }))}
+            {/* Side — radio chips */}
+            <div>
+              <label style={LABEL_STYLE}>Khách mời của</label>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {['Nhà Trai', 'Nhà Gái', 'Bạn Chung'].map(side => (
+                  <label
+                    key={side}
                     style={{
-                      fontSize: '0.78rem',
-                      padding: '5px 12px',
-                      background: 'transparent',
-                      border: '1px solid rgba(35,27,21,0.15)',
-                      borderRadius: '2px',
-                      color: '#756B63',
-                      cursor: 'pointer',
+                      display: 'inline-flex', alignItems: 'center', gap: '8px',
+                      padding: '9px 16px',
+                      border: `1px solid ${formData.side === side ? '#7C1D21' : 'rgba(30,20,16,0.13)'}`,
+                      backgroundColor: formData.side === side ? 'rgba(124,29,33,0.05)' : 'transparent',
+                      borderRadius: '1px', cursor: 'pointer',
                       fontFamily: "'Be Vietnam Pro', sans-serif",
+                      fontSize: '0.84rem',
+                      color: formData.side === side ? '#7C1D21' : '#3D3228',
+                      fontWeight: formData.side === side ? 600 : 400,
                       transition: 'all 0.2s ease',
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B1E22'; e.currentTarget.style.color = '#8B1E22'; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(35,27,21,0.15)'; e.currentTarget.style.color = '#756B63'; }}
                   >
-                    {preset}
-                  </button>
+                    <input
+                      type="radio" name="rsvp-side"
+                      checked={formData.side === side}
+                      onChange={() => setFormData({ ...formData, side })}
+                      style={{ accentColor: '#7C1D21', width: '14px', height: '14px' }}
+                    />
+                    {side}
+                  </label>
                 ))}
               </div>
+            </div>
 
-              <form onSubmit={handleWishSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            {/* Attend + Guests */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '14px' }}>
+              <div>
+                <label style={LABEL_STYLE}>Tham dự</label>
+                <select
+                  value={formData.attend}
+                  onChange={e => setFormData({ ...formData, attend: e.target.value })}
+                  style={{
+                    ...INPUT_STYLE,
+                    backgroundImage: SELECT_BG,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 14px center',
+                    paddingRight: '36px', cursor: 'pointer',
+                  }}
+                  onFocus={focusBorder} onBlur={blurBorder}
+                >
+                  <option value="yes">Chắc chắn tham dự</option>
+                  <option value="maybe">Có thể tham dự</option>
+                  <option value="no">Rất tiếc không thể</option>
+                </select>
+              </div>
+              <div>
+                <label style={LABEL_STYLE}>Số người</label>
+                <select
+                  value={formData.guests}
+                  onChange={e => setFormData({ ...formData, guests: e.target.value })}
+                  style={{
+                    ...INPUT_STYLE,
+                    backgroundImage: SELECT_BG,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 14px center',
+                    paddingRight: '36px', cursor: 'pointer',
+                  }}
+                  onFocus={focusBorder} onBlur={blurBorder}
+                >
+                  <option value="1">1 người</option>
+                  <option value="2">2 người</option>
+                  <option value="3">3 người</option>
+                  <option value="4+">4 người trở lên</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Message */}
+            <div>
+              <label style={LABEL_STYLE}>Lời chúc phúc</label>
+              <textarea
+                rows={3}
+                placeholder="Gửi lời chúc yêu thương của bạn..."
+                value={formData.message}
+                onChange={e => setFormData({ ...formData, message: e.target.value })}
+                style={{ ...INPUT_STYLE, resize: 'none' }}
+                onFocus={focusBorder} onBlur={blurBorder}
+              />
+            </div>
+
+            <button type="submit" className="btn-primary" style={{ width: '100%', padding: '15px', justifyContent: 'center' }}>
+              Gửi xác nhận
+            </button>
+          </form>
+        )}
+
+        {/* Separator */}
+        <div style={{
+          height: '1px',
+          background: 'linear-gradient(to right, transparent, rgba(176,140,78,0.35) 30%, rgba(176,140,78,0.35) 70%, transparent)',
+          margin: 'clamp(44px, 7vw, 68px) 0 clamp(30px, 5vw, 44px)',
+        }} />
+
+        {/* Guestbook */}
+        <div>
+          <div style={{
+            display: 'flex', alignItems: 'baseline',
+            justifyContent: 'space-between',
+            marginBottom: 'clamp(22px, 3.8vw, 34px)',
+            flexWrap: 'wrap', gap: '10px',
+          }}>
+            <h3 style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: 'clamp(1.38rem, 2.8vw, 1.85rem)',
+              fontWeight: 500, color: '#1E1410',
+              lineHeight: 1.15, margin: 0,
+            }}>
+              Lời Chúc
+              <span style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontStyle: 'italic', fontWeight: 400,
+                color: '#B08C4E', marginLeft: '10px',
+              }}>&amp; Kỷ Niệm</span>
+            </h3>
+            {wishes.length > 0 && (
+              <button
+                onClick={() => setShowGuestbook(!showGuestbook)}
+                style={{
+                  background: 'transparent', border: 'none',
+                  fontFamily: "'Be Vietnam Pro', sans-serif",
+                  fontSize: '0.72rem', fontWeight: 500,
+                  color: '#7C1D21', cursor: 'pointer',
+                  letterSpacing: '0.04em',
+                  textDecoration: 'underline',
+                  textUnderlineOffset: '3px',
+                }}
+              >
+                {showGuestbook ? 'Ẩn' : `Xem ${wishes.length} lời chúc`}
+              </button>
+            )}
+          </div>
+
+          {/* Write wish */}
+          <div style={{
+            padding: 'clamp(18px, 3.2vw, 28px)',
+            backgroundColor: '#FDFBF5',
+            border: '1px solid rgba(30,20,16,0.07)',
+            marginBottom: 'clamp(18px, 3vw, 26px)',
+          }}>
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: 'clamp(0.98rem, 1.7vw, 1.12rem)',
+              fontStyle: 'italic', color: '#3D3228',
+              marginBottom: '14px',
+            }}>Để lại lời chúc phúc gửi đến đôi bạn...</p>
+
+            {/* Quick presets */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '7px', marginBottom: '14px' }}>
+              {WISH_PRESETS.map((preset, i) => (
+                <button
+                  key={i} type="button"
+                  onClick={() => setWishInput(prev => ({ ...prev, message: preset }))}
+                  style={{
+                    fontSize: '0.76rem', padding: '5px 12px',
+                    background: 'transparent',
+                    border: '1px solid rgba(30,20,16,0.13)',
+                    borderRadius: '1px', color: '#6B5D52',
+                    cursor: 'pointer',
+                    fontFamily: "'Be Vietnam Pro', sans-serif",
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#7C1D21'; e.currentTarget.style.color = '#7C1D21'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(30,20,16,0.13)'; e.currentTarget.style.color = '#6B5D52'; }}
+                >
+                  {preset}
+                </button>
+              ))}
+            </div>
+
+            {wishSubmitted ? (
+              <div style={{ textAlign: 'center', padding: '14px 0', color: '#7C1D21' }}>
+                <CheckCircle2 size={18} style={{ display: 'inline-block', marginRight: '7px', verticalAlign: 'middle' }} />
+                <span style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: '0.86rem' }}>
+                  Cảm ơn lời chúc của bạn!
+                </span>
+              </div>
+            ) : (
+              <form onSubmit={handleWishSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <input
                     type="text" required placeholder="Tên của bạn"
                     value={wishInput.name}
                     onChange={e => setWishInput({ ...wishInput, name: e.target.value })}
-                    style={{ ...INPUT, backgroundColor: '#FDFBF7' }}
-                    onFocus={e => { e.target.style.borderColor = '#8B1E22'; }}
-                    onBlur={e => { e.target.style.borderColor = 'rgba(35,27,21,0.15)'; }}
+                    style={INPUT_STYLE}
+                    onFocus={focusBorder} onBlur={blurBorder}
                   />
                   <select
                     value={wishInput.side}
                     onChange={e => setWishInput({ ...wishInput, side: e.target.value })}
-                    style={{ ...INPUT, backgroundColor: '#FDFBF7' }}
+                    style={{
+                      ...INPUT_STYLE,
+                      backgroundImage: SELECT_BG,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'right 14px center',
+                      paddingRight: '36px', cursor: 'pointer',
+                    }}
+                    onFocus={focusBorder} onBlur={blurBorder}
                   >
                     <option value="Bạn Chú Rể">Bạn Chú Rể</option>
                     <option value="Bạn Cô Dâu">Bạn Cô Dâu</option>
-                    <option value="Gia Đình Họ Hàng">Gia Đình Họ Hàng</option>
-                    <option value="Bạn Bè Đồng Nghiệp">Bạn Bè Đồng Nghiệp</option>
+                    <option value="Gia Đình">Gia Đình</option>
+                    <option value="Bạn Bè">Bạn Bè</option>
                   </select>
                 </div>
                 <textarea
                   rows={2} required
-                  placeholder="Viết lời chúc phúc gửi đến đôi bạn trẻ..."
+                  placeholder="Viết lời chúc phúc..."
                   value={wishInput.message}
                   onChange={e => setWishInput({ ...wishInput, message: e.target.value })}
-                  style={{ ...INPUT, backgroundColor: '#FDFBF7', resize: 'none' }}
-                  onFocus={e => { e.target.style.borderColor = '#8B1E22'; }}
-                  onBlur={e => { e.target.style.borderColor = 'rgba(35,27,21,0.15)'; }}
+                  style={{ ...INPUT_STYLE, resize: 'none' }}
+                  onFocus={focusBorder} onBlur={blurBorder}
                 />
-                <button type="submit" className="btn-primary" style={{ alignSelf: 'flex-start', padding: '12px 24px' }}>
-                  <MessageSquareHeart size={15} />
+                <button type="submit" className="btn-primary" style={{ alignSelf: 'flex-start', padding: '11px 22px' }}>
                   Gửi lời chúc
                 </button>
               </form>
-            </div>
+            )}
+          </div>
 
-            {/* Wishes feed */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Wishes list */}
+          {showGuestbook && wishes.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
               {wishes.map(w => (
-                <div
-                  key={w.id}
-                  style={{
-                    padding: '20px',
-                    backgroundColor: '#FDFBF7',
-                    borderBottom: '1px solid rgba(35,27,21,0.08)',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <div key={w.id} style={{
+                  padding: 'clamp(14px, 2.2vw, 20px)',
+                  borderBottom: '1px solid rgba(30,20,16,0.07)',
+                }}>
+                  <div style={{
+                    display: 'flex', justifyContent: 'space-between',
+                    alignItems: 'center', marginBottom: '7px',
+                  }}>
                     <div>
                       <span style={{
                         fontFamily: "'Playfair Display', serif",
-                        fontSize: '0.95rem',
-                        fontWeight: 500,
-                        color: '#231B15',
-                        marginRight: '8px',
-                      }}>
-                        {w.name}
-                      </span>
+                        fontSize: '0.94rem', fontWeight: 500,
+                        color: '#1E1410', marginRight: '8px',
+                      }}>{w.name}</span>
                       <span style={{
                         fontFamily: "'Be Vietnam Pro', sans-serif",
-                        fontSize: '0.7rem',
-                        fontWeight: 500,
-                        color: '#8B1E22',
-                        letterSpacing: '0.04em',
-                      }}>
-                        {w.side}
-                      </span>
+                        fontSize: '0.66rem', fontWeight: 500,
+                        color: '#7C1D21', letterSpacing: '0.04em',
+                      }}>{w.side}</span>
                     </div>
                     <span style={{
                       fontFamily: "'Be Vietnam Pro', sans-serif",
-                      fontSize: '0.72rem',
-                      color: '#756B63',
-                    }}>
-                      {w.time}
-                    </span>
+                      fontSize: '0.68rem', color: '#9E8E82',
+                    }}>{w.time}</span>
                   </div>
                   <p style={{
                     fontFamily: "'Cormorant Garamond', serif",
-                    fontSize: '1.05rem',
-                    fontStyle: 'italic',
-                    color: '#4A3F38',
-                    lineHeight: 1.7,
-                    margin: 0,
-                  }}>
-                    "{w.message}"
-                  </p>
+                    fontSize: 'clamp(0.98rem, 1.7vw, 1.08rem)',
+                    fontStyle: 'italic', color: '#3D3228',
+                    lineHeight: 1.72, margin: 0,
+                  }}>"{w.message}"</p>
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          )}
 
+          {wishes.length === 0 && (
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: '0.98rem', fontStyle: 'italic',
+              color: '#9E8E82', textAlign: 'center', paddingTop: '8px',
+            }}>
+              Hãy là người đầu tiên gửi lời chúc phúc.
+            </p>
+          )}
+        </div>
       </div>
     </section>
   );

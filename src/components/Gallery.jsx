@@ -1,26 +1,14 @@
 /* ══════════════════════════════════════════════════════════════════════
-   GALLERY — Editorial Photo Story
-   ────────────────────────────────────────────────────────────
-   Art direction: DARK BACKGROUND — immersive photo story moment.
-   Near-black background makes photographs feel gallery-quality.
-   Data: from weddingData.js (centralized placeholder photo config).
-   Layout: 2-col mobile, 3-col desktop grid with controlled aspect ratios.
-   Preserved: lightbox, keyboard navigation, accessibility, lazy loading.
+   GALLERY — Photo Essay  [REDESIGNED]
+   ART DIRECTION: Near-black — photography is everything.
+   Asymmetric editorial layout with varied sizes.
+   Lightbox with keyboard navigation.
+   No category filters — this is a photo essay, not a portfolio.
 ══════════════════════════════════════════════════════════════════════ */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { GALLERY } from '../weddingData';
 
-const GALLERY_PHOTOS = GALLERY;
-
-const CATEGORIES = [
-  { key: 'all',         label: 'Tất cả' },
-  { key: 'traditional', label: 'Truyền thống' },
-  { key: 'romance',     label: 'Lãng mạn' },
-  { key: 'outdoor',     label: 'Ngoại cảnh' },
-  { key: 'moments',     label: 'Khoảnh khắc' },
-];
-
-/* ── Lightbox ── */
+/* Lightbox */
 function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
   if (activeIdx === null) return null;
   const photo = photos[activeIdx];
@@ -34,36 +22,35 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`Xem ảnh: ${photo.title}`}
+      aria-label={`Xem ảnh: ${photo.alt}`}
       onClick={onClose}
       style={{
         position: 'fixed', inset: 0, zIndex: 9999,
-        backgroundColor: 'rgba(14,9,6,0.97)',
+        backgroundColor: 'rgba(8,5,3,0.98)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '20px',
-        animation: 'fadeIn 0.25s ease',
+        animation: 'lbFadeIn 0.22s ease',
       }}
     >
       {/* Close */}
       <button
         onClick={onClose}
-        aria-label="Đóng lightbox"
+        aria-label="Đóng"
         style={{
           position: 'absolute', top: '20px', right: '20px', zIndex: 10,
-          width: '40px', height: '40px', borderRadius: '50%',
+          width: '42px', height: '42px', borderRadius: '50%',
           background: 'transparent',
-          border: '1px solid rgba(248,244,236,0.2)',
-          color: 'rgba(248,244,236,0.8)',
+          border: '1px solid rgba(248,244,236,0.18)',
+          color: 'rgba(248,244,236,0.75)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer',
-          transition: 'border-color 0.2s, color 0.2s',
+          transition: 'border-color 0.2s',
         }}
-        onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(248,244,236,0.6)'; }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(248,244,236,0.2)'; }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(248,244,236,0.55)'; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(248,244,236,0.18)'; }}
       >
-        {/* Close X */}
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
-          <path d="M2 2l10 10M12 2L2 12"/>
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+          <path d="M1.5 1.5l10 10M11.5 1.5l-10 10"/>
         </svg>
       </button>
 
@@ -72,11 +59,11 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
         onClick={e => { e.stopPropagation(); onPrev(); }}
         aria-label="Ảnh trước"
         style={{
-          position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)',
-          width: '44px', height: '44px', borderRadius: '50%',
+          position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)',
+          width: '46px', height: '46px', borderRadius: '50%',
           background: 'transparent',
-          border: '1px solid rgba(248,244,236,0.2)',
-          color: 'rgba(248,244,236,0.7)',
+          border: '1px solid rgba(248,244,236,0.18)',
+          color: 'rgba(248,244,236,0.65)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer', zIndex: 10,
         }}
@@ -91,11 +78,11 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
         onClick={e => { e.stopPropagation(); onNext(); }}
         aria-label="Ảnh tiếp theo"
         style={{
-          position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
-          width: '44px', height: '44px', borderRadius: '50%',
+          position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)',
+          width: '46px', height: '46px', borderRadius: '50%',
           background: 'transparent',
-          border: '1px solid rgba(248,244,236,0.2)',
-          color: 'rgba(248,244,236,0.7)',
+          border: '1px solid rgba(248,244,236,0.18)',
+          color: 'rgba(248,244,236,0.65)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer', zIndex: 10,
         }}
@@ -105,7 +92,7 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
         </svg>
       </button>
 
-      {/* Photo */}
+      {/* Image */}
       <div onClick={e => e.stopPropagation()} style={{ maxWidth: '90vw', maxHeight: '85vh', textAlign: 'center' }}>
         <img
           src={photo.src}
@@ -116,270 +103,196 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
           }}
           onError={e => { e.target.src = photo.fallback; }}
         />
-        <div style={{ marginTop: '14px' }}>
+        <div style={{ marginTop: '16px' }}>
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: '1rem', fontStyle: 'italic',
-            color: 'rgba(248,244,236,0.7)', margin: 0,
-          }}>{photo.title}</p>
+            color: 'rgba(248,244,236,0.55)', margin: 0,
+          }}>{photo.alt}</p>
           <p style={{
             fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.65rem', color: 'rgba(248,244,236,0.3)',
-            marginTop: '4px', letterSpacing: '0.1em',
-          }}>
-            {activeIdx + 1} / {photos.length}
-          </p>
+            fontSize: '0.62rem',
+            color: 'rgba(248,244,236,0.25)',
+            marginTop: '5px', letterSpacing: '0.1em',
+          }}>{activeIdx + 1} / {photos.length}</p>
         </div>
       </div>
     </div>
   );
 }
 
-export default function Gallery() {
-  const [selectedCat, setSelectedCat] = useState('all');
-  const [activeIdx, setActiveIdx]     = useState(null);
+/* Photo cell */
+function PhotoCell({ photo, idx, onOpen, aspectRatio, style = {} }) {
+  return (
+    <div
+      onClick={() => onOpen(idx)}
+      tabIndex={0}
+      role="button"
+      aria-label={`Xem ảnh: ${photo.alt}`}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') onOpen(idx); }}
+      className="gallery-cell"
+      style={{ aspectRatio, ...style }}
+    >
+      <img
+        src={photo.src}
+        alt={photo.alt}
+        loading="lazy"
+        decoding="async"
+        style={{ objectPosition: 'center 22%' }}
+        onError={e => { e.target.src = photo.fallback; }}
+      />
+      <div className="gallery-cell-overlay" aria-hidden="true" />
+    </div>
+  );
+}
 
-  const filtered = selectedCat === 'all'
-    ? GALLERY_PHOTOS
-    : GALLERY_PHOTOS.filter(p => p.category === selectedCat);
+export default function Gallery() {
+  const [activeIdx, setActiveIdx] = useState(null);
+  const photos = GALLERY;
 
   /* Keyboard navigation */
   useEffect(() => {
     const onKey = e => {
       if (activeIdx === null) return;
       if (e.key === 'Escape')     setActiveIdx(null);
-      if (e.key === 'ArrowLeft')  setActiveIdx(i => (i > 0 ? i - 1 : filtered.length - 1));
-      if (e.key === 'ArrowRight') setActiveIdx(i => (i < filtered.length - 1 ? i + 1 : 0));
+      if (e.key === 'ArrowLeft')  setActiveIdx(i => (i > 0 ? i - 1 : photos.length - 1));
+      if (e.key === 'ArrowRight') setActiveIdx(i => (i < photos.length - 1 ? i + 1 : 0));
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [activeIdx, filtered.length]);
+  }, [activeIdx, photos.length]);
+
+  const p = useCallback((n) => photos[n % photos.length], [photos]);
+
+  const gap = 'clamp(4px, 0.6vw, 7px)';
 
   return (
     <section
       id="gallery"
       aria-label="Album ảnh cưới"
       style={{
-        /* No top padding — featured photo sits flush at top of section */
-        paddingBottom: 'clamp(64px, 10vw, 96px)',
-        backgroundColor: '#0E0905',
+        backgroundColor: '#0E0A07',
+        paddingBottom: 'clamp(68px, 10vw, 100px)',
         overflow: 'hidden',
       }}
     >
-      {/* ── Featured editorial photo — full-bleed, no max-width constraint ──
-           Breaks the grid before the grid starts. Visual impact. */}
-      {GALLERY_PHOTOS[0] && (
-        <div
-          style={{
-            width: '100%',
-            height: 'clamp(200px, 40vw, 480px)',
-            overflow: 'hidden',
-            position: 'relative',
-          }}
-        >
-          <img
-            src={GALLERY_PHOTOS[0].src}
-            alt={GALLERY_PHOTOS[0].alt}
-            loading="eager"
-            decoding="async"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center 35%',
-              display: 'block',
-              filter: 'brightness(0.75) contrast(1.07)',
-            }}
-            onError={e => { e.currentTarget.parentElement.style.display = 'none'; }}
-          />
-          <div aria-hidden="true" style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(to top, rgba(14,9,5,0.82) 0%, transparent 55%)',
-            pointerEvents: 'none',
-          }} />
-        </div>
-      )}
-
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'clamp(56px, 8vw, 80px) clamp(16px, 3vw, 32px) clamp(48px, 7vw, 72px)' }}>
-        <div style={{ marginBottom: 'clamp(36px, 5vw, 52px)', padding: '0 clamp(4px, 1vw, 16px)' }}>
-          <p style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.60rem',
-            fontWeight: 500,
-            letterSpacing: '0.22em',
-            textTransform: 'uppercase',
-            color: '#B89555',
-            marginBottom: '14px',
-          }} className="gsap-reveal">
-            Album Ảnh
-          </p>
-          <h2
-            className="gsap-reveal"
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(2rem, 4vw, 2.8rem)',
-              fontWeight: 500, color: 'rgba(248,244,236,0.92)',
-              lineHeight: 1.1, letterSpacing: '-0.01em',
-            }}
-          >
-            Khoảnh Khắc Hạnh Phúc
-          </h2>
-        </div>
-
-        {/* Category filter — plain text underline style */}
-        <div
-          role="tablist"
-          aria-label="Lọc ảnh theo danh mục"
-          style={{
-            display: 'flex', flexWrap: 'wrap', gap: '4px 28px',
-            marginBottom: 'clamp(28px, 4vw, 40px)',
-            paddingBottom: '16px',
-            borderBottom: '1px solid rgba(248,244,236,0.1)',
-            padding: '0 clamp(4px, 1vw, 16px)',
-          }}
-        >
-          {CATEGORIES.map(cat => {
-            const isActive = selectedCat === cat.key;
-            return (
-              <button
-                key={cat.key}
-                role="tab"
-                aria-selected={isActive}
-                onClick={() => setSelectedCat(cat.key)}
-                style={{
-                  background: 'transparent', border: 'none', padding: '4px 0',
-                  fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: '0.82rem',
-                  fontWeight: isActive ? 600 : 400,
-                  color: isActive ? 'rgba(248,244,236,0.92)' : 'rgba(248,244,236,0.38)',
-                  cursor: 'pointer',
-                  borderBottom: isActive ? '1px solid #B89555' : '1px solid transparent',
-                  paddingBottom: '3px',
-                  transition: 'color 0.2s, border-color 0.2s',
-                  letterSpacing: '0.02em',
-                  marginBottom: '12px',
-                }}
-                onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = 'rgba(248,244,236,0.65)'; }}
-                onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = 'rgba(248,244,236,0.38)'; }}
-              >
-                {cat.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* ── CSS Grid — editorial 2-col mobile, 3-col desktop ──
-             Visual rhythm: alternating portrait/landscape ratios
-             Mobile:  2 columns, 10px gap — deliberate editorial rhythm
-             Desktop: 3 columns, 14px gap — masonry-like variety */}
-        <div
-          className="gallery-grid"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '10px',
-          }}
-        >
-          <style>{`
-            .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            @media (min-width: 640px) {
-              .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
-            }
-          `}</style>
-          {filtered.map((photo, idx) => {
-            /*
-             * Aspect ratio per item for visual rhythm:
-             * Odd items (0,2,4,...) — portrait  4:5
-             * Even items (1,3,5,...) — landscape 4:3
-             * tall:true override keeps portrait items taller
-             */
-            const aspectRatio = photo.tall ? '3/4' : (idx % 2 === 1 ? '4/3' : '3/4');
-            return (
-              <div
-                key={photo.id}
-                onClick={() => setActiveIdx(idx)}
-                tabIndex={0}
-                role="button"
-                aria-label={`Xem ảnh: ${photo.title}`}
-                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setActiveIdx(idx); }}
-                style={{
-                  cursor: 'pointer',
-                  overflow: 'hidden',
-                  position: 'relative',
-                  lineHeight: 0,
-                  /* Controlled aspect ratio — no image dominates entire screen */
-                  aspectRatio,
-                }}
-              >
-                <img
-                  src={photo.src}
-                  alt={photo.alt}
-                  loading="lazy"
-                  decoding="async"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'block',
-                    objectFit: 'cover',
-                    objectPosition: 'center 25%',
-                    transition: 'transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)',
-                  }}
-                  onMouseEnter={e => { e.target.style.transform = 'scale(1.04)'; }}
-                  onMouseLeave={e => { e.target.style.transform = 'scale(1)'; }}
-                  onError={e => { e.target.src = photo.fallback; }}
-                />
-                {/* Hover caption */}
-                <div
-                  className="photo-caption"
-                  style={{
-                    position: 'absolute', bottom: 0, left: 0, right: 0,
-                    padding: '16px 12px 10px',
-                    background: 'linear-gradient(to top, rgba(18,10,6,0.55) 0%, transparent 100%)',
-                    opacity: 0,
-                    transition: 'opacity 0.3s ease',
-                    pointerEvents: 'none',
-                  }}
-                >
-                  <p style={{
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontSize: '0.82rem', fontStyle: 'italic',
-                    color: 'rgba(248,244,236,0.9)',
-                    margin: 0, lineHeight: 1,
-                  }}>
-                    {photo.title}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
+      {/* Featured opener — full bleed */}
+      <div
+        style={{
+          width: '100%',
+          height: 'clamp(220px, 44vw, 500px)',
+          overflow: 'hidden', position: 'relative', cursor: 'pointer',
+        }}
+        onClick={() => setActiveIdx(0)}
+        role="button"
+        tabIndex={0}
+        aria-label={`Xem ảnh: ${photos[0]?.alt}`}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setActiveIdx(0); }}
+      >
+        {photos[0] && (
+          <>
+            <img
+              src={photos[0].src}
+              alt={photos[0].alt}
+              loading="eager"
+              decoding="async"
+              style={{
+                width: '100%', height: '100%',
+                objectFit: 'cover', objectPosition: 'center 30%',
+                display: 'block',
+                filter: 'brightness(0.68) contrast(1.08) saturate(0.83)',
+                transition: 'transform 10s cubic-bezier(0.25,0.46,0.45,0.94)',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.022)'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+              onError={e => { e.currentTarget.parentElement.style.display = 'none'; }}
+            />
+            <div aria-hidden="true" style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to top, rgba(14,10,7,0.90) 0%, rgba(14,10,7,0.20) 44%, transparent 68%)',
+              pointerEvents: 'none',
+            }} />
+            {/* Title overlay */}
+            <div style={{
+              position: 'absolute',
+              bottom: 'clamp(22px, 3.8vw, 38px)',
+              left: 'clamp(22px, 4.5vw, 52px)',
+            }}>
+              <p style={{
+                fontFamily: "'Be Vietnam Pro', sans-serif",
+                fontSize: '0.58rem', fontWeight: 500,
+                letterSpacing: '0.24em', textTransform: 'uppercase',
+                color: '#B08C4E', marginBottom: '7px',
+              }}>Album Ảnh</p>
+              <h2 style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: 'clamp(1.9rem, 4.8vw, 3.6rem)',
+                fontWeight: 400,
+                color: 'rgba(248,244,236,0.96)',
+                lineHeight: 1.0, letterSpacing: '-0.02em',
+                margin: 0,
+                textShadow: '0 2px 28px rgba(0,0,0,0.28)',
+              }}>
+                Khoảnh Khắc<br/>
+                <span style={{ fontStyle: 'italic', fontWeight: 400, fontSize: '0.80em', color: 'rgba(248,244,236,0.56)' }}>
+                  hạnh phúc
+                </span>
+              </h2>
+            </div>
+          </>
+        )}
       </div>
 
-      {/* Lightbox */}
+      {/* Editorial grid */}
+      <div style={{ padding: `${gap}` }}>
+
+        {/* Row 1: Portrait + two landscape stacked */}
+        <div className="gallery-row-1" style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap, marginBottom: gap,
+        }}>
+          <PhotoCell photo={p(1)} idx={1} onOpen={setActiveIdx} aspectRatio="3/4" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap }}>
+            <PhotoCell photo={p(2)} idx={2} onOpen={setActiveIdx} aspectRatio="4/3" />
+            <PhotoCell photo={p(3)} idx={3} onOpen={setActiveIdx} aspectRatio="4/3" />
+          </div>
+        </div>
+
+        {/* Row 2: Full-width cinematic strip */}
+        <div style={{ marginBottom: gap }}>
+          <PhotoCell photo={p(4)} idx={4} onOpen={setActiveIdx} aspectRatio="16/5" style={{ width: '100%' }} />
+        </div>
+
+        {/* Row 3: Three equal portraits */}
+        <div className="gallery-row-3" style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap, marginBottom: gap,
+        }}>
+          <PhotoCell photo={p(5)} idx={5} onOpen={setActiveIdx} aspectRatio="3/4" />
+          <PhotoCell photo={p(6)} idx={6} onOpen={setActiveIdx} aspectRatio="3/4" />
+          <PhotoCell photo={p(7)} idx={7} onOpen={setActiveIdx} aspectRatio="3/4" />
+        </div>
+
+        {/* Row 4: Portrait + landscape */}
+        <div className="gallery-row-4" style={{
+          display: 'grid',
+          gridTemplateColumns: '38% 62%',
+          gap,
+        }}>
+          <PhotoCell photo={p(0)} idx={0} onOpen={setActiveIdx} aspectRatio="3/4" />
+          <PhotoCell photo={p(2)} idx={2} onOpen={setActiveIdx} aspectRatio="4/3" style={{ height: '100%' }} />
+        </div>
+      </div>
+
       <Lightbox
-        photos={filtered}
+        photos={photos}
         activeIdx={activeIdx}
         onClose={() => setActiveIdx(null)}
-        onPrev={() => setActiveIdx(i => (i > 0 ? i - 1 : filtered.length - 1))}
-        onNext={() => setActiveIdx(i => (i < filtered.length - 1 ? i + 1 : 0))}
+        onPrev={() => setActiveIdx(i => (i > 0 ? i - 1 : photos.length - 1))}
+        onNext={() => setActiveIdx(i => (i < photos.length - 1 ? i + 1 : 0))}
       />
-
-      <style>{`
-        .photo-caption { opacity: 0 !important; }
-        div[role="button"]:hover .photo-caption,
-        div[role="button"]:focus-visible .photo-caption {
-          opacity: 1 !important;
-        }
-        div[role="button"]:focus-visible {
-          outline: 2px solid #8B1E22;
-          outline-offset: 2px;
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
-      `}</style>
     </section>
   );
 }

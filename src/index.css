@@ -3,42 +3,63 @@
 @tailwind utilities;
 
 /* ══════════════════════════════════════════════════════════════════════
-   VIETNAMESE EDITORIAL WEDDING INVITATION
-   Design Direction: Quiet Luxury · Editorial · Vietnamese Heritage
-   Palette: Cream #F8F4EC · Espresso #231B15 · Burgundy #8B1E22 · Champagne #B89555
-   Typography: Playfair Display · Cormorant Garamond · Be Vietnam Pro
-   Principle: Less decoration, more emotion.
+   MODERN VIETNAMESE EDITORIAL WEDDING
+   Direction: Warm · Intimate · Cinematic · Tactile · Editorial
+   Palette: Ivory #FDFBF5 · Cream #F5EFE3 · Espresso #1E1410 · 
+            Champagne #B08C4E · Deep Burgundy #7C1D21 · Near-black #0E0A07
+   Typography: Cormorant Garamond (display) · Playfair Display (editorial)
+               Be Vietnam Pro (UI/sans)
+   Principle: EMOTION > STORYTELLING > PHOTOGRAPHY > TYPOGRAPHY > DECORATION
+              MORE MEMORABLE, NOT MORE DECORATED
 ══════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --bg-cream:      #F8F4EC;
-  --bg-white:      #FDFBF7;
-  --bg-warm:       #F2EDE3;
-  --bg-dark:       #231B15;
+  --bg-ivory:       #FDFBF5;
+  --bg-cream:       #F5EFE3;
+  --bg-champagne:   #EDE2CA;
+  --bg-espresso:    #1E1410;
+  --bg-dark:        #140E0B;
+  --bg-near-black:  #0E0A07;
 
-  --burgundy:      #8B1E22;
-  --burgundy-dark: #6D1013;
-  --burgundy-pale: rgba(139,30,34,0.06);
+  --burgundy:       #7C1D21;
+  --burgundy-dark:  #5E1419;
+  --burgundy-light: #9B2D32;
+  --burgundy-pale:  rgba(124,29,33,0.07);
+  --champagne:      #B08C4E;
+  --champagne-pale: rgba(176,140,78,0.15);
+  --champagne-deep: #8D6C33;
 
-  --champagne:     #B89555;
-  --champagne-pale:rgba(184,149,85,0.15);
+  --text-primary:   #1E1410;
+  --text-secondary: #3D3228;
+  --text-muted:     #6B5D52;
+  --text-faint:     #9E8E82;
+  --text-ghost:     rgba(30,20,16,0.35);
 
-  --text-primary:  #231B15;
-  --text-secondary:#4A3F38;
-  --text-muted:    #756B63;
+  --border:         rgba(30,20,16,0.12);
+  --border-warm:    rgba(30,20,16,0.07);
+  --border-faint:   rgba(30,20,16,0.05);
 
-  --border:        rgba(35,27,21,0.12);
-  --border-warm:   rgba(35,27,21,0.08);
-
-  --shadow-sm:     0 2px 8px rgba(35,27,21,0.06);
-  --shadow-md:     0 8px 32px rgba(35,27,21,0.08);
-  --shadow-lg:     0 20px 60px rgba(35,27,21,0.10);
+  --shadow-xs: 0 1px 4px rgba(30,20,16,0.06);
+  --shadow-sm: 0 2px 12px rgba(30,20,16,0.08);
+  --shadow-md: 0 8px 32px rgba(30,20,16,0.10);
+  --shadow-lg: 0 20px 60px rgba(30,20,16,0.12);
+  --shadow-xl: 0 40px 100px rgba(30,20,16,0.14);
 
   --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out:   cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-silk:     cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  --container-xs:  440px;
+  --container-sm:  640px;
+  --container-md:  860px;
+  --container-lg:  1080px;
+  --container-xl:  1280px;
+
+  --section-pad-v: clamp(80px, 12vw, 120px);
+  --section-pad-h: clamp(24px, 5vw, 72px);
 }
 
-/* ── Reset ── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -49,92 +70,74 @@ html {
   font-size: 16px;
   scroll-behavior: auto;
   -webkit-tap-highlight-color: transparent;
-  background-color: #F8F4EC;
+  background-color: var(--bg-cream);
   overflow-x: hidden;
 }
 
 body {
-  background-color: #F8F4EC;
+  background-color: var(--bg-cream);
   color: var(--text-primary);
-  font-family: 'Be Vietnam Pro', sans-serif;
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
   overflow-x: hidden;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Selection ── */
 ::selection {
-  background: rgba(139, 30, 34, 0.12);
-  color: #231B15;
+  background: rgba(124,29,33,0.12);
+  color: #1E1410;
 }
 
-/* ── Focus ── */
 :focus-visible {
   outline: 2px solid var(--burgundy);
   outline-offset: 3px;
 }
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(139,30,34,0.2);
+  background: rgba(124,29,33,0.20);
   border-radius: 2px;
 }
 
-/* ══════════════════════════
-   TYPOGRAPHY
-══════════════════════════ */
+/* ── Typography ── */
 
-/* Display — for large headings, names */
-.font-display {
-  font-family: 'Playfair Display', Georgia, serif;
-}
+.font-display  { font-family: 'Cormorant Garamond', 'Times New Roman', serif; }
+.font-editorial { font-family: 'Playfair Display', Georgia, serif; }
+.font-sans     { font-family: 'Be Vietnam Pro', system-ui, sans-serif; }
 
-/* Editorial — for body serif, quotes, captions */
-.font-serif {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-}
-
-/* UI — for labels, UI text, navigation */
-.font-sans {
+.label {
   font-family: 'Be Vietnam Pro', sans-serif;
-}
-
-/* ── Section label / eyebrow ── */
-.section-label {
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--burgundy);
   display: block;
 }
 
-/* ── Section heading ── */
+.section-label {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--burgundy);
+  display: block;
+}
+
 .section-heading {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
   font-weight: 500;
   color: var(--text-primary);
-  line-height: 1.15;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
   margin: 0;
 }
 
-/* ── Thin divider ── */
-.divider {
-  width: 40px;
-  height: 1px;
-  background: var(--champagne);
-  display: block;
-  margin: 0 auto;
-}
-
-/* ══════════════════════════
-   BUTTONS
-══════════════════════════ */
+/* ── Buttons ── */
 
 .btn-primary {
   display: inline-flex;
@@ -145,19 +148,21 @@ body {
   background: var(--burgundy);
   color: #FFF;
   font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   border: none;
-  border-radius: 2px;
+  border-radius: 1px;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.3s ease, transform 0.2s ease;
+  transition: background 0.3s var(--ease-out), transform 0.2s var(--ease-out);
 }
 .btn-primary:hover {
   background: var(--burgundy-dark);
   transform: translateY(-1px);
 }
+.btn-primary:active { transform: translateY(0); }
 
 .btn-secondary {
   display: inline-flex;
@@ -168,52 +173,58 @@ body {
   background: transparent;
   color: var(--text-primary);
   font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   border: 1px solid var(--border);
-  border-radius: 2px;
+  border-radius: 1px;
   cursor: pointer;
   text-decoration: none;
-  transition: border-color 0.3s ease, color 0.3s ease;
+  transition: border-color 0.25s ease, color 0.25s ease;
 }
 .btn-secondary:hover {
   border-color: var(--burgundy);
   color: var(--burgundy);
 }
 
-/* Legacy compatibility — mapped to new system */
-.btn-crimson { composes: btn-primary; }
-.btn-gold-outline { composes: btn-secondary; }
-
-/* ══════════════════════════
-   FORM ELEMENTS
-══════════════════════════ */
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-label {
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: transparent;
+  color: rgba(253,248,240,0.65);
   font-family: 'Be Vietnam Pro', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  border: 1px solid rgba(253,248,240,0.18);
+  border-radius: 1px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.25s ease, color 0.25s ease;
 }
+.btn-ghost:hover {
+  border-color: rgba(176,140,78,0.5);
+  color: #B08C4E;
+}
+
+/* ── Form ── */
 
 .form-input {
   width: 100%;
-  padding: 12px 16px;
-  background: var(--bg-white);
+  padding: 13px 16px;
+  background: var(--bg-ivory);
   border: 1px solid var(--border);
-  border-radius: 2px;
+  border-radius: 1px;
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: 0.9rem;
   color: var(--text-primary);
   transition: border-color 0.25s ease;
+  -webkit-appearance: none;
   appearance: none;
 }
 .form-input:focus {
@@ -221,32 +232,11 @@ body {
   border-color: var(--burgundy);
 }
 .form-input::placeholder {
-  color: var(--text-muted);
-  opacity: 0.6;
+  color: var(--text-faint);
+  opacity: 0.7;
 }
 
-select.form-input {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23756B63' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  padding-right: 36px;
-  cursor: pointer;
-}
-
-/* ══════════════════════════
-   SCROLL REVEAL
-══════════════════════════ */
-
-.gsap-reveal {
-  /* managed by GSAP — keep opacity:1 as base */
-}
-
-.gsap-stagger {}
-.gsap-line {}
-
-/* ══════════════════════════
-   LENIS
-══════════════════════════ */
+/* ── Lenis ── */
 
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
@@ -254,31 +244,49 @@ html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-stopped { overflow: hidden; }
 .lenis.lenis-scrolling iframe { pointer-events: none; }
 
-/* ══════════════════════════
-   KEYFRAMES
-══════════════════════════ */
+/* ── Keyframes ── */
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-
+@keyframes cardEnter {
+  from { opacity: 0; transform: translateY(60px) rotate(-2deg) scale(0.92); }
+  to   { opacity: 1; transform: translateY(0) rotate(-2deg) scale(1); }
+}
+@keyframes glowBreath {
+  0%, 100% { opacity: 0.85; transform: translate(-50%, -50%) scale(1); }
+  50%       { opacity: 1.0;  transform: translate(-50%, -50%) scale(1.05); }
+}
+@keyframes threadPulse {
+  0%, 100% { transform: scaleY(0.2); opacity: 0.2; }
+  60%       { transform: scaleY(1);   opacity: 1.0; }
+}
 @keyframes shimmer {
   0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes lbFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes wishPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+@keyframes introCTAThread {
+  0%, 100% { transform: scaleY(0.3); opacity: 0.3; }
+  60%       { transform: scaleY(1.0); opacity: 1.0; }
+}
+@keyframes introGlowBreath {
+  0%, 100% { opacity: 0.85; transform: translate(-50%, -50%) scale(1); }
+  50%       { opacity: 1.0;  transform: translate(-50%, -50%) scale(1.04); }
 }
 
-@keyframes toast-slide {
-  from { transform: translateX(-50%) translateY(12px); opacity: 0; }
-  to   { transform: translateX(-50%) translateY(0); opacity: 1; }
-}
-
-/* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -287,103 +295,147 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
-/* ══════════════════════════
-   IMAGES
-══════════════════════════ */
-img {
-  display: block;
-  max-width: 100%;
-}
+/* ── Images ── */
 
-/* ══════════════════════════
-   UTILITIES
-══════════════════════════ */
+img { display: block; max-width: 100%; }
 
-.text-muted { color: var(--text-muted); }
-.text-burgundy { color: var(--burgundy); }
+/* ── Utilities ── */
+
 .text-champagne { color: var(--champagne); }
+.text-burgundy  { color: var(--burgundy); }
+.text-muted     { color: var(--text-muted); }
 
-/* Snap scroll */
-.snap-x-mandatory {
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-.snap-start { scroll-snap-align: start; }
-
-/* ── Champagne gradient rule ──
-   Use as a narrow horizontal rule between sections.
-   Fades to transparent at edges — premium paper stationery feel. */
 .champagne-rule {
   height: 1px;
   background: linear-gradient(
     to right,
     transparent 0%,
-    rgba(184,149,85,0.5) 20%,
-    rgba(184,149,85,0.5) 80%,
+    rgba(176,140,78,0.45) 20%,
+    rgba(176,140,78,0.45) 80%,
     transparent 100%
   );
   border: none;
   margin: 0;
 }
 
-/* ── Paper texture ──
-   Applied as ::before pseudo-element.
-   Use on warm-ivory sections to add premium paper feeling.
-   SVG noise filter at ~2.5% intensity — barely perceptible. */
-.paper-texture {
-  position: relative;
-}
+.paper-texture { position: relative; }
 .paper-texture::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23p)' opacity='0.025'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23p)' opacity='0.022'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 300px 300px;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.9;
 }
 .paper-texture > * { position: relative; z-index: 1; }
 
-/* ── Botanical divider image ── */
-.botanical-divider {
-  display: block;
-  width: 100%;
-  max-width: 280px;
-  height: 36px;
-  margin: 0 auto;
-  opacity: 0.7;
-}
-
-/* ── Section separator ── */
 .section-sep {
   height: 1px;
-  background: var(--border-warm);
+  background: var(--border-faint);
   border: none;
   margin: 0;
 }
 
-/* ── Editorial photo frame ──
-   Thin champagne lines above and below photos. */
-.photo-frame {
-  position: relative;
-}
-.photo-frame::before,
-.photo-frame::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(184,149,85,0.45) 20%,
-    rgba(184,149,85,0.45) 80%,
-    transparent
-  );
-  z-index: 2;
-}
-.photo-frame::before { top: 0; }
-.photo-frame::after  { bottom: 0; }
+.gsap-reveal {}
+.gsap-stagger {}
+.gsap-line {}
 
+/* ── Gallery ── */
+
+.gallery-cell {
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  line-height: 0;
+}
+.gallery-cell img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.9s cubic-bezier(0.25,0.46,0.45,0.94);
+  display: block;
+}
+.gallery-cell:hover img { transform: scale(1.04); }
+.gallery-cell-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(14,10,7,0.45) 0%, transparent 55%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.gallery-cell:hover .gallery-cell-overlay,
+.gallery-cell:focus-visible .gallery-cell-overlay { opacity: 1; }
+.gallery-cell:focus-visible {
+  outline: 2px solid #7C1D21;
+  outline-offset: 2px;
+}
+
+/* hover overlay for old gallery code */
+.gallery-hover-overlay { opacity: 0 !important; }
+div[role="button"]:hover .gallery-hover-overlay,
+div[role="button"]:focus-visible .gallery-hover-overlay { opacity: 1 !important; }
+div[role="button"]:focus-visible {
+  outline: 2px solid #7C1D21;
+  outline-offset: 2px;
+}
+
+/* ── Navigation ── */
+
+.nav-link {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.nav-link:hover { color: var(--burgundy); }
+
+/* ── Responsive helpers ── */
+
+@media (max-width: 768px) {
+  .desktop-nav { display: none !important; }
+  .mobile-hamburger { display: flex !important; }
+}
+
+/* ── Couple ── */
+
+@media (max-width: 680px) {
+  .couple-panel {
+    grid-template-columns: 1fr !important;
+    min-height: auto !important;
+  }
+  .couple-photo-col {
+    order: 1 !important;
+    height: clamp(280px, 65vw, 380px) !important;
+    position: relative !important;
+  }
+  .couple-text-col { order: 2 !important; }
+}
+
+/* ── Story ── */
+
+@media (max-width: 640px) {
+  .story-alt-entry { grid-template-columns: 1fr !important; }
+  .story-alt-entry > div { order: unset !important; }
+  .story-alt-entry > div[style*="aspectRatio"] { max-height: 280px; }
+  .story-quote-entry > div { flex-direction: column !important; }
+  .story-quote-entry > div > div:last-child { display: none; }
+}
+
+/* ── Gallery responsive ── */
+
+@media (max-width: 560px) {
+  .gallery-row-1 { grid-template-columns: 1fr !important; }
+  .gallery-row-3 { grid-template-columns: repeat(2, 1fr) !important; }
+  .gallery-row-4 { grid-template-columns: 1fr !important; }
+}
+
+/* ── Invitation grid ── */
+
+@media (max-width: 680px) {
+  .invitation-grid { grid-template-columns: 1fr !important; }
+}

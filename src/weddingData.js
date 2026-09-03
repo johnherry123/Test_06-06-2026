@@ -120,7 +120,7 @@ export const STORY = [
     content: '[ Kể câu chuyện lần đầu gặp nhau ở đây. ]',
     // ⚠️ PLACEHOLDER photo — replace with real memory photo
     photo: {
-      src:     'https://images.unsplash.com/photo-1529519195486-b5190a6dc77e?w=800&q=85&fm=webp',
+      src:     'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&q=88&fm=webp',
       alt:     'Khoảnh khắc đầu tiên — ảnh minh họa',
     },
   },
@@ -129,7 +129,7 @@ export const STORY = [
     title:   'Khoảnh khắc đặc biệt',
     content: '[ Một kỷ niệm đáng nhớ trong hành trình. ]',
     photo: {
-      src:     'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800&q=85&fm=webp',
+      src:     'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&q=88&fm=webp',
       alt:     'Khoảnh khắc đặc biệt — ảnh minh họa',
     },
   },
@@ -138,7 +138,7 @@ export const STORY = [
     title:   'Chuyến đi cùng nhau',
     content: '[ Chuyến hành trình đáng nhớ cùng nhau. ]',
     photo: {
-      src:     'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=85&fm=webp',
+      src:     'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=1200&q=88&fm=webp',
       alt:     'Chuyến đi — ảnh minh họa',
     },
   },
@@ -147,7 +147,7 @@ export const STORY = [
     title:   'Quyết định quan trọng',
     content: '[ Khoảnh khắc cầu hôn / quyết định bước vào cuộc sống hôn nhân. ]',
     photo: {
-      src:     'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=85&fm=webp',
+      src:     'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=88&fm=webp',
       alt:     'Quyết định — ảnh minh họa',
     },
   },
