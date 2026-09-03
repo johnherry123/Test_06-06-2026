@@ -286,6 +286,10 @@ html.lenis, html.lenis body { height: auto; }
   0%, 100% { opacity: 0.85; transform: translate(-50%, -50%) scale(1); }
   50%       { opacity: 1.0;  transform: translate(-50%, -50%) scale(1.04); }
 }
+@keyframes sealBreath {
+  0%, 100% { transform: scale(1.00); }
+  50%       { transform: scale(1.04); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -401,29 +405,22 @@ div[role="button"]:focus-visible {
   .mobile-hamburger { display: flex !important; }
 }
 
-/* ── Couple ── */
+/* ── Couple triptych ── */
 
 @media (max-width: 680px) {
+  /* Stale couple-panel rules kept for safety */
   .couple-panel {
     grid-template-columns: 1fr !important;
     min-height: auto !important;
   }
-  .couple-photo-col {
-    order: 1 !important;
-    height: clamp(280px, 65vw, 380px) !important;
-    position: relative !important;
-  }
-  .couple-text-col { order: 2 !important; }
 }
 
-/* ── Story ── */
+/* ── Story entry grids ── */
 
-@media (max-width: 640px) {
-  .story-alt-entry { grid-template-columns: 1fr !important; }
-  .story-alt-entry > div { order: unset !important; }
-  .story-alt-entry > div[style*="aspectRatio"] { max-height: 280px; }
-  .story-quote-entry > div { flex-direction: column !important; }
-  .story-quote-entry > div > div:last-child { display: none; }
+@media (max-width: 600px) {
+  .story-entry-grid {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 /* ── Gallery responsive ── */

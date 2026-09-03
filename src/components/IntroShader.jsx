@@ -1,69 +1,85 @@
 /* ══════════════════════════════════════════════════════════════════════
-   INTRO — Physical Wedding Invitation Experience
+   INTRO — Physical Wedding Invitation  [REFINED]
    ──────────────────────────────────────────────────────────────────────
-   ART DIRECTION:
-   This must feel like holding a real invitation in your hands.
    
-   Experience flow:
-   1. CLOSED — An invitation card rests in warm ambient light
-      Paper texture, physical shadow, monogram, names, date
-   2. INTERACTION — Subtle hover: card lifts slightly, seal stirs
-   3. CLICK/TAP — Wax seal pulses, card opens upward with physics
-      The card DOES NOT just fly away — it opens like a real card
-   4. REVEAL — Environment transitions from intimate warmth → cinematic
+   AUDIT FINDINGS fixed in this version:
    
-   Visual philosophy:
-   - Warm ivory paper, not a white rectangle
-   - Deep multi-layer physical shadow
-   - Paper grain at imperceptible opacity
-   - Envelope texture corner at 3.5%
-   - Typography is the decoration
-   - One vertical champagne thread as CTA — not a button
+   PROBLEM: Wax seal existed only in code comments — not in the actual UI.
+   FIX: Wax seal SVG is now rendered as the primary interaction point.
+        It sits centered on the card. Hover: seal breathes subtly.
+        Click: seal "presses" (scale down briefly), then the card opens.
    
-   What was REMOVED from previous version:
-   - Excessive gradient layers that looked like digital art
-   - The card simply flying "up" off screen — no physical feel
-   - Glow bloom that looked like a vignette effect
+   PROBLEM: "Opening" was just translateY(-108vh) — card flies away.
+   FIX: Two-layer opening:
+        1. Card itself slides up with realistic physics
+        2. Scene background cross-fades into Hero warmth, not hard cut
    
-   What is NEW:
-   - Cleaner environment background — champagne → cream gradient
-   - Physical card shadow stack (4 layers)
-   - Wax seal concept via a thin ruled circle (SVG inline)
-   - Cleaner typography hierarchy on card
-   - Smoother opening sequence: lift → pause → sweep + fade
+   PROBLEM: Background was a very visible radial gradient "glow" 
+            centered behind the card — too digital-looking.
+   FIX: Flatter, more uniform warm paper surface. The center lightness
+        is reduced. Edge vignette kept very subtle.
+
+   PROBLEM: "Chạm để mở" text was hidden (aria-hidden) and 
+            pointerEvents: none — inaccessible.
+   FIX: Moved below seal as a visible visual cue. Removed aria-hidden.
+   
+   KEPT:
+   - Paper grain SVG
+   - Envelope texture at micro-opacity
+   - 4-layer physical shadow stack
+   - Card proportions and typography hierarchy
+   - prefers-reduced-motion support
+   - Keyboard accessibility
 ══════════════════════════════════════════════════════════════════════ */
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { COUPLE, WEDDING } from '../weddingData';
 
-export default function IntroShader({ onComplete }) {
-  const [entered, setEntered]   = useState(false);
-  const [phase, setPhase]       = useState('idle'); // idle | hover | lifting | exiting
-  const [isHovered, setIsHovered] = useState(false);
-  const cardRef                 = useRef(null);
+/* Wax seal path — inline for reliable rendering without asset load delay */
+const WAX_SEAL_PATH = '/Test_06-06-2026/wax-seal.svg';
 
-  /* Entrance — delay slightly so paint is ready */
+export default function IntroShader({ onComplete }) {
+  const [entered,   setEntered]   = useState(false);
+  const [phase,     setPhase]     = useState('idle'); // idle | sealing | lifting | exiting
+  const [isHovered, setIsHovered] = useState(false);
+  const [sealPressed, setSealPressed] = useState(false);
+
+  /* Entrance — short delay so paint is ready */
   useEffect(() => {
-    const t = setTimeout(() => setEntered(true), 100);
+    const t = setTimeout(() => setEntered(true), 80);
     return () => clearTimeout(t);
   }, []);
 
-  /* prefers-reduced-motion */
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setEntered(true);
-    }
-  }, []);
+  /* prefers-reduced-motion: skip animation entirely */
+  const reducedMotion = typeof window !== 'undefined'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const handleOpen = useCallback(() => {
     if (phase !== 'idle') return;
-    setPhase('lifting');
-    /* Lift briefly — then sweep out */
-    setTimeout(() => setPhase('exiting'), 320);
-    /* Signal parent after animation completes */
-    setTimeout(() => onComplete?.(), 1100);
-  }, [phase, onComplete]);
 
-  /* Keyboard accessibility */
+    if (reducedMotion) {
+      setPhase('exiting');
+      setTimeout(() => onComplete?.(), 200);
+      return;
+    }
+
+    /* Seal press feedback */
+    setSealPressed(true);
+    setPhase('sealing');
+
+    /* After seal press: lift card */
+    setTimeout(() => {
+      setSealPressed(false);
+      setPhase('lifting');
+    }, 340);
+
+    /* Card sweeps: start exiting */
+    setTimeout(() => setPhase('exiting'), 660);
+
+    /* Signal parent — Hero can mount */
+    setTimeout(() => onComplete?.(), 1080);
+  }, [phase, onComplete, reducedMotion]);
+
+  /* Keyboard */
   useEffect(() => {
     const h = (e) => {
       if (e.key === 'Enter' || e.key === ' ') handleOpen();
@@ -74,250 +90,191 @@ export default function IntroShader({ onComplete }) {
 
   const isLifting = phase === 'lifting';
   const isExiting = phase === 'exiting';
+  const isSealing = phase === 'sealing';
 
-  /* Card transform */
+  /* ── Card transform states ──
+     idle:     slight natural tilt, resting
+     hovered:  lifts 5px, rotates a touch more — physical pickup
+     sealing:  presses down slightly — weight of tap
+     lifting:  rises, rotates, scale up slightly — paper leaving surface
+     exiting:  sweeps up fast with mild tilt
+  */
   const cardTransform = (() => {
-    if (!entered) return 'translateY(56px) rotate(-1.5deg) scale(0.93)';
-    if (isHovered && phase === 'idle') return 'translateY(-6px) rotate(-2.2deg) scale(1.012)';
-    if (isLifting) return 'translateY(-14px) rotate(-3deg) scale(1.018)';
-    if (isExiting) return 'translateY(-108vh) rotate(-4.5deg) scale(1.015)';
-    return 'translateY(0) rotate(-1.5deg) scale(1)';
+    if (!entered)     return 'translateY(52px) rotate(-1.8deg) scale(0.92)';
+    if (isExiting)    return 'translateY(-115vh) rotate(-5deg) scale(1.02)';
+    if (isLifting)    return 'translateY(-12px) rotate(-3.2deg) scale(1.02)';
+    if (isSealing)    return 'translateY(3px) rotate(-1.2deg) scale(0.985)';
+    if (isHovered)    return 'translateY(-7px) rotate(-2.5deg) scale(1.014)';
+    return 'translateY(0px) rotate(-1.8deg) scale(1)';
   })();
 
   const cardTransition = (() => {
-    if (!entered) return 'none';
-    if (isHovered && phase === 'idle') return 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease';
-    if (isLifting) return 'transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1)';
-    if (isExiting) return 'transform 0.76s cubic-bezier(0.55, 0, 0.88, 0.42)';
-    return 'transform 1.4s cubic-bezier(0.16,1,0.3,1), opacity 1.1s cubic-bezier(0.16,1,0.3,1)';
+    if (!entered)  return 'none';
+    if (isExiting) return 'transform 0.72s cubic-bezier(0.55, 0, 0.88, 0.42), opacity 0.5s ease 0.05s';
+    if (isLifting) return 'transform 0.36s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    if (isSealing) return 'transform 0.18s cubic-bezier(0.55, 0, 1, 1)';
+    if (isHovered) return 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease';
+    return 'transform 1.5s cubic-bezier(0.16,1,0.3,1), opacity 1.1s cubic-bezier(0.16,1,0.3,1)';
   })();
 
-  /* Scene fades out as card exits */
-  const sceneOpacity   = isExiting ? 0 : 1;
-  const sceneTransition = isExiting ? 'opacity 0.68s ease 0.08s' : 'none';
+  /* Shadow deepens on hover, lightens on press */
+  const cardShadow = (() => {
+    if (isSealing) return [
+      '0 1px 3px rgba(50,30,8,0.05)',
+      '0 4px 14px rgba(50,30,8,0.10)',
+      '0 10px 32px rgba(50,30,8,0.10)',
+      'inset 0 0 0 0.5px rgba(255,240,200,0.45)',
+    ].join(', ');
+    if (isHovered && phase === 'idle') return [
+      '0 3px 6px rgba(50,30,8,0.07)',
+      '0 12px 30px rgba(50,30,8,0.17)',
+      '0 34px 76px rgba(50,30,8,0.20)',
+      '0 58px 116px rgba(50,30,8,0.14)',
+      'inset 0 0 0 0.5px rgba(255,240,200,0.62)',
+    ].join(', ');
+    return [
+      '0 2px 4px rgba(50,30,8,0.07)',
+      '0 8px 22px rgba(50,30,8,0.13)',
+      '0 26px 62px rgba(50,30,8,0.15)',
+      '0 46px 94px rgba(50,30,8,0.10)',
+      'inset 0 0 0 0.5px rgba(255,240,200,0.50)',
+    ].join(', ');
+  })();
 
-  /* Card shadow — lifts and deepens on hover */
-  const cardShadow = isHovered && phase === 'idle'
-    ? [
-        '0 2px 4px rgba(50,30,8,0.06)',
-        '0 10px 28px rgba(50,30,8,0.16)',
-        '0 32px 72px rgba(50,30,8,0.18)',
-        '0 56px 110px rgba(50,30,8,0.13)',
-        'inset 0 0 0 0.5px rgba(255,240,200,0.60)',
-      ].join(', ')
-    : [
-        '0 2px 4px rgba(50,30,8,0.07)',
-        '0 8px 22px rgba(50,30,8,0.12)',
-        '0 24px 60px rgba(50,30,8,0.14)',
-        '0 44px 90px rgba(50,30,8,0.10)',
-        'inset 0 0 0 0.5px rgba(255,240,200,0.50)',
-      ].join(', ');
+  /* Scene fades with card */
+  const sceneOpacity    = isExiting ? 0 : 1;
+  const sceneTransition = isExiting ? 'opacity 0.60s ease 0.10s' : 'none';
 
   return (
     <div
       onClick={handleOpen}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => phase === 'idle' && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       role="button"
       tabIndex={0}
       aria-label="Chạm để mở thiệp cưới"
       style={{
         position: 'fixed', inset: 0, zIndex: 9999,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        userSelect: 'none',
-        WebkitUserSelect: 'none',
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        cursor: isLifting || isExiting ? 'default' : 'pointer',
+        userSelect: 'none', WebkitUserSelect: 'none',
         overflow: 'hidden',
         opacity: sceneOpacity,
         transition: sceneTransition,
       }}
     >
 
-      {/* ── Environment: Warm champagne-cream background ──
-           Clean radial gradient — center is warmer and lighter,
-           edges darker but still warm. No digital art feel. */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute', inset: 0,
-          background: `
-            radial-gradient(
-              ellipse 90% 85% at 50% 50%,
-              #F5EBCF 0%,
-              #EDD9A8 30%,
-              #E2C98A 62%,
-              #D5BB74 85%,
-              #C9B065 100%
-            )
-          `,
-          pointerEvents: 'none',
-        }}
-      />
+      {/* ── Surface background ──
+           Warm paper/stationery feel.
+           Flat enough to feel physical, not digital.
+           Avoid prominent center glow — too "spotlight". */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', inset: 0,
+        background: `
+          radial-gradient(
+            ellipse 110% 100% at 50% 48%,
+            #F0E4C4 0%,
+            #EAD9AB 38%,
+            #E3CC90 68%,
+            #D9C07B 88%,
+            #CDB56A 100%
+          )
+        `,
+        pointerEvents: 'none',
+      }} />
 
-      {/* ── Warm glow behind card — very subtle ──
-           Think: morning light from a window landing on the envelope.
-           Not a bloom, not a vignette — just warmth. */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          top: '50%', left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 'clamp(320px, 80vw, 640px)',
-          height: 'clamp(480px, 110vh, 900px)',
-          background: `
-            radial-gradient(
-              ellipse 55% 60% at 50% 48%,
-              rgba(255,252,230,0.88) 0%,
-              rgba(252,243,210,0.60) 35%,
-              rgba(244,228,182,0.32) 60%,
-              transparent 78%
-            )
-          `,
-          pointerEvents: 'none',
-          animation: 'introGlowBreath 5.5s ease-in-out infinite',
-        }}
-      />
+      {/* Corner vignette — just edges, not a bloom */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', inset: 0,
+        background: `
+          radial-gradient(
+            ellipse 108% 108% at 50% 50%,
+            transparent 50%,
+            rgba(80,55,15,0.18) 100%
+          )
+        `,
+        pointerEvents: 'none',
+      }} />
 
-      {/* ── Edge vignette — corners only, very subtle ── */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute', inset: 0,
-          background: `
-            radial-gradient(
-              ellipse 100% 100% at 50% 50%,
-              transparent 42%,
-              rgba(100,72,28,0.15) 100%
-            )
-          `,
-          pointerEvents: 'none',
-        }}
-      />
+      {/* Paper texture on surface */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.020'/%3E%3C/svg%3E")`,
+        backgroundRepeat: 'repeat', backgroundSize: '160px 160px',
+      }} />
 
-      {/* ══ THE INVITATION CARD ════════════════════════════════════════
-           Portrait invitation proportions — ~4:5.6
-           This is the PHYSICAL OBJECT the user interacts with.
-           
-           Materials:
-           • backgroundColor: warm ivory #FCF7EC
-           • borderRadius: 2px — paper has slightly soft edges
-           • boxShadow: 4-layer physical shadow stack
-           • Envelope texture at 3.5% via background image
-           • SVG fractal noise grain at 2.8%
-           
-           Typography hierarchy:
-           small italic monogram → thin rule → "Trân trọng kính mời"
-           → Groom name (large) → & → Bride name (large)
-           → thin rule → date (large) → venue (small)
-      ══════════════════════════════════════════════════════════════════ */}
+      {/* ══ INVITATION CARD ══════════════════════════════════════════════
+           Physical proportions: ~A5 portrait  (148 × 210mm ratio ≈ 0.70)
+           Width constrained: never wider than 344px on desktop,
+                              never narrower than 272px on mobile.
+           Natural slight tilt at -1.8deg — resting on surface.
+      ════════════════════════════════════════════════════════════════ */}
       <div
-        ref={cardRef}
         style={{
           position: 'relative',
           zIndex: 2,
-          width: 'clamp(268px, 60vw, 344px)',
+          width: 'clamp(272px, 60vw, 344px)',
           opacity: entered ? 1 : 0,
           transform: cardTransform,
-          transition: entered
-            ? (isLifting || isExiting
-                ? cardTransition
-                : 'opacity 1.1s cubic-bezier(0.16,1,0.3,1), transform 1.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.55s ease')
-            : 'none',
+          transition: cardTransition,
           boxShadow: cardShadow,
           borderRadius: '2px',
-          backgroundColor: '#FCF8EC',
+          backgroundColor: '#FCF8EE',
           overflow: 'hidden',
           willChange: 'transform, opacity',
         }}
       >
+        {/* Envelope texture — extremely subtle */}
+        <div aria-hidden="true" style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: 'url("/Test_06-06-2026/envelope_back.png")',
+          backgroundSize: 'cover', backgroundPosition: 'center',
+          opacity: 0.032, pointerEvents: 'none', zIndex: 0,
+          mixBlendMode: 'multiply',
+        }} />
 
-        {/* Envelope texture at micro-opacity */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute', inset: 0,
-            backgroundImage: 'url("/Test_06-06-2026/envelope_back.png")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: 0.038,
-            pointerEvents: 'none',
-            zIndex: 0,
-            mixBlendMode: 'multiply',
-          }}
-        />
-
-        {/* Paper grain — SVG fractal noise */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute', inset: 0,
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E")`,
-            backgroundRepeat: 'repeat',
-            backgroundSize: '200px 200px',
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
+        {/* Paper grain */}
+        <div aria-hidden="true" style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.74' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.026'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat', backgroundSize: '180px 180px',
+        }} />
 
         {/* ── Card content ── */}
         <div style={{
-          position: 'relative',
-          zIndex: 1,
-          padding: 'clamp(36px, 8vw, 56px) clamp(26px, 5vw, 38px) clamp(40px, 9vw, 60px)',
+          position: 'relative', zIndex: 1,
+          padding: 'clamp(38px, 9vw, 58px) clamp(28px, 6vw, 40px) clamp(28px, 6vw, 40px)',
           textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
         }}>
 
-          {/* Monogram — very small, almost invisible */}
-          <div style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(0.72rem, 1.6vw, 0.85rem)',
-            fontWeight: 400,
-            fontStyle: 'italic',
-            color: 'rgba(90,60,20,0.38)',
-            letterSpacing: '0.24em',
-            marginBottom: 'clamp(18px, 4vw, 26px)',
-            lineHeight: 1,
-          }}>
-            ĐN &amp; TN
-          </div>
-
-          {/* Top thin rule */}
-          <div style={{
-            width: 'clamp(24px, 5.5vw, 36px)',
-            height: '0.5px',
-            background: 'rgba(140,100,40,0.30)',
-            marginBottom: 'clamp(18px, 4vw, 26px)',
-          }} />
-
-          {/* "Trân trọng kính mời" */}
+          {/* "Trân trọng kính mời" — first line */}
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(0.60rem, 1.2vw, 0.70rem)',
-            fontStyle: 'italic',
-            fontWeight: 400,
-            color: 'rgba(90,60,20,0.42)',
-            letterSpacing: '0.08em',
-            marginBottom: 'clamp(20px, 4.5vw, 30px)',
+            fontSize: 'clamp(0.58rem, 1.1vw, 0.68rem)',
+            fontStyle: 'italic', fontWeight: 400,
+            color: 'rgba(80,54,16,0.48)',
+            letterSpacing: '0.10em',
+            marginBottom: 'clamp(16px, 3.5vw, 24px)',
             lineHeight: 1,
           }}>
             Trân trọng kính mời
           </p>
 
-          {/* Groom name */}
+          {/* Thin rule */}
+          <div style={{
+            width: 'clamp(22px, 5vw, 32px)', height: '0.5px',
+            background: 'linear-gradient(to right, transparent, rgba(130,95,35,0.38), transparent)',
+            marginBottom: 'clamp(16px, 3.5vw, 24px)',
+          }} />
+
+          {/* Groom */}
           <div style={{
             fontFamily: "'Playfair Display', serif",
-            fontSize: 'clamp(1.5rem, 4.2vw, 2.05rem)',
-            fontWeight: 500,
-            color: '#1A1008',
-            lineHeight: 1.05,
-            letterSpacing: '-0.01em',
+            fontSize: 'clamp(1.48rem, 4.2vw, 2.0rem)',
+            fontWeight: 500, color: '#1A1008',
+            lineHeight: 1.05, letterSpacing: '-0.01em',
           }}>
             {COUPLE.groom.firstName}
           </div>
@@ -325,138 +282,149 @@ export default function IntroShader({ onComplete }) {
           {/* Ampersand */}
           <div style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(0.92rem, 2vw, 1.22rem)',
-            fontStyle: 'italic',
-            fontWeight: 300,
+            fontSize: 'clamp(0.90rem, 2vw, 1.18rem)',
+            fontStyle: 'italic', fontWeight: 300,
             color: '#9A7228',
-            lineHeight: 1,
-            margin: 'clamp(5px, 1vw, 9px) 0',
+            lineHeight: 1, margin: 'clamp(4px, 0.8vw, 8px) 0',
           }}>
             &amp;
           </div>
 
-          {/* Bride name */}
+          {/* Bride */}
           <div style={{
             fontFamily: "'Playfair Display', serif",
-            fontSize: 'clamp(1.5rem, 4.2vw, 2.05rem)',
-            fontWeight: 500,
-            color: '#1A1008',
-            lineHeight: 1.05,
-            letterSpacing: '-0.01em',
-            marginBottom: 'clamp(26px, 5.5vw, 38px)',
+            fontSize: 'clamp(1.48rem, 4.2vw, 2.0rem)',
+            fontWeight: 500, color: '#1A1008',
+            lineHeight: 1.05, letterSpacing: '-0.01em',
+            marginBottom: 'clamp(22px, 5vw, 32px)',
           }}>
             {COUPLE.bride.firstName}
           </div>
 
-          {/* Center rule */}
+          {/* ── WAX SEAL — the interaction point ──
+               Centered on card. Sits between names and date.
+               Hover: breathes subtly.
+               Click (sealing): presses / scale down briefly.
+               This is the tactile focal point. */}
           <div style={{
-            width: 'clamp(24px, 5.5vw, 36px)',
-            height: '0.5px',
-            background: 'linear-gradient(to right, transparent, rgba(140,100,40,0.45), transparent)',
-            marginBottom: 'clamp(18px, 4vw, 26px)',
-          }} />
-
-          {/* Date — typographic, stacked */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 0,
-            marginBottom: 'clamp(14px, 3vw, 20px)',
+            width: 'clamp(52px, 12vw, 64px)',
+            height: 'clamp(52px, 12vw, 64px)',
+            marginBottom: 'clamp(20px, 4.5vw, 28px)',
+            position: 'relative',
+            transform: sealPressed ? 'scale(0.88)' : isHovered ? 'scale(1.06)' : 'scale(1)',
+            transition: sealPressed
+              ? 'transform 0.16s cubic-bezier(0.55, 0, 1, 1)'
+              : 'transform 0.50s cubic-bezier(0.16, 1, 0.3, 1)',
+            animation: entered && !isHovered && !sealPressed && phase === 'idle'
+              ? 'sealBreath 4.5s ease-in-out infinite'
+              : 'none',
           }}>
-            <div style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(2.2rem, 6vw, 3.3rem)',
-              fontWeight: 400,
-              color: '#231208',
-              lineHeight: 0.9,
-              letterSpacing: '-0.025em',
-            }}>
-              20
-            </div>
-            <div style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 'clamp(0.64rem, 1.4vw, 0.76rem)',
-              fontStyle: 'italic',
-              fontWeight: 400,
-              color: 'rgba(90,60,20,0.52)',
-              letterSpacing: '0.12em',
-              marginTop: 'clamp(3px, 0.5vw, 5px)',
-              lineHeight: 1,
-            }}>
-              tháng Mười · 2026
-            </div>
+            <img
+              src={WAX_SEAL_PATH}
+              alt="Wax seal — nhấn để mở thiệp"
+              width="64" height="64"
+              style={{
+                width: '100%', height: '100%',
+                display: 'block',
+                opacity: 0.92,
+                filter: sealPressed ? 'brightness(0.82)' : 'brightness(1)',
+                transition: 'filter 0.15s ease',
+              }}
+              onError={e => {
+                /* Fallback: inline SVG circle if asset fails */
+                e.currentTarget.parentElement.innerHTML = `
+                  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+                    <circle cx="32" cy="32" r="29" fill="#7C1D21" opacity="0.92"/>
+                    <circle cx="32" cy="32" r="26" stroke="rgba(255,255,255,0.10)" stroke-width="0.5" fill="none"/>
+                    <circle cx="32" cy="32" r="22" stroke="rgba(248,244,236,0.18)" stroke-width="0.5" fill="none" stroke-dasharray="2 3"/>
+                    <text x="32" y="37" font-family="Georgia,serif" font-size="14" font-style="italic" fill="#FDF8EC" text-anchor="middle" opacity="0.95">ĐN</text>
+                  </svg>`;
+              }}
+            />
+          </div>
+
+          {/* Date */}
+          <div style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: 'clamp(2.0rem, 5.5vw, 3.0rem)',
+            fontWeight: 400, color: '#231208',
+            lineHeight: 0.9, letterSpacing: '-0.025em',
+            marginBottom: 'clamp(3px, 0.6vw, 6px)',
+          }}>
+            20
+          </div>
+          <div style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(0.62rem, 1.3vw, 0.74rem)',
+            fontStyle: 'italic', fontWeight: 400,
+            color: 'rgba(80,54,16,0.52)',
+            letterSpacing: '0.12em',
+            marginBottom: 'clamp(12px, 2.5vw, 18px)',
+            lineHeight: 1,
+          }}>
+            tháng Mười · 2026
           </div>
 
           {/* Venue */}
           <p style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(0.60rem, 1.2vw, 0.70rem)',
-            fontStyle: 'italic',
-            fontWeight: 400,
-            color: 'rgba(90,60,20,0.38)',
-            lineHeight: 1.35,
-            margin: 0,
-            letterSpacing: '0.01em',
+            fontSize: 'clamp(0.58rem, 1.1vw, 0.68rem)',
+            fontStyle: 'italic', fontWeight: 400,
+            color: 'rgba(80,54,16,0.36)',
+            lineHeight: 1.4, margin: 0, letterSpacing: '0.01em',
           }}>
-            {WEDDING.venue}<br/>
-            <span style={{ fontSize: '0.9em', opacity: 0.80 }}>TP. Hồ Chí Minh</span>
+            {WEDDING.venue}
+            <br/>
+            <span style={{ opacity: 0.78, fontSize: '0.92em' }}>TP. Hồ Chí Minh</span>
           </p>
 
         </div>
       </div>
 
-      {/* ── CTA — below card, whisper-level ──
-           A single vertical champagne thread that breathes.
-           "Chạm để mở" in tiny uppercase.
-           This is the most restrained possible CTA. */}
+      {/* ── CTA cue — below card ──
+           Visible label, not aria-hidden.
+           "Nhấn để mở" is the most minimal possible instruction.
+           Thread below pulses gently. */}
       <div
-        aria-hidden="true"
         style={{
-          position: 'relative',
-          zIndex: 2,
-          marginTop: 'clamp(20px, 4vw, 32px)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '8px',
-          opacity: entered ? 1 : 0,
-          transition: 'opacity 1.0s 1.8s ease',
-          pointerEvents: 'none',
+          position: 'relative', zIndex: 2,
+          marginTop: 'clamp(18px, 3.5vw, 28px)',
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          gap: '7px',
+          opacity: entered && phase === 'idle' ? 1 : 0,
+          transition: entered ? 'opacity 0.6s ease' : 'none',
+          transitionDelay: entered ? '2.0s' : '0s',
         }}
       >
         <p style={{
           fontFamily: "'Be Vietnam Pro', sans-serif",
-          fontSize: 'clamp(0.50rem, 0.9vw, 0.58rem)',
-          fontWeight: 400,
-          letterSpacing: '0.30em',
+          fontSize: 'clamp(0.48rem, 0.9vw, 0.56rem)',
+          fontWeight: 400, letterSpacing: '0.32em',
           textTransform: 'uppercase',
-          color: 'rgba(90,60,20,0.52)',
-          margin: 0,
+          color: 'rgba(80,54,16,0.44)', margin: 0,
         }}>
-          Chạm để mở
+          Nhấn để mở
         </p>
         <div style={{
-          width: '1px',
-          height: '20px',
-          background: 'linear-gradient(to bottom, rgba(130,92,30,0.48), transparent)',
+          width: '1px', height: '18px',
+          background: 'linear-gradient(to bottom, rgba(120,86,24,0.45), transparent)',
           transformOrigin: 'top center',
-          animation: 'introCTAThread 2.8s ease-in-out infinite',
-        }} />
+          animation: 'introCTAThread 2.6s ease-in-out infinite',
+        }} aria-hidden="true" />
       </div>
 
       <style>{`
         @keyframes introCTAThread {
-          0%, 100% { transform: scaleY(0.3); opacity: 0.3; }
-          60%       { transform: scaleY(1.0); opacity: 1.0; }
+          0%, 100% { transform: scaleY(0.25); opacity: 0.25; }
+          55%       { transform: scaleY(1.0);  opacity: 0.90; }
         }
-        @keyframes introGlowBreath {
-          0%, 100% { opacity: 0.85; transform: translate(-50%, -50%) scale(1); }
-          50%       { opacity: 1.0;  transform: translate(-50%, -50%) scale(1.04); }
+        @keyframes sealBreath {
+          0%, 100% { transform: scale(1.00); }
+          50%       { transform: scale(1.04); }
         }
         @media (prefers-reduced-motion: reduce) {
-          @keyframes introCTAThread { 0%, 100% { transform: none; opacity: 0.4; } }
-          @keyframes introGlowBreath { 0%, 100% { opacity: 0.9; } }
+          @keyframes introCTAThread { 0%, 100% { opacity: 0.35; } }
+          @keyframes sealBreath { 0%, 100% { transform: none; } }
         }
       `}</style>
     </div>
