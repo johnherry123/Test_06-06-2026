@@ -117,24 +117,26 @@ function AccountAccordion({ account }) {
               width: '100%', borderCollapse: 'collapse',
               fontFamily: "'Be Vietnam Pro', sans-serif",
             }}>
-              {[
-                ['Ngân hàng', account.bank],
-                ['Số tài khoản', account.accountNumber],
-                ['Chi nhánh', account.branch],
-                ['Chủ tài khoản', account.name],
-              ].map(([k, v]) => (
-                <tr key={k} style={{ borderBottom: '0.5px solid rgba(30,20,16,0.06)' }}>
-                  <td style={{
-                    fontSize: '0.70rem', color: 'rgba(80,54,16,0.45)',
-                    padding: '7px 0', verticalAlign: 'top', width: '40%',
-                    paddingRight: '12px',
-                  }}>{k}</td>
-                  <td style={{
-                    fontSize: '0.84rem', color: '#1A1008',
-                    padding: '7px 0', verticalAlign: 'top', fontWeight: k === 'Số tài khoản' ? 600 : 400,
-                  }}>{v}</td>
-                </tr>
-              ))}
+              <tbody>
+                {[
+                  ['Ngân hàng', account.bank],
+                  ['Số tài khoản', account.accountNumber],
+                  ['Chi nhánh', account.branch],
+                  ['Chủ tài khoản', account.name],
+                ].map(([k, v]) => (
+                  <tr key={k} style={{ borderBottom: '0.5px solid rgba(30,20,16,0.06)' }}>
+                    <td style={{
+                      fontSize: '0.70rem', color: 'rgba(80,54,16,0.45)',
+                      padding: '7px 0', verticalAlign: 'top', width: '40%',
+                      paddingRight: '12px',
+                    }}>{k}</td>
+                    <td style={{
+                      fontSize: '0.84rem', color: '#1A1008',
+                      padding: '7px 0', verticalAlign: 'top', fontWeight: k === 'Số tài khoản' ? 600 : 400,
+                    }}>{v}</td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
             <div style={{ marginTop: '10px' }}>
               <CopyBtn text={account.accountNumber} label="số tài khoản" />
