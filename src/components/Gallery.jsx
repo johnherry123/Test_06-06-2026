@@ -1,14 +1,28 @@
-/* ══════════════════════════════════════════════════════════════════════
-   GALLERY — Photo Essay  [REDESIGNED]
-   ART DIRECTION: Near-black — photography is everything.
-   Asymmetric editorial layout with varied sizes.
-   Lightbox with keyboard navigation.
-   No category filters — this is a photo essay, not a portfolio.
-══════════════════════════════════════════════════════════════════════ */
+/*
+  GALLERY — Compact Contact Sheet Album
+  ─────────────────────────────────────────────────────────────────
+  
+  Philosophy:
+  A wedding album, not a photographer's portfolio.
+  
+  Layout:
+  - 2-col grid on mobile, 3-col on desktop
+  - aspect-ratio 4/5 — uniform, compact
+  - Show 6 photos on page (first 6)
+  - "Xem toàn bộ" opens lightbox with all photos
+  - No featured full-bleed image
+  - No category filters
+  - No cinematic strips
+  - Lightbox: all photos, keyboard nav, swipe-friendly
+  
+  Section bg: warm cream (#F5EFE3) — NOT near-black
+  This section should feel like a printed photo album page,
+  not a photographer's dark-mode portfolio.
+*/
 import React, { useState, useEffect, useCallback } from 'react';
-import { GALLERY } from '../weddingData';
+import { GALLERY, COUPLE } from '../weddingData';
 
-/* Lightbox */
+/* ── Lightbox — full photo access ── */
 function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
   if (activeIdx === null) return null;
   const photo = photos[activeIdx];
@@ -26,9 +40,9 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
       onClick={onClose}
       style={{
         position: 'fixed', inset: 0, zIndex: 9999,
-        backgroundColor: 'rgba(8,5,3,0.98)',
+        backgroundColor: 'rgba(10,6,3,0.97)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '20px',
+        padding: '24px',
         animation: 'lbFadeIn 0.22s ease',
       }}
     >
@@ -37,20 +51,17 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
         onClick={onClose}
         aria-label="Đóng"
         style={{
-          position: 'absolute', top: '20px', right: '20px', zIndex: 10,
-          width: '42px', height: '42px', borderRadius: '50%',
+          position: 'absolute', top: '16px', right: '16px', zIndex: 10,
+          width: '40px', height: '40px', borderRadius: '50%',
           background: 'transparent',
-          border: '1px solid rgba(248,244,236,0.18)',
-          color: 'rgba(248,244,236,0.75)',
+          border: '1px solid rgba(248,244,236,0.20)',
+          color: 'rgba(248,244,236,0.70)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer',
-          transition: 'border-color 0.2s',
         }}
-        onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(248,244,236,0.55)'; }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(248,244,236,0.18)'; }}
       >
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
-          <path d="M1.5 1.5l10 10M11.5 1.5l-10 10"/>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+          <path d="M1 1l10 10M11 1L1 11"/>
         </svg>
       </button>
 
@@ -59,8 +70,8 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
         onClick={e => { e.stopPropagation(); onPrev(); }}
         aria-label="Ảnh trước"
         style={{
-          position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)',
-          width: '46px', height: '46px', borderRadius: '50%',
+          position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)',
+          width: '44px', height: '44px', borderRadius: '50%',
           background: 'transparent',
           border: '1px solid rgba(248,244,236,0.18)',
           color: 'rgba(248,244,236,0.65)',
@@ -68,8 +79,8 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
           cursor: 'pointer', zIndex: 10,
         }}
       >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M10 3L5 8l5 5"/>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M9 2.5L4.5 7 9 11.5"/>
         </svg>
       </button>
 
@@ -78,8 +89,8 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
         onClick={e => { e.stopPropagation(); onNext(); }}
         aria-label="Ảnh tiếp theo"
         style={{
-          position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)',
-          width: '46px', height: '46px', borderRadius: '50%',
+          position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
+          width: '44px', height: '44px', borderRadius: '50%',
           background: 'transparent',
           border: '1px solid rgba(248,244,236,0.18)',
           color: 'rgba(248,244,236,0.65)',
@@ -87,61 +98,34 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
           cursor: 'pointer', zIndex: 10,
         }}
       >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M6 3l5 5-5 5"/>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M5 2.5L9.5 7 5 11.5"/>
         </svg>
       </button>
 
       {/* Image */}
-      <div onClick={e => e.stopPropagation()} style={{ maxWidth: '90vw', maxHeight: '85vh', textAlign: 'center' }}>
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{ maxWidth: '88vw', maxHeight: '84vh', textAlign: 'center' }}
+      >
         <img
           src={photo.src}
           alt={photo.alt}
           style={{
-            maxWidth: '100%', maxHeight: '78vh',
+            maxWidth: '100%', maxHeight: '76vh',
             objectFit: 'contain', display: 'block', margin: '0 auto',
           }}
           onError={e => { e.target.src = photo.fallback; }}
         />
-        <div style={{ marginTop: '16px' }}>
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: '1rem', fontStyle: 'italic',
-            color: 'rgba(248,244,236,0.55)', margin: 0,
-          }}>{photo.alt}</p>
-          <p style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.62rem',
-            color: 'rgba(248,244,236,0.25)',
-            marginTop: '5px', letterSpacing: '0.1em',
-          }}>{activeIdx + 1} / {photos.length}</p>
-        </div>
+        <p style={{
+          fontFamily: "'Be Vietnam Pro', sans-serif",
+          fontSize: '0.60rem',
+          color: 'rgba(248,244,236,0.22)',
+          marginTop: '12px', letterSpacing: '0.08em',
+        }}>
+          {activeIdx + 1} / {photos.length}
+        </p>
       </div>
-    </div>
-  );
-}
-
-/* Photo cell */
-function PhotoCell({ photo, idx, onOpen, aspectRatio, style = {} }) {
-  return (
-    <div
-      onClick={() => onOpen(idx)}
-      tabIndex={0}
-      role="button"
-      aria-label={`Xem ảnh: ${photo.alt}`}
-      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') onOpen(idx); }}
-      className="gallery-cell"
-      style={{ aspectRatio, ...style }}
-    >
-      <img
-        src={photo.src}
-        alt={photo.alt}
-        loading="lazy"
-        decoding="async"
-        style={{ objectPosition: 'center 22%' }}
-        onError={e => { e.target.src = photo.fallback; }}
-      />
-      <div className="gallery-cell-overlay" aria-hidden="true" />
     </div>
   );
 }
@@ -150,10 +134,14 @@ export default function Gallery() {
   const [activeIdx, setActiveIdx] = useState(null);
   const photos = GALLERY;
 
+  /* Show first 6 on page */
+  const VISIBLE = 6;
+  const visible = photos.slice(0, VISIBLE);
+
   /* Keyboard navigation */
   useEffect(() => {
+    if (activeIdx === null) return;
     const onKey = e => {
-      if (activeIdx === null) return;
       if (e.key === 'Escape')     setActiveIdx(null);
       if (e.key === 'ArrowLeft')  setActiveIdx(i => (i > 0 ? i - 1 : photos.length - 1));
       if (e.key === 'ArrowRight') setActiveIdx(i => (i < photos.length - 1 ? i + 1 : 0));
@@ -162,129 +150,112 @@ export default function Gallery() {
     return () => window.removeEventListener('keydown', onKey);
   }, [activeIdx, photos.length]);
 
-  const p = useCallback((n) => photos[n % photos.length], [photos]);
-
-  const gap = 'clamp(4px, 0.6vw, 7px)';
-
   return (
     <section
       id="gallery"
       aria-label="Album ảnh cưới"
       style={{
-        backgroundColor: '#0E0A07',
-        paddingBottom: 'clamp(68px, 10vw, 100px)',
+        backgroundColor: '#F5EFE3',
+        padding: 'clamp(64px, 10vw, 96px) 0',
         overflow: 'hidden',
       }}
     >
-      {/* Featured opener — full bleed */}
-      <div
-        style={{
-          width: '100%',
-          height: 'clamp(220px, 44vw, 500px)',
-          overflow: 'hidden', position: 'relative', cursor: 'pointer',
-        }}
-        onClick={() => setActiveIdx(0)}
-        role="button"
-        tabIndex={0}
-        aria-label={`Xem ảnh: ${photos[0]?.alt}`}
-        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setActiveIdx(0); }}
+      {/* Section header — minimal */}
+      <div style={{
+        textAlign: 'center',
+        padding: '0 clamp(24px, 5vw, 48px) clamp(28px, 5vw, 40px)',
+      }}>
+        <p style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: 'clamp(0.78rem, 1.5vw, 0.92rem)',
+          fontStyle: 'italic',
+          color: 'rgba(80,54,16,0.42)',
+          letterSpacing: '0.04em',
+          marginBottom: '6px',
+        }}>
+          Album
+        </p>
+        <h2 style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: 'clamp(1.65rem, 4.2vw, 2.6rem)',
+          fontWeight: 500, color: '#1A1008',
+          lineHeight: 1.10, letterSpacing: '0.01em',
+          margin: 0,
+        }}>
+          {COUPLE.groom.firstName} &amp; {COUPLE.bride.firstName}
+        </h2>
+      </div>
+
+      {/* ── 2-col / 3-col contact-sheet grid ── */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: '3px',
+        padding: '0',
+      }}
+      className="gallery-grid"
       >
-        {photos[0] && (
-          <>
+        {visible.map((photo, idx) => (
+          <button
+            key={photo.id}
+            onClick={() => setActiveIdx(idx)}
+            aria-label={`Mở ảnh ${idx + 1}: ${photo.alt}`}
+            style={{
+              display: 'block',
+              aspectRatio: '4/5',
+              overflow: 'hidden',
+              position: 'relative',
+              background: '#1A1008',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+            }}
+          >
             <img
-              src={photos[0].src}
-              alt={photos[0].alt}
-              loading="eager"
+              src={photo.src}
+              alt={photo.alt}
+              loading="lazy"
               decoding="async"
               style={{
                 width: '100%', height: '100%',
-                objectFit: 'cover', objectPosition: 'center 30%',
+                objectFit: 'cover',
+                objectPosition: 'center 20%',
                 display: 'block',
-                filter: 'brightness(0.68) contrast(1.08) saturate(0.83)',
-                transition: 'transform 10s cubic-bezier(0.25,0.46,0.45,0.94)',
+                transition: 'transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94)',
+                filter: 'brightness(0.88) contrast(1.04) saturate(0.88)',
               }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.022)'; }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.04)'; }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
-              onError={e => { e.currentTarget.parentElement.style.display = 'none'; }}
+              onError={e => { e.currentTarget.src = photo.fallback; }}
             />
-            <div aria-hidden="true" style={{
-              position: 'absolute', inset: 0,
-              background: 'linear-gradient(to top, rgba(14,10,7,0.90) 0%, rgba(14,10,7,0.20) 44%, transparent 68%)',
-              pointerEvents: 'none',
-            }} />
-            {/* Title overlay */}
-            <div style={{
-              position: 'absolute',
-              bottom: 'clamp(22px, 3.8vw, 38px)',
-              left: 'clamp(22px, 4.5vw, 52px)',
-            }}>
-              <p style={{
-                fontFamily: "'Be Vietnam Pro', sans-serif",
-                fontSize: '0.58rem', fontWeight: 500,
-                letterSpacing: '0.24em', textTransform: 'uppercase',
-                color: '#B08C4E', marginBottom: '7px',
-              }}>Album Ảnh</p>
-              <h2 style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: 'clamp(1.9rem, 4.8vw, 3.6rem)',
-                fontWeight: 400,
-                color: 'rgba(248,244,236,0.96)',
-                lineHeight: 1.0, letterSpacing: '-0.02em',
-                margin: 0,
-                textShadow: '0 2px 28px rgba(0,0,0,0.28)',
-              }}>
-                Khoảnh Khắc<br/>
-                <span style={{ fontStyle: 'italic', fontWeight: 400, fontSize: '0.80em', color: 'rgba(248,244,236,0.56)' }}>
-                  hạnh phúc
-                </span>
-              </h2>
-            </div>
-          </>
-        )}
+          </button>
+        ))}
       </div>
 
-      {/* Editorial grid */}
-      <div style={{ padding: `${gap}` }}>
-
-        {/* Row 1: Portrait + two landscape stacked */}
-        <div className="gallery-row-1" style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap, marginBottom: gap,
-        }}>
-          <PhotoCell photo={p(1)} idx={1} onOpen={setActiveIdx} aspectRatio="3/4" />
-          <div style={{ display: 'flex', flexDirection: 'column', gap }}>
-            <PhotoCell photo={p(2)} idx={2} onOpen={setActiveIdx} aspectRatio="4/3" />
-            <PhotoCell photo={p(3)} idx={3} onOpen={setActiveIdx} aspectRatio="4/3" />
-          </div>
+      {/* "View all" link */}
+      {photos.length > VISIBLE && (
+        <div style={{ textAlign: 'center', paddingTop: 'clamp(22px, 4vw, 32px)' }}>
+          <button
+            onClick={() => setActiveIdx(VISIBLE)}
+            style={{
+              fontFamily: "'Be Vietnam Pro', sans-serif",
+              fontSize: '0.72rem', fontWeight: 500,
+              letterSpacing: '0.10em', textTransform: 'uppercase',
+              color: '#7C1D21',
+              background: 'transparent', border: 'none',
+              cursor: 'pointer',
+              textDecoration: 'none',
+              display: 'inline-flex', alignItems: 'center', gap: '6px',
+              padding: '8px 0',
+            }}
+          >
+            Xem toàn bộ album
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+              <path d="M2.5 6h7M7 3l3 3-3 3"/>
+            </svg>
+          </button>
         </div>
-
-        {/* Row 2: Full-width cinematic strip */}
-        <div style={{ marginBottom: gap }}>
-          <PhotoCell photo={p(4)} idx={4} onOpen={setActiveIdx} aspectRatio="16/5" style={{ width: '100%' }} />
-        </div>
-
-        {/* Row 3: Three equal portraits */}
-        <div className="gallery-row-3" style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap, marginBottom: gap,
-        }}>
-          <PhotoCell photo={p(5)} idx={5} onOpen={setActiveIdx} aspectRatio="3/4" />
-          <PhotoCell photo={p(6)} idx={6} onOpen={setActiveIdx} aspectRatio="3/4" />
-          <PhotoCell photo={p(7)} idx={7} onOpen={setActiveIdx} aspectRatio="3/4" />
-        </div>
-
-        {/* Row 4: Portrait + landscape */}
-        <div className="gallery-row-4" style={{
-          display: 'grid',
-          gridTemplateColumns: '38% 62%',
-          gap,
-        }}>
-          <PhotoCell photo={p(0)} idx={0} onOpen={setActiveIdx} aspectRatio="3/4" />
-          <PhotoCell photo={p(2)} idx={2} onOpen={setActiveIdx} aspectRatio="4/3" style={{ height: '100%' }} />
-        </div>
-      </div>
+      )}
 
       <Lightbox
         photos={photos}
@@ -293,6 +264,12 @@ export default function Gallery() {
         onPrev={() => setActiveIdx(i => (i > 0 ? i - 1 : photos.length - 1))}
         onNext={() => setActiveIdx(i => (i < photos.length - 1 ? i + 1 : 0))}
       />
+
+      <style>{`
+        @media (min-width: 640px) {
+          .gallery-grid { grid-template-columns: repeat(3, 1fr) !important; }
+        }
+      `}</style>
     </section>
   );
 }

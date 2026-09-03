@@ -31,14 +31,11 @@ import AudioPlayer from './components/AudioPlayer';
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* Navigation — labels match actual section IDs and content */
+/* Navigation — minimal. Wedding invitation, not a website menu. */
 const NAV_LINKS = [
-  { href: '#loi-ngo',  label: 'Lời Ngỏ'      },
-  { href: '#story',    label: 'Câu Chuyện'    },
-  { href: '#couple',   label: 'Hai Chúng Mình'},
-  { href: '#events',   label: 'Ngày Cưới'     },
-  { href: '#gallery',  label: 'Album'          },
-  { href: '#rsvp',     label: 'RSVP'           },
+  { href: '#events',   label: 'Ngày Cưới' },
+  { href: '#gallery',  label: 'Album'      },
+  { href: '#rsvp',     label: 'RSVP'       },
 ];
 
 export default function App() {
@@ -57,12 +54,12 @@ export default function App() {
     if (!hasOpened) return;
 
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 0.90,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 0.9,
-      touchMultiplier: 1.8,
+      wheelMultiplier: 1.0,
+      touchMultiplier: 2.0,
       infinite: false,
     });
 
@@ -203,7 +200,7 @@ export default function App() {
               href="#hero"
               onClick={(e) => { e.preventDefault(); scrollTo('#hero'); }}
               style={{
-                fontFamily: "'Playfair Display', serif",
+                fontFamily: "'Cormorant Garamond', serif",
                 fontSize: '1.05rem',
                 fontWeight: 500,
                 fontStyle: 'italic',
