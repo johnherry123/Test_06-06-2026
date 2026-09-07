@@ -103,14 +103,14 @@ export default function Invitation() {
             <p
               style={{
                 fontFamily: "'Alex Brush', cursive",
-                fontSize: 'clamp(1.9rem, 5.5vw, 3.4rem)',
+                fontSize: 'clamp(2.1rem, 6vw, 3.6rem)',
                 color: '#801D24',
                 lineHeight: 1.15,
                 margin: 0,
                 wordBreak: 'break-word',
               }}
             >
-              {COUPLE.groom.fullName}
+              {COUPLE.groom.firstName}
             </p>
             <p
               style={{
@@ -126,14 +126,26 @@ export default function Invitation() {
             <p
               style={{
                 fontFamily: "'Alex Brush', cursive",
-                fontSize: 'clamp(1.9rem, 5.5vw, 3.4rem)',
+                fontSize: 'clamp(2.1rem, 6vw, 3.6rem)',
                 color: '#801D24',
                 lineHeight: 1.15,
                 margin: 0,
                 wordBreak: 'break-word',
               }}
             >
-              {COUPLE.bride.fullName}
+              {COUPLE.bride.firstName}
+            </p>
+            <p
+              style={{
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: 'clamp(0.95rem, 2.2vw, 1.2rem)',
+                fontStyle: 'italic',
+                color: '#584A42',
+                marginTop: '6px',
+                marginBottom: 0,
+              }}
+            >
+              ({COUPLE.groom.fullName} &amp; {COUPLE.bride.fullName})
             </p>
           </div>
 

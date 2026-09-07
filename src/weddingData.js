@@ -7,7 +7,7 @@
 export const COUPLE = {
   groom: {
     firstName:   'Đại Nghĩa',
-    fullName:    'Nguyễn Đại Nghĩa',
+    fullName:    'Trần Đại Nghĩa',
     role:        'Chú Rể',
     roleLabel:   'Trưởng Nam',
     title:       'Kỹ sư Phần mềm',
@@ -15,7 +15,7 @@ export const COUPLE = {
     photo: {
       src:      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&q=90&fm=webp',
       fallback: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=900&q=85',
-      alt:      'Chú rể Nguyễn Đại Nghĩa',
+      alt:      'Chú rể Trần Đại Nghĩa',
     },
     details: [
       { label: 'Sở thích',        value: 'Nhiếp ảnh, Du lịch & Cà phê sáng' },
@@ -24,8 +24,8 @@ export const COUPLE = {
     ],
   },
   bride: {
-    firstName:   'Thị Nhung',
-    fullName:    'Lê Thị Nhung',
+    firstName:   'Trịnh Nhung',
+    fullName:    'Trịnh Thị Nhung',
     role:        'Cô Dâu',
     roleLabel:   'Út Nữ',
     title:       'Nhà Thiết Kế Thời Trang',
@@ -33,7 +33,7 @@ export const COUPLE = {
     photo: {
       src:      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&q=90&fm=webp',
       fallback: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=900&q=85',
-      alt:      'Cô dâu Lê Thị Nhung',
+      alt:      'Cô dâu Trịnh Thị Nhung',
     },
     details: [
       { label: 'Sở thích',        value: 'Hội họa, Cắm hoa & Nấu ăn gia đình' },
@@ -60,12 +60,12 @@ export const WEDDING = {
 /* ── Family ── */
 export const FAMILY = {
   groom: {
-    father:  'Ông Nguyễn Văn Hùng',
-    mother:  'Bà Trần Thị Mai',
+    father:  'Ông Trần Văn Hùng',
+    mother:  'Bà Nguyễn Thị Mai',
     address: '48 Trường Chinh, Phường 14, Tân Bình, TP. HCM',
   },
   bride: {
-    father:  'Ông Lê Văn Thành',
+    father:  'Ông Trịnh Văn Thành',
     mother:  'Bà Phạm Thị Lan',
     address: '125 Nam Kỳ Khởi Nghĩa, Võ Thị Sáu, Quận 3, TP. HCM',
   },
@@ -232,24 +232,24 @@ export const BANK_ACCOUNTS = [
   {
     id:            'groom',
     role:          'Chú Rể',
-    name:          'NGUYỄN ĐẠI NGHĨA',
+    name:          'TRẦN ĐẠI NGHĨA',
     bank:          'Vietcombank',
     bankShort:     'VCB',
     accountNumber: '1018899889',
     branch:        'Chi nhánh Tân Bình, TP. HCM',
     qrUrl:         'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=2|99|00020101021238540010A00000072701240006970436011010188998890208QRIBFTTA53037045802VN6304',
-    qrFallback:    'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=MUNG_CUOI_CHU_RE_NGUYEN_DAI_NGHIA_1018899889',
+    qrFallback:    'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=MUNG_CUOI_CHU_RE_TRAN_DAI_NGHIA_1018899889',
   },
   {
     id:            'bride',
     role:          'Cô Dâu',
-    name:          'LÊ THỊ NHUNG',
+    name:          'TRỊNH THỊ NHUNG',
     bank:          'Techcombank',
     bankShort:     'TCB',
     accountNumber: '1903668866',
     branch:        'Chi nhánh Sài Gòn, TP. HCM',
     qrUrl:         'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=2|99|00020101021238540010A00000072701240006970407011019036688660208QRIBFTTA53037045802VN6304',
-    qrFallback:    'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=MUNG_CUOI_CO_DAU_LE_THI_NHUNG_1903668866',
+    qrFallback:    'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=MUNG_CUOI_CO_DAU_TRINH_THI_NHUNG_1903668866',
   },
 ];
 
@@ -257,5 +257,5 @@ export const BANK_ACCOUNTS = [
 export const INTRO_PHOTO = {
   src:      'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=1200&q=88&fm=webp',
   fallback: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80',
-  alt:      'Đại Nghĩa & Thị Nhung',
+  alt:      'Đại Nghĩa & Trịnh Nhung',
 };

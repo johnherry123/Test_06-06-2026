@@ -292,7 +292,7 @@ export default function Story() {
               wordBreak: 'break-word',
             }}
           >
-            Đại Nghĩa &amp; Thị Nhung
+            {COUPLE.groom.firstName} &amp; {COUPLE.bride.firstName}
           </p>
           <p
             style={{

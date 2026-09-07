@@ -27,7 +27,7 @@ export default function RSVP() {
         {
           id: 2,
           name: 'Nhóm bạn thân Đại học',
-          message: 'Mừng cho đôi bạn trẻ! Chúc Nghĩa & Nhung luôn ngọt ngào như ngày đầu mới yêu nhé!',
+          message: 'Mừng cho đôi bạn trẻ! Chúc Đại Nghĩa & Trịnh Nhung luôn ngọt ngào như ngày đầu mới yêu nhé!',
           date: 'Hôm qua',
         },
       ];

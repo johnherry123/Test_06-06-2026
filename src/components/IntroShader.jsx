@@ -46,7 +46,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
   return (
     <div
       role="dialog"
-      aria-label="Thiệp cưới Đại Nghĩa & Thị Nhung — Chạm để mở thiệp"
+      aria-label="Thiệp cưới Đại Nghĩa & Trịnh Nhung — Chạm để mở thiệp"
       style={{
         position: 'fixed',
         inset: 0,
