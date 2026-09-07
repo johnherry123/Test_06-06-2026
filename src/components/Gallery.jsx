@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { GALLERY, COUPLE } from '../weddingData';
-import { Camera, X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Maximize2, Film, Sparkles } from 'lucide-react';
 
 /* ── Lightbox Component ── */
 function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
@@ -18,14 +18,15 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`Xem ảnh: ${photo.title || photo.alt}`}
+      aria-label={`Xem ảnh lớn: ${photo.title || photo.alt}`}
       onClick={onClose}
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        backgroundColor: 'rgba(12, 8, 6, 0.94)',
-        backdropFilter: 'blur(12px)',
+        backgroundColor: 'rgba(12, 8, 6, 0.95)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -42,27 +43,27 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
           position: 'absolute',
           top: '20px',
           right: '20px',
-          zIndex: 10,
-          width: '44px',
-          height: '44px',
+          zIndex: 20,
+          width: '46px',
+          height: '46px',
           borderRadius: '50%',
-          background: 'rgba(255, 255, 255, 0.15)',
-          border: '1px solid rgba(255, 255, 255, 0.3)',
+          background: 'rgba(255, 255, 255, 0.12)',
+          border: '1px solid rgba(255, 255, 255, 0.25)',
           color: '#FFFFFF',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-          transition: 'background 0.2s',
+          transition: 'all 0.2s ease',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(128, 29, 36, 0.8)';
+          e.currentTarget.style.background = 'rgba(128, 29, 36, 0.85)';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)';
         }}
       >
-        <X size={20} />
+        <X size={22} />
       </button>
 
       {/* Prev button */}
@@ -78,8 +79,8 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
           left: '20px',
           top: '50%',
           transform: 'translateY(-50%)',
-          width: '50px',
-          height: '50px',
+          width: '52px',
+          height: '52px',
           borderRadius: '50%',
           background: 'rgba(255, 255, 255, 0.15)',
           border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -88,10 +89,17 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-          zIndex: 10,
+          zIndex: 20,
+          transition: 'all 0.2s',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(197, 160, 89, 0.85)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
         }}
       >
-        <ChevronLeft size={24} />
+        <ChevronLeft size={26} />
       </button>
 
       {/* Next button */}
@@ -107,8 +115,8 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
           right: '20px',
           top: '50%',
           transform: 'translateY(-50%)',
-          width: '50px',
-          height: '50px',
+          width: '52px',
+          height: '52px',
           borderRadius: '50%',
           background: 'rgba(255, 255, 255, 0.15)',
           border: '1px solid rgba(255, 255, 255, 0.3)',
@@ -117,18 +125,25 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-          zIndex: 10,
+          zIndex: 20,
+          transition: 'all 0.2s',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(197, 160, 89, 0.85)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
         }}
       >
-        <ChevronRight size={24} />
+        <ChevronRight size={26} />
       </button>
 
       {/* Image Container */}
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          maxWidth: '90vw',
-          maxHeight: '85vh',
+          maxWidth: '92vw',
+          maxHeight: '88vh',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -136,18 +151,18 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
       >
         <div
           style={{
-            borderRadius: '12px',
+            borderRadius: '16px',
             overflow: 'hidden',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6)',
-            border: '2px solid rgba(197, 160, 89, 0.4)',
+            boxShadow: '0 25px 70px rgba(0, 0, 0, 0.7)',
+            border: '2px solid rgba(197, 160, 89, 0.45)',
           }}
         >
           <img
             src={photo.src}
             alt={photo.title || photo.alt}
             style={{
-              maxWidth: '85vw',
-              maxHeight: '75vh',
+              maxWidth: '88vw',
+              maxHeight: '74vh',
               objectFit: 'contain',
               display: 'block',
             }}
@@ -162,20 +177,21 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
           <p
             style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontSize: '1.25rem',
+              fontSize: '1.35rem',
               color: '#FFFFFF',
               fontStyle: 'italic',
               margin: '0 0 4px 0',
+              textShadow: '0 2px 4px rgba(0,0,0,0.5)',
             }}
           >
             {photo.title}
           </p>
           <span
             style={{
-              fontFamily: "'Be Vietnam Pro', sans-serif",
+              fontFamily: "'Cinzel', serif",
               fontSize: '0.74rem',
-              color: 'rgba(255, 255, 255, 0.6)',
-              letterSpacing: '0.1em',
+              color: '#C5A059',
+              letterSpacing: '0.14em',
             }}
           >
             {activeIdx + 1} / {photos.length}
@@ -187,32 +203,60 @@ function Lightbox({ photos, activeIdx, onClose, onPrev, onNext }) {
 }
 
 export default function Gallery() {
-  const [activeIdx, setActiveIdx] = useState(null);
-  const [filter, setFilter] = useState('all');
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [lightboxIdx, setLightboxIdx] = useState(null);
+  const touchStartXRef = useRef(null);
 
-  const filteredPhotos = filter === 'all'
-    ? GALLERY
-    : GALLERY.filter((p) => p.category === filter);
+  const totalPhotos = GALLERY.length;
+  const currentPhoto = GALLERY[currentIdx];
 
+  const handlePrev = () => {
+    setCurrentIdx((prev) => (prev > 0 ? prev - 1 : totalPhotos - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIdx((prev) => (prev < totalPhotos - 1 ? prev + 1 : 0));
+  };
+
+  /* ── Keyboard navigation ── */
   useEffect(() => {
-    if (activeIdx === null) return;
     const handleKey = (e) => {
-      if (e.key === 'Escape') setActiveIdx(null);
-      if (e.key === 'ArrowLeft') setActiveIdx((i) => (i > 0 ? i - 1 : filteredPhotos.length - 1));
-      if (e.key === 'ArrowRight') setActiveIdx((i) => (i < filteredPhotos.length - 1 ? i + 1 : 0));
+      if (lightboxIdx !== null) {
+        if (e.key === 'Escape') setLightboxIdx(null);
+        if (e.key === 'ArrowLeft') setLightboxIdx((i) => (i > 0 ? i - 1 : totalPhotos - 1));
+        if (e.key === 'ArrowRight') setLightboxIdx((i) => (i < totalPhotos - 1 ? i + 1 : 0));
+      } else {
+        if (e.key === 'ArrowLeft') handlePrev();
+        if (e.key === 'ArrowRight') handleNext();
+      }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [activeIdx, filteredPhotos.length]);
+  }, [lightboxIdx, totalPhotos]);
+
+  /* ── Touch gestures for mobile ── */
+  const handleTouchStart = (e) => {
+    touchStartXRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartXRef.current === null) return;
+    const diff = touchStartXRef.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) handleNext();
+      else handlePrev();
+    }
+    touchStartXRef.current = null;
+  };
 
   return (
     <section
-      id="gallery"
-      aria-label="Album ảnh cưới nghệ thuật"
+      id="moments"
+      aria-label="Chapter III · Cinematic Moments - Album ảnh cưới nghệ thuật"
       style={{
         backgroundColor: '#FAF7F2',
-        background: 'radial-gradient(circle at center, #FFFDF9 0%, #F5EDE0 100%)',
-        padding: 'clamp(50px, 8vw, 90px) clamp(12px, 3vw, 36px)',
+        background: 'radial-gradient(ellipse 90% 70% at 50% 30%, #FFFDF9 0%, #F5ECE0 100%)',
+        padding: 'clamp(60px, 9vw, 95px) clamp(16px, 4vw, 36px)',
         position: 'relative',
         overflow: 'hidden',
         width: '100%',
@@ -220,9 +264,12 @@ export default function Gallery() {
         boxSizing: 'border-box',
       }}
     >
+      {/* Anchor alias for compatibility */}
+      <span id="gallery" style={{ position: 'absolute', top: 0, left: 0 }} />
+
       <div
         style={{
-          maxWidth: '1080px',
+          maxWidth: '860px',
           width: '100%',
           margin: '0 auto',
           position: 'relative',
@@ -231,265 +278,361 @@ export default function Gallery() {
         }}
       >
         {/* Section Header */}
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(32px, 5vw, 50px)' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(28px, 4vw, 42px)' }}>
           <div
-            className="gsap-reveal"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              padding: '5px 16px',
+              padding: '6px 18px',
               borderRadius: '999px',
               background: 'rgba(128, 29, 36, 0.08)',
+              border: '1px solid rgba(197, 160, 89, 0.35)',
               color: '#801D24',
               fontFamily: "'Be Vietnam Pro', sans-serif",
               fontSize: '0.66rem',
-              fontWeight: 600,
+              fontWeight: 700,
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              marginBottom: '10px',
+              marginBottom: '12px',
             }}
           >
-            <Camera size={13} />
-            Khoảnh Khắc Yêu Thương
+            <Film size={12} />
+            Chapter III · Cinematic Moments
           </div>
 
           <h2
-            className="gsap-reveal"
             style={{
               fontFamily: "'Alex Brush', cursive",
-              fontSize: 'clamp(2.2rem, 6vw, 4.2rem)',
+              fontSize: 'clamp(2.4rem, 6.5vw, 4.4rem)',
               color: '#801D24',
               lineHeight: 1.15,
-              margin: '0 0 8px 0',
+              margin: '0 0 10px 0',
               fontWeight: 400,
-              wordBreak: 'break-word',
             }}
           >
-            Album Kỷ Niệm
+            Những Khoảnh Khắc Bất Tận
           </h2>
 
           <p
-            className="gsap-reveal"
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
-              fontSize: 'clamp(1.0rem, 2.2vw, 1.25rem)',
+              fontSize: 'clamp(1.02rem, 2.2vw, 1.25rem)',
               fontStyle: 'italic',
               color: '#584A42',
+              maxWidth: '520px',
+              margin: '0 auto',
+              lineHeight: 1.6,
             }}
           >
-            {COUPLE.groom.firstName} &amp; {COUPLE.bride.firstName} — Từng khoảnh khắc đong đầy tình yêu
+            Từng ánh mắt, nụ cười và dấu ấn thời gian được khắc ghi trong từng thước phim tình yêu của{' '}
+            <span style={{ color: '#801D24', fontWeight: 600 }}>{COUPLE.groom.firstName}</span> &amp;{' '}
+            <span style={{ color: '#801D24', fontWeight: 600 }}>{COUPLE.bride.firstName}</span>.
           </p>
+        </div>
 
-          {/* Filter Pills */}
-          <div
-            className="gsap-reveal gallery-filter-bar"
+        {/* ── Main Editorial Lookbook Viewer ── */}
+        <div
+          style={{
+            position: 'relative',
+            borderRadius: '24px',
+            overflow: 'hidden',
+            backgroundColor: '#1C1510',
+            border: '2px solid rgba(197, 160, 89, 0.45)',
+            boxShadow: '0 24px 60px -10px rgba(50, 30, 15, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.8) inset',
+            aspectRatio: '16 / 11',
+            maxHeight: '560px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            touchAction: 'pan-y',
+            cursor: 'pointer',
+          }}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onClick={() => setLightboxIdx(currentIdx)}
+          title="Nhấn để phóng to toàn màn hình"
+        >
+          {/* Main Photo with smooth crossfade */}
+          <img
+            key={currentPhoto.id}
+            src={currentPhoto.src}
+            alt={currentPhoto.title || currentPhoto.alt}
             style={{
-              display: 'flex',
-              justifyContent: 'center',
-              gap: '8px',
-              flexWrap: 'wrap',
-              marginTop: '20px',
               width: '100%',
-              boxSizing: 'border-box',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+              animation: 'fadeIn 0.4s ease',
+              transition: 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)',
+            }}
+            onError={(e) => {
+              e.currentTarget.src = currentPhoto.fallback;
+            }}
+          />
+
+          {/* Vignette & Gradient Overlays */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, transparent 40%, rgba(0,0,0,0.7) 100%)',
+              pointerEvents: 'none',
+            }}
+          />
+
+          {/* Top Bar: Expand button & Photo Counter Pill */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '16px',
+              left: '16px',
+              right: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              zIndex: 3,
             }}
           >
-            {[
-              { key: 'all', label: 'Tất Cả' },
-              { key: 'romance', label: 'Lãng Mạn' },
-              { key: 'moments', label: 'Khoảnh Khắc' },
-              { key: 'traditional', label: 'Truyền Thống' },
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                type="button"
-                className="gallery-filter-pill"
-                onClick={() => setFilter(tab.key)}
-                style={{
-                  padding: '6px 16px',
-                  borderRadius: '999px',
-                  border: filter === tab.key ? '1px solid #801D24' : '1px solid rgba(197, 160, 89, 0.35)',
-                  background: filter === tab.key ? '#801D24' : 'rgba(255, 255, 255, 0.85)',
-                  color: filter === tab.key ? '#FFFFFF' : '#584A42',
-                  fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: '0.72rem',
-                  fontWeight: 600,
-                  letterSpacing: '0.04em',
-                  cursor: 'pointer',
-                  transition: 'all 0.25s ease',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
+            <span
+              style={{
+                fontFamily: "'Cinzel', serif",
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                letterSpacing: '0.16em',
+                color: '#FAF7F2',
+                backgroundColor: 'rgba(28, 21, 16, 0.75)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                padding: '6px 14px',
+                borderRadius: '999px',
+                border: '1px solid rgba(197, 160, 89, 0.4)',
+              }}
+            >
+              {String(currentIdx + 1).padStart(2, '0')} / {String(totalPhotos).padStart(2, '0')}
+            </span>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIdx(currentIdx);
+              }}
+              aria-label="Phóng to ảnh"
+              style={{
+                width: '38px',
+                height: '38px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(28, 21, 16, 0.75)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                border: '1px solid rgba(197, 160, 89, 0.4)',
+                color: '#FAF7F2',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <Maximize2 size={16} />
+            </button>
+          </div>
+
+          {/* Previous / Next Arrow Buttons */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePrev();
+            }}
+            aria-label="Ảnh trước"
+            style={{
+              position: 'absolute',
+              left: '14px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(28, 21, 16, 0.8)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(197, 160, 89, 0.5)',
+              color: '#FAF7F2',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              zIndex: 3,
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(128, 29, 36, 0.9)';
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(28, 21, 16, 0.8)';
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+            }}
+          >
+            <ChevronLeft size={22} />
+          </button>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNext();
+            }}
+            aria-label="Ảnh sau"
+            style={{
+              position: 'absolute',
+              right: '14px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(28, 21, 16, 0.8)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(197, 160, 89, 0.5)',
+              color: '#FAF7F2',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              zIndex: 3,
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(128, 29, 36, 0.9)';
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(28, 21, 16, 0.8)';
+              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+            }}
+          >
+            <ChevronRight size={22} />
+          </button>
+
+          {/* Bottom Title Bar */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '18px',
+              left: '20px',
+              right: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+              zIndex: 3,
+              pointerEvents: 'none',
+            }}
+          >
+            <h3
+              style={{
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: 'clamp(1.2rem, 3.2vw, 1.75rem)',
+                fontWeight: 600,
+                color: '#FFFDF9',
+                margin: '0 0 4px 0',
+                textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)',
+              }}
+            >
+              {currentPhoto.title}
+            </h3>
+            <p
+              style={{
+                fontFamily: "'Be Vietnam Pro', sans-serif",
+                fontSize: '0.72rem',
+                color: 'rgba(255, 255, 255, 0.8)',
+                letterSpacing: '0.08em',
+                margin: 0,
+                textShadow: '0 1px 4px rgba(0, 0, 0, 0.8)',
+              }}
+            >
+              {currentPhoto.alt}
+            </p>
           </div>
         </div>
 
-        {/* ── MASONRY EDITORIAL PHOTO GRID ── */}
+        {/* ── Filmstrip Thumbnails Bar ── */}
         <div
-          className="gallery-masonry-grid"
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))',
-            gap: 'clamp(10px, 2vw, 20px)',
-            width: '100%',
-            boxSizing: 'border-box',
+            marginTop: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+            overflowX: 'auto',
+            padding: '6px 4px',
+            scrollbarWidth: 'none',
           }}
         >
-          {filteredPhotos.map((photo, idx) => (
-            <div
-              key={photo.id}
-              className="gsap-reveal gallery-photo-card"
-              onClick={() => setActiveIdx(idx)}
-              style={{
-                position: 'relative',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                aspectRatio: photo.tall ? '3 / 4' : '4 / 3',
-                backgroundColor: '#EBE3D5',
-                cursor: 'pointer',
-                boxShadow: '0 8px 24px -4px rgba(45, 30, 20, 0.08)',
-                border: '1px solid rgba(197, 160, 89, 0.3)',
-              }}
-            >
-              <img
-                src={photo.src}
-                alt={photo.title || photo.alt}
-                loading="lazy"
+          {GALLERY.map((photo, idx) => {
+            const isActive = idx === currentIdx;
+            return (
+              <button
+                key={photo.id}
+                type="button"
+                onClick={() => setCurrentIdx(idx)}
+                aria-label={`Chuyển đến ảnh ${idx + 1}`}
                 style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  display: 'block',
-                  transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.06)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                }}
-                onError={(e) => {
-                  e.currentTarget.src = photo.fallback;
-                }}
-              />
-
-              {/* Mobile Permanent Subtle Caption */}
-              <div
-                className="gallery-mobile-caption"
-                style={{
-                  display: 'none',
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  padding: '24px 10px 8px',
-                  background: 'linear-gradient(to top, rgba(30, 10, 12, 0.75) 0%, transparent 100%)',
-                  color: '#FAF7F2',
-                  pointerEvents: 'none',
+                  width: isActive ? '68px' : '52px',
+                  height: '52px',
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                  padding: 0,
+                  border: isActive
+                    ? '2px solid #C5A059'
+                    : '1px solid rgba(197, 160, 89, 0.25)',
+                  boxShadow: isActive ? '0 4px 14px rgba(197, 160, 89, 0.45)' : 'none',
+                  opacity: isActive ? 1 : 0.6,
+                  transform: isActive ? 'scale(1.05)' : 'scale(1)',
+                  transition: 'all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  backgroundColor: '#1E1612',
                 }}
               >
-                <p
+                <img
+                  src={photo.src}
+                  alt={photo.title}
                   style={{
-                    fontFamily: "'Cormorant Garamond', Georgia, serif",
-                    fontSize: '0.88rem',
-                    fontStyle: 'italic',
-                    fontWeight: 600,
-                    margin: 0,
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block',
                   }}
-                >
-                  {photo.title}
-                </p>
-              </div>
-
-              {/* Desktop Hover Overlay with Title and Zoom Icon */}
-              <div
-                className="gallery-desktop-hover"
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(to top, rgba(128, 29, 36, 0.75) 0%, rgba(20, 10, 5, 0.2) 60%, transparent 100%)',
-                  opacity: 0,
-                  transition: 'opacity 0.35s ease',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'flex-end',
-                  padding: '20px',
-                  color: '#FFFFFF',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.opacity = '1';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.opacity = '0';
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <p
-                    style={{
-                      fontFamily: "'Cormorant Garamond', Georgia, serif",
-                      fontSize: '1.2rem',
-                      fontStyle: 'italic',
-                      fontWeight: 600,
-                      margin: 0,
-                    }}
-                  >
-                    {photo.title}
-                  </p>
-                  <Maximize2 size={18} />
-                </div>
-              </div>
-            </div>
-          ))}
+                  onError={(e) => {
+                    e.currentTarget.src = photo.fallback;
+                  }}
+                />
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Lightbox Modal */}
-      <Lightbox
-        photos={filteredPhotos}
-        activeIdx={activeIdx}
-        onClose={() => setActiveIdx(null)}
-        onPrev={() => setActiveIdx((i) => (i > 0 ? i - 1 : filteredPhotos.length - 1))}
-        onNext={() => setActiveIdx((i) => (i < filteredPhotos.length - 1 ? i + 1 : 0))}
-      />
-
-      <style>{`
-        @media (max-width: 640px) {
-          .gallery-filter-bar {
-            justify-content: flex-start !important;
-            flex-wrap: nowrap !important;
-            overflow-x: auto !important;
-            padding: 4px 6px 12px !important;
-            -webkit-overflow-scrolling: touch !important;
-            scrollbar-width: none !important;
+      {lightboxIdx !== null && (
+        <Lightbox
+          photos={GALLERY}
+          activeIdx={lightboxIdx}
+          onClose={() => setLightboxIdx(null)}
+          onPrev={() =>
+            setLightboxIdx((i) => (i > 0 ? i - 1 : totalPhotos - 1))
           }
-          .gallery-filter-bar::-webkit-scrollbar {
-            display: none !important;
+          onNext={() =>
+            setLightboxIdx((i) => (i < totalPhotos - 1 ? i + 1 : 0))
           }
-          .gallery-filter-pill {
-            flex-shrink: 0 !important;
-            white-space: nowrap !important;
-          }
-          .gallery-masonry-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-            gap: 10px !important;
-          }
-          .gallery-photo-card {
-            aspect-ratio: 4 / 5 !important;
-            border-radius: 12px !important;
-          }
-          .gallery-mobile-caption {
-            display: flex !important;
-          }
-          .gallery-desktop-hover {
-            display: none !important;
-          }
-        }
-      `}</style>
+        />
+      )}
     </section>
   );
 }

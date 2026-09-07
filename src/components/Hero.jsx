@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Heart, MapPin } from 'lucide-react';
+import { Calendar, Heart, MapPin, Sparkles, ChevronDown } from 'lucide-react';
 import { COUPLE, WEDDING } from '../weddingData';
 
 const MAIN_PHOTO = {
   src: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=90&fm=webp',
   fallback: 'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=900&q=85',
-  alt: `${COUPLE.groom.fullName} và ${COUPLE.bride.fullName}`,
+  alt: `${COUPLE.groom.fullName} & ${COUPLE.bride.fullName}`,
 };
 
 function useLiveCountdown(targetISO) {
@@ -43,11 +43,11 @@ export default function Hero() {
   };
 
   const handleAddToCalendar = () => {
-    // Google Calendar URL generator
     const title = encodeURIComponent(`Lễ Thành Hôn | ${COUPLE.groom.firstName} & ${COUPLE.bride.firstName}`);
-    const details = encodeURIComponent(`Trân trọng kính mời Quý khách tham dự Lễ Thành Hôn và Tiệc Cưới của ${COUPLE.groom.fullName} & ${COUPLE.bride.fullName} tại ${WEDDING.venueHall} - ${WEDDING.venue}.`);
+    const details = encodeURIComponent(
+      `Trân trọng kính mời Quý khách tham dự Lễ Thành Hôn và Tiệc Cưới của ${COUPLE.groom.fullName} & ${COUPLE.bride.fullName} tại ${WEDDING.venueHall} - ${WEDDING.venue}.`
+    );
     const location = encodeURIComponent(WEDDING.venueAddress);
-    // 2026-10-20 17:30 to 21:30 (UTC+7 -> UTC: 10:30 to 14:30)
     const dates = '20261020T103000Z/20261020T143000Z';
     const gCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
     window.open(gCalUrl, '_blank');
@@ -60,8 +60,8 @@ export default function Hero() {
       style={{
         position: 'relative',
         backgroundColor: '#FAF7F2',
-        background: 'radial-gradient(ellipse 90% 80% at 50% 10%, #FFFDF9 0%, #F5EDE0 100%)',
-        padding: 'clamp(100px, 14vw, 130px) clamp(14px, 3.5vw, 36px) clamp(50px, 8vw, 85px)',
+        background: 'radial-gradient(ellipse 90% 75% at 50% 15%, #FFFDF9 0%, #F5ECE0 100%)',
+        padding: 'clamp(90px, 12vw, 120px) clamp(16px, 4vw, 36px) clamp(40px, 6vw, 65px)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -72,7 +72,7 @@ export default function Hero() {
         boxSizing: 'border-box',
       }}
     >
-      {/* Background Floral Accents */}
+      {/* Background Subtle Accent Pattern */}
       <div
         aria-hidden="true"
         style={{
@@ -88,7 +88,7 @@ export default function Hero() {
         style={{
           position: 'relative',
           zIndex: 2,
-          maxWidth: '780px',
+          maxWidth: '760px',
           width: '100%',
           boxSizing: 'border-box',
           display: 'flex',
@@ -96,283 +96,244 @@ export default function Hero() {
           alignItems: 'center',
         }}
       >
-        {/* Top Monogram Ribbon */}
+        <span id="loi-ngo" style={{ position: 'absolute', top: 0, left: 0 }} />
+        {/* Top Header Pill */}
         <div
           className="gsap-reveal"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            padding: '5px 16px',
+            padding: '6px 18px',
             borderRadius: '999px',
-            background: 'rgba(255, 255, 255, 0.92)',
-            border: '1px solid rgba(197, 160, 89, 0.35)',
-            boxShadow: '0 2px 10px rgba(50, 30, 15, 0.04)',
-            marginBottom: '18px',
-            maxWidth: '100%',
-            boxSizing: 'border-box',
+            background: 'rgba(255, 255, 255, 0.94)',
+            border: '1px solid rgba(197, 160, 89, 0.4)',
+            boxShadow: '0 2px 10px rgba(50, 30, 15, 0.05)',
+            marginBottom: '16px',
           }}
         >
-          <span style={{ color: '#C5A059', fontSize: '11px' }}>✦</span>
+          <Sparkles size={11} color="#C5A059" />
           <span
             style={{
               fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: 'clamp(0.58rem, 1.8vw, 0.66rem)',
-              fontWeight: 600,
-              letterSpacing: '0.12em',
+              fontSize: 'clamp(0.60rem, 1.8vw, 0.68rem)',
+              fontWeight: 700,
+              letterSpacing: '0.16em',
               textTransform: 'uppercase',
               color: '#801D24',
-              whiteSpace: 'nowrap',
             }}
           >
-            Lễ Thành Hôn · Save The Date
+            Chương I · Lễ Thành Hôn &amp; Lời Ngỏ
           </span>
-          <span style={{ color: '#C5A059', fontSize: '11px' }}>✦</span>
+          <Sparkles size={11} color="#C5A059" />
         </div>
 
-        {/* Groom & Bride Names in Romantic Calligraphy & Serif */}
+        {/* Couple Names */}
         <h1
           className="gsap-reveal"
           style={{
             fontFamily: "'Alex Brush', cursive",
-            fontSize: 'clamp(1.9rem, 6.2vw, 4.2rem)',
+            fontSize: 'clamp(2.4rem, 7vw, 4.6rem)',
             color: '#801D24',
             lineHeight: 1.15,
             margin: '0 0 6px 0',
             fontWeight: 400,
-            textShadow: '0 2px 12px rgba(128, 29, 36, 0.08)',
+            textShadow: '0 2px 14px rgba(128, 29, 36, 0.08)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            gap: '8px',
             flexWrap: 'wrap',
-            gap: '2px 8px',
-            maxWidth: '100%',
-            wordBreak: 'break-word',
           }}
         >
-          <span style={{ whiteSpace: 'nowrap' }}>{COUPLE.groom.firstName}</span>
+          <span>{COUPLE.groom.firstName}</span>
           <span
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
               fontStyle: 'italic',
               fontWeight: 300,
               color: '#C5A059',
-              margin: '0 4px',
-              fontSize: '0.75em',
+              fontSize: '0.78em',
             }}
           >
             &amp;
           </span>
-          <span style={{ whiteSpace: 'nowrap' }}>{COUPLE.bride.firstName}</span>
+          <span>{COUPLE.bride.firstName}</span>
         </h1>
 
-        {/* Full Names for Formal Elegance */}
+        {/* Full Formal Names */}
         <p
           className="gsap-reveal"
           style={{
             fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize: 'clamp(1.05rem, 2.5vw, 1.4rem)',
+            fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)',
             fontStyle: 'italic',
             color: '#42332A',
             letterSpacing: '0.04em',
-            marginBottom: 'clamp(20px, 4vw, 32px)',
-            maxWidth: '100%',
-            wordBreak: 'break-word',
+            marginBottom: 'clamp(16px, 3vw, 24px)',
           }}
         >
           {COUPLE.groom.fullName} &amp; {COUPLE.bride.fullName}
         </p>
 
-        {/* ── ROMAN ARCH PORTRAIT ── */}
+        {/* ── EDITORIAL ROMAN ARCH PORTRAIT ── */}
         <div
-          className="gsap-reveal arch-gold-border"
+          className="gsap-reveal"
           style={{
             width: '100%',
-            maxWidth: 'min(310px, 80vw)',
-            marginBottom: 'clamp(24px, 4.5vw, 36px)',
-            boxSizing: 'border-box',
+            maxWidth: 'min(300px, 80vw)',
+            marginBottom: 'clamp(20px, 4vw, 30px)',
+            position: 'relative',
           }}
         >
+          {/* Ornate Double Matting & Gold Hairline Border */}
           <div
-            className="arch-frame"
             style={{
-              width: '100%',
-              aspectRatio: '4 / 5',
-              backgroundColor: '#EDE5D8',
+              padding: '8px',
+              backgroundColor: '#FFFFFF',
+              borderRadius: '160px 160px 16px 16px',
+              border: '2px solid #C5A059',
+              boxShadow: '0 18px 45px -10px rgba(50, 30, 15, 0.18), 0 0 25px rgba(197, 160, 89, 0.25)',
             }}
           >
-            <img
-              src={MAIN_PHOTO.src}
-              alt={MAIN_PHOTO.alt}
+            <div
               style={{
                 width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center 20%',
-                display: 'block',
-                transition: 'transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.04)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-              onError={(e) => {
-                e.currentTarget.src = MAIN_PHOTO.fallback;
-              }}
-            />
-            {/* Subtle bottom vignette */}
-            <div
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(to top, rgba(20, 10, 5, 0.35) 0%, transparent 40%)',
-                pointerEvents: 'none',
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Date and Location Badge */}
-        <div
-          className="gsap-reveal"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '8px',
-            marginBottom: 'clamp(22px, 4vw, 32px)',
-            maxWidth: '100%',
-            boxSizing: 'border-box',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#801D24' }}>
-            <Calendar size={18} />
-            <span
-              style={{
-                fontFamily: "'Cinzel', serif",
-                fontSize: 'clamp(1.05rem, 2.4vw, 1.35rem)',
-                fontWeight: 600,
-                letterSpacing: '0.14em',
-                color: '#1E1612',
+                aspectRatio: '4 / 5',
+                borderRadius: '150px 150px 10px 10px',
+                overflow: 'hidden',
+                backgroundColor: '#F0E6D6',
+                position: 'relative',
               }}
             >
-              20 . 10 . 2026
-            </span>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', color: '#7C6E66', fontSize: 'clamp(0.78rem, 2vw, 0.88rem)', flexWrap: 'wrap' }}>
-            <MapPin size={15} color="#C5A059" style={{ flexShrink: 0 }} />
-            <span style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontWeight: 500 }}>
-              {WEDDING.venueHall} · {WEDDING.venue}
-            </span>
+              <img
+                src={MAIN_PHOTO.src}
+                alt={MAIN_PHOTO.alt}
+                loading="eager"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center 20%',
+                  display: 'block',
+                }}
+                onError={(e) => {
+                  e.currentTarget.src = MAIN_PHOTO.fallback;
+                }}
+              />
+            </div>
           </div>
         </div>
 
-        {/* ── LIVE 4-CARD COUNTDOWN TIMER ── */}
+        {/* Poetic Wedding Vow */}
+        <p
+          className="gsap-reveal"
+          style={{
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
+            fontSize: 'clamp(1.05rem, 2.3vw, 1.3rem)',
+            fontStyle: 'italic',
+            color: '#584A42',
+            maxWidth: '540px',
+            lineHeight: 1.7,
+            margin: '0 auto clamp(18px, 3.5vw, 26px)',
+          }}
+        >
+          “Tình yêu không phải là tìm một người hoàn hảo, mà là học cách nhìn nhận một người không hoàn hảo một cách trọn vẹn nhất.”
+        </p>
+
+        {/* ── MINIMALIST COUNTDOWN BADGE ── */}
         <div
           className="gsap-reveal"
           style={{
-            width: '100%',
-            maxWidth: '380px',
-            boxSizing: 'border-box',
-            marginBottom: 'clamp(28px, 5vw, 40px)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 'clamp(10px, 2.5vw, 18px)',
+            padding: '10px clamp(16px, 3vw, 28px)',
+            borderRadius: '999px',
+            backgroundColor: '#FFFFFF',
+            border: '1.5px solid rgba(197, 160, 89, 0.45)',
+            boxShadow: '0 8px 24px rgba(50, 30, 15, 0.06)',
+            marginBottom: 'clamp(20px, 4vw, 32px)',
           }}
         >
-          <p
-            style={{
-              fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: '0.66rem',
-              fontWeight: 600,
-              letterSpacing: '0.20em',
-              textTransform: 'uppercase',
-              color: '#9A7836',
-              marginBottom: '10px',
-            }}
-          >
-            Đếm ngược ngày chung đôi
-          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <span style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', fontWeight: 700, color: '#801D24', lineHeight: 1 }}>
+              {days}
+            </span>
+            <span style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: '0.58rem', textTransform: 'uppercase', color: '#9A7836', letterSpacing: '0.08em', marginTop: '2px' }}>
+              Ngày
+            </span>
+          </div>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-              gap: 'clamp(4px, 1.5vw, 10px)',
-              width: '100%',
-              boxSizing: 'border-box',
-            }}
-          >
-            {[
-              { val: days, label: 'Ngày' },
-              { val: hours, label: 'Giờ' },
-              { val: minutes, label: 'Phút' },
-              { val: seconds, label: 'Giây' },
-            ].map((item, idx) => (
-              <div key={idx} className="countdown-box">
-                <span
-                  style={{
-                    fontFamily: "'Cinzel', serif",
-                    fontSize: 'clamp(1.05rem, 3.8vw, 1.65rem)',
-                    fontWeight: 700,
-                    color: '#801D24',
-                    lineHeight: 1.1,
-                  }}
-                >
-                  {String(item.val).padStart(2, '0')}
-                </span>
-                <span
-                  style={{
-                    fontFamily: "'Be Vietnam Pro', sans-serif",
-                    fontSize: 'clamp(0.52rem, 1.6vw, 0.64rem)',
-                    fontWeight: 600,
-                    letterSpacing: '0.04em',
-                    textTransform: 'uppercase',
-                    color: '#7C6E66',
-                    marginTop: '2px',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {item.label}
-                </span>
-              </div>
-            ))}
+          <span style={{ color: '#C5A059', fontWeight: 300 }}>:</span>
+
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <span style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', fontWeight: 700, color: '#801D24', lineHeight: 1 }}>
+              {String(hours).padStart(2, '0')}
+            </span>
+            <span style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: '0.58rem', textTransform: 'uppercase', color: '#9A7836', letterSpacing: '0.08em', marginTop: '2px' }}>
+              Giờ
+            </span>
+          </div>
+
+          <span style={{ color: '#C5A059', fontWeight: 300 }}>:</span>
+
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <span style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', fontWeight: 700, color: '#801D24', lineHeight: 1 }}>
+              {String(minutes).padStart(2, '0')}
+            </span>
+            <span style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: '0.58rem', textTransform: 'uppercase', color: '#9A7836', letterSpacing: '0.08em', marginTop: '2px' }}>
+              Phút
+            </span>
+          </div>
+
+          <span style={{ color: '#C5A059', fontWeight: 300 }}>:</span>
+
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <span style={{ fontFamily: "'Cinzel', serif", fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', fontWeight: 700, color: '#801D24', lineHeight: 1 }}>
+              {String(seconds).padStart(2, '0')}
+            </span>
+            <span style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontSize: '0.58rem', textTransform: 'uppercase', color: '#9A7836', letterSpacing: '0.08em', marginTop: '2px' }}>
+              Giây
+            </span>
           </div>
         </div>
 
-        {/* Action Buttons: RSVP & Calendar */}
+        {/* ── ACTION BUTTONS ── */}
         <div
           className="gsap-reveal"
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '10px',
+            gap: '12px',
             flexWrap: 'wrap',
-            width: '100%',
-            maxWidth: '100%',
-            boxSizing: 'border-box',
           }}
         >
           <a
             href="#rsvp"
             onClick={scrollToRsvp}
             className="btn-luxury btn-luxury-primary"
-            aria-label="Xác nhận tham dự tiệc cưới"
+            style={{
+              padding: '12px 26px',
+              fontSize: '0.80rem',
+            }}
           >
-            <Heart size={15} fill="currentColor" />
-            Xác nhận tham dự
+            <Heart size={14} />
+            <span>Xác Nhận Tham Dự (RSVP)</span>
           </a>
 
           <button
             type="button"
             onClick={handleAddToCalendar}
             className="btn-luxury btn-luxury-outline"
-            aria-label="Lưu ngày cưới vào lịch"
+            style={{
+              padding: '12px 22px',
+              fontSize: '0.80rem',
+            }}
           >
-            <Calendar size={15} color="#801D24" />
-            Thêm vào lịch
+            <Calendar size={14} />
+            <span>Thêm Vào Lịch</span>
           </button>
         </div>
       </div>
