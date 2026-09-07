@@ -241,8 +241,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
       <div
         style={{
           position: 'relative',
-          width: 'min(346px, 86vw)',
-          maxHeight: 'calc(100dvh - 38px)',
+          width: 'min(356px, 92vw)',
+          maxHeight: 'calc(100dvh - 36px)',
           transformStyle: 'preserve-3d',
           transform: isOpen
             ? 'scale(1.18) translateZ(80px)'
@@ -280,7 +280,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               boxShadow: isOpen
                 ? '0 30px 80px rgba(0, 0, 0, 0.65), 0 0 45px rgba(197, 160, 89, 0.45)'
                 : '0 25px 65px rgba(0, 0, 0, 0.60), 0 8px 25px rgba(0, 0, 0, 0.35)',
-              padding: 'clamp(24px, 3.8vh, 32px) clamp(16px, 4vw, 24px) clamp(18px, 2.8vh, 24px)',
+              padding: 'clamp(24px, 3.8vh, 32px) clamp(10px, 2.5vw, 18px) clamp(18px, 2.8vh, 24px)',
               boxSizing: 'border-box',
               textAlign: 'center',
               display: 'flex',
@@ -477,35 +477,37 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             </div>
 
             {/* ── SECTION 2: COUPLE NAMES & EVENT INFO ── */}
-            <div style={{ width: '100%', margin: 'clamp(10px, 1.8vh, 16px) 0' }}>
+            <div style={{ width: '100%', margin: 'clamp(10px, 1.8vh, 16px) 0', padding: '0 4px', boxSizing: 'border-box' }}>
               <h1
                 style={{
                   fontFamily: "'Alex Brush', cursive",
-                  fontSize: 'clamp(2.05rem, 4.3vh, 2.65rem)',
+                  fontSize: 'clamp(1.42rem, 4.4vw, 2.35rem)',
                   color: '#801D24',
-                  lineHeight: 1.2,
+                  lineHeight: 1.25,
                   margin: '0 0 3px 0',
                   fontWeight: 400,
                   textShadow: '0 1px 4px rgba(128, 29, 36, 0.12)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '8px',
+                  gap: 'clamp(4px, 1.2vw, 8px)',
                   whiteSpace: 'nowrap',
+                  maxWidth: '100%',
+                  overflow: 'visible',
                 }}
               >
                 <span>{COUPLE.groom.firstName}</span>
-                <span style={{ fontSize: '0.85em', color: '#C5A059' }}>&amp;</span>
+                <span style={{ fontSize: '0.82em', color: '#C5A059' }}>&amp;</span>
                 <span>{COUPLE.bride.firstName}</span>
               </h1>
 
               <p
                 style={{
                   fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: 'clamp(0.72rem, 1.4vh, 0.82rem)',
+                  fontSize: 'clamp(0.64rem, 1.8vw, 0.78rem)',
                   fontWeight: 500,
                   color: '#584A42',
-                  letterSpacing: '0.02em',
+                  letterSpacing: '0.01em',
                   margin: '0 0 8px 0',
                   whiteSpace: 'nowrap',
                 }}
