@@ -476,7 +476,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             </div>
 
             {/* ── SECTION 2: COUPLE NAMES & EVENT INFO ── */}
-            <div style={{ width: '100%', margin: 'clamp(8px, 1.4vh, 12px) 0 clamp(10px, 1.6vh, 14px)', padding: '0 4px', boxSizing: 'border-box' }}>
+            <div style={{ width: '100%', margin: 'clamp(8px, 1.4vh, 12px) 0 clamp(24px, 3.4vh, 32px)', padding: '0 4px', boxSizing: 'border-box' }}>
               <h1
                 className="intro-couple-names"
                 style={{
@@ -576,7 +576,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 style={{
                   width: 'calc(100% + 36px)',
                   margin: '0 -18px',
-                  height: '38px',
+                  height: '36px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -642,8 +642,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                     }}
                     style={{
                       position: 'relative',
-                      width: '68px',
-                      height: '68px',
+                      width: '64px',
+                      height: '64px',
                       border: 'none',
                       background: 'transparent',
                       cursor: 'pointer',
@@ -658,8 +658,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                     }}
                   >
                     <svg
-                      width="68"
-                      height="68"
+                      width="64"
+                      height="64"
                       viewBox="0 0 100 100"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -743,7 +743,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                   startOpening();
                 }}
                 style={{
-                  marginTop: 'clamp(10px, 1.8vh, 16px)',
+                  marginTop: 'clamp(24px, 3.4vh, 30px)',
                   padding: '7px 20px',
                   borderRadius: '999px',
                   background: 'rgba(255, 253, 249, 0.96)',
