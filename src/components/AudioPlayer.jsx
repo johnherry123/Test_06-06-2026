@@ -1,109 +1,141 @@
-/* ══════════════════════════════════
-   AUDIO PLAYER — Minimal floating control
-   A tiny discreet button, not a UI component.
-══════════════════════════════════ */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+import { Volume2, VolumeX, Music } from 'lucide-react';
 
-export default function AudioPlayer({ autoPlay = false }) {
+const AUDIO_LOCAL = `${import.meta.env.BASE_URL}wedding-music.mp3`;
+const AUDIO_FALLBACK = 'https://archive.org/download/100ClassicalMusicMasterpieces/1698%20Pachelbel%20%2C%20Canon%20in%20D.mp3';
+
+const AudioPlayer = forwardRef(function AudioPlayer({ shouldPlay }, ref) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const ctxRef  = useRef(null);
-  const runRef  = useRef(false);
-  const stepRef = useRef(0);
+  const audioRef = useRef(null);
 
-  const melody = [
-    { f: 587.33, d: 1.2 }, { f: 523.25, d: 1.2 },
-    { f: 493.88, d: 1.2 }, { f: 440.00, d: 1.2 },
-    { f: 392.00, d: 1.2 }, { f: 349.23, d: 1.2 },
-    { f: 392.00, d: 1.2 }, { f: 440.00, d: 1.2 },
-  ];
-
-  const start = () => {
-    try {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return;
-      if (!ctxRef.current) ctxRef.current = new AC();
-      const ctx = ctxRef.current;
-      if (ctx.state === 'suspended') ctx.resume();
-      runRef.current = true;
-      const play = () => {
-        if (!runRef.current) return;
-        const now  = ctx.currentTime;
-        const note = melody[stepRef.current % melody.length];
-        const osc1 = ctx.createOscillator();
-        const osc2 = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc1.type = 'sine';     osc1.frequency.value = note.f;
-        osc2.type = 'triangle'; osc2.frequency.value = note.f / 2;
-        gain.gain.setValueAtTime(0.06, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + note.d * 0.9);
-        [osc1, osc2].forEach(o => { o.connect(gain); o.start(now); o.stop(now + note.d); });
-        gain.connect(ctx.destination);
-        stepRef.current++;
-        setTimeout(play, note.d * 880);
-      };
-      play();
-      setIsPlaying(true);
-    } catch {}
+  const startPlay = () => {
+    if (!audioRef.current) return;
+    audioRef.current.volume = 0.6;
+    audioRef.current
+      .play()
+      .then(() => {
+        setIsPlaying(true);
+      })
+      .catch(() => {
+        // Autoplay policy prevented playback, user can tap the button manually
+        setIsPlaying(false);
+      });
   };
 
-  const stop = () => {
-    runRef.current = false;
-    if (ctxRef.current?.state === 'running') ctxRef.current.suspend();
+  const pausePlay = () => {
+    if (!audioRef.current) return;
+    audioRef.current.pause();
     setIsPlaying(false);
   };
 
-  useEffect(() => {
-    if (autoPlay) {
-      const t = setTimeout(start, 1000);
-      return () => clearTimeout(t);
+  const togglePlay = () => {
+    if (isPlaying) {
+      pausePlay();
+    } else {
+      startPlay();
     }
-  }, [autoPlay]);
+  };
+
+  useImperativeHandle(ref, () => ({
+    play: startPlay,
+    pause: pausePlay,
+    toggle: togglePlay,
+  }));
+
+  useEffect(() => {
+    if (shouldPlay) {
+      startPlay();
+    }
+  }, [shouldPlay]);
 
   return (
-    <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 9000 }}>
-      <button
-        onClick={isPlaying ? stop : start}
-        title={isPlaying ? 'Tắt nhạc' : 'Bật nhạc'}
-        aria-label={isPlaying ? 'Tắt nhạc' : 'Bật nhạc'}
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: '50%',
-          background: 'rgba(253,251,247,0.95)',
-          border: '1px solid rgba(35,27,21,0.15)',
-          boxShadow: '0 2px 12px rgba(35,27,21,0.08)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: isPlaying ? '#8B1E22' : '#756B63',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          fontSize: '16px',
-          lineHeight: 1,
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.borderColor = '#8B1E22';
-          e.currentTarget.style.color = '#8B1E22';
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.borderColor = 'rgba(35,27,21,0.15)';
-          e.currentTarget.style.color = isPlaying ? '#8B1E22' : '#756B63';
+    <div
+      style={{
+        position: 'fixed',
+        bottom: '24px',
+        right: '24px',
+        zIndex: 9000,
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+      }}
+    >
+      {/* Hidden HTML5 Audio Element */}
+      <audio
+        ref={audioRef}
+        loop
+        preload="auto"
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onError={(e) => {
+          // If local fails, switch to fallback
+          if (e.currentTarget.src !== AUDIO_FALLBACK) {
+            e.currentTarget.src = AUDIO_FALLBACK;
+            e.currentTarget.play().catch(() => {});
+          }
         }}
       >
-        {/* Simple music note or pause bars — pure SVG, no library */}
+        <source src={AUDIO_LOCAL} type="audio/mp3" />
+        <source src={AUDIO_FALLBACK} type="audio/mp3" />
+      </audio>
+
+      {/* Floating Animated Music Badge */}
+      <button
+        type="button"
+        onClick={togglePlay}
+        title={isPlaying ? 'Tạm dừng nhạc nền' : 'Bật nhạc nền lãng mạn (Canon in D)'}
+        aria-label={isPlaying ? 'Tạm dừng nhạc nền' : 'Bật nhạc nền lãng mạn'}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          padding: '8px 18px',
+          borderRadius: '999px',
+          background: isPlaying
+            ? 'linear-gradient(135deg, #801D24 0%, #5A1217 100%)'
+            : 'rgba(255, 255, 255, 0.95)',
+          color: isPlaying ? '#FFFFFF' : '#801D24',
+          border: '1.5px solid #C5A059',
+          boxShadow: '0 8px 25px rgba(50, 30, 15, 0.18)',
+          cursor: 'pointer',
+          backdropFilter: 'blur(10px)',
+          transition: 'all 0.3s ease',
+        }}
+      >
+        {/* Animated Soundwave Equalizer Bars */}
         {isPlaying ? (
-          /* Pause bars */
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-            <rect x="2" y="1" width="3.5" height="12" rx="1"/>
-            <rect x="8.5" y="1" width="3.5" height="12" rx="1"/>
-          </svg>
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', height: '16px' }}>
+            <span style={{ width: '3px', backgroundColor: '#E6CA85', borderRadius: '2px', animation: 'barWave 1.0s ease-in-out infinite' }} />
+            <span style={{ width: '3px', backgroundColor: '#E6CA85', borderRadius: '2px', animation: 'barWave 0.7s ease-in-out infinite 0.2s' }} />
+            <span style={{ width: '3px', backgroundColor: '#E6CA85', borderRadius: '2px', animation: 'barWave 1.2s ease-in-out infinite 0.4s' }} />
+          </div>
         ) : (
-          /* Music note */
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-            <path d="M10.5 1.5v7.25a2.25 2.25 0 1 1-1.5-.82V4.5l-5 1v5.75a2.25 2.25 0 1 1-1.5-.82V3.5L10.5 1.5z"/>
-          </svg>
+          <Music size={16} color="#801D24" />
         )}
+
+        <span
+          style={{
+            fontFamily: "'Be Vietnam Pro', sans-serif",
+            fontSize: '0.72rem',
+            fontWeight: 600,
+            letterSpacing: '0.04em',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {isPlaying ? 'Canon in D' : 'Bật Nhạc'}
+        </span>
+
+        {isPlaying ? <Volume2 size={16} /> : <VolumeX size={16} />}
       </button>
+
+      <style>{`
+        @keyframes barWave {
+          0%, 100% { height: 4px; }
+          50% { height: 16px; }
+        }
+      `}</style>
     </div>
   );
-}
+});
+
+export default AudioPlayer;

@@ -1,205 +1,345 @@
-/*
-  EVENTS — Wedding Day Details
-  ─────────────────────────────────────────────────────────────────
-  
-  This section is the ceremony details page of the invitation.
-  A Vietnamese wedding invitation prints this information clearly:
-  - Lễ cưới / Tiệc mừng
-  - Ngày giờ
-  - Địa điểm
-  - Map link
-  
-  Keep it elegant and readable. Not a UI dashboard.
-  Not a modern timeline component. Not a dashboard widget.
-  Just beautiful, clear information.
-*/
-import React from 'react';
-import { ExternalLink } from 'lucide-react';
-import { EVENTS, WEDDING } from '../weddingData';
+import { Clock, MapPin, Calendar, ExternalLink } from 'lucide-react';
+import { EVENTS, WEDDING, COUPLE } from '../weddingData';
+
+function createCalendarUrl(event) {
+  const title = encodeURIComponent(`${event.title} | ${COUPLE.groom.firstName} & ${COUPLE.bride.firstName}`);
+  const details = encodeURIComponent(`${event.subtitle}. ${event.description}`);
+  const location = encodeURIComponent(event.address);
+  // Default date: 2026-10-20
+  let startTime = '103000Z';
+  let endTime = '123000Z';
+  if (event.time.startsWith('07')) {
+    startTime = '003000Z'; endTime = '023000Z';
+  } else if (event.time.startsWith('10')) {
+    startTime = '033000Z'; endTime = '053000Z';
+  } else if (event.time.startsWith('17')) {
+    startTime = '103000Z'; endTime = '143000Z';
+  }
+  const dates = `20261020T${startTime}/20261020T${endTime}`;
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
+}
 
 export default function Events() {
   return (
     <section
       id="events"
-      aria-label="Lịch trình lễ cưới"
+      aria-label="Lịch trình lễ cưới và tiệc mừng"
       style={{
-        backgroundColor: '#6A1518',
-        padding: 'clamp(72px, 11vw, 108px) clamp(24px, 5vw, 56px)',
+        backgroundColor: '#F5EDE1',
+        background: 'linear-gradient(180deg, #FAF7F2 0%, #F5EDE1 50%, #FAF7F2 100%)',
+        padding: 'clamp(70px, 10vw, 110px) clamp(20px, 4vw, 40px)',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Subtle warm paper grain on burgundy */}
-      <div aria-hidden="true" style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E")`,
-        backgroundRepeat: 'repeat', backgroundSize: '180px 180px',
-      }} />
+      <div
+        style={{
+          maxWidth: '920px',
+          margin: '0 auto',
+          position: 'relative',
+          zIndex: 2,
+        }}
+      >
+        {/* Section Header */}
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(44px, 7vw, 68px)' }}>
+          <div
+            className="gsap-reveal"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '5px 16px',
+              borderRadius: '999px',
+              background: 'rgba(128, 29, 36, 0.08)',
+              color: '#801D24',
+              fontFamily: "'Be Vietnam Pro', sans-serif",
+              fontSize: '0.66rem',
+              fontWeight: 600,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              marginBottom: '12px',
+            }}
+          >
+            <Calendar size={13} />
+            Lịch Trình Hôn Lễ
+          </div>
 
-      <div style={{
-        maxWidth: '640px', margin: '0 auto',
-        position: 'relative', zIndex: 1,
-        textAlign: 'center',
-      }}>
-
-        {/* Section header */}
-        <div className="gsap-reveal" style={{ marginBottom: 'clamp(44px, 7vw, 64px)' }}>
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(0.75rem, 1.4vw, 0.88rem)',
-            fontStyle: 'italic',
-            color: 'rgba(248,244,236,0.40)',
-            letterSpacing: '0.04em',
-            marginBottom: 'clamp(10px, 2vw, 14px)',
-          }}>
-            Trân trọng kính mời
-          </p>
-          <h2 style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(2.2rem, 6vw, 4.0rem)',
-            fontWeight: 400, fontStyle: 'italic',
-            color: 'rgba(248,244,236,0.94)',
-            lineHeight: 1.08, letterSpacing: '0.01em',
-            margin: 0,
-          }}>
-            Ngày 20 tháng Mười
+          <h2
+            className="gsap-reveal"
+            style={{
+              fontFamily: "'Alex Brush', cursive",
+              fontSize: 'clamp(2.8rem, 6.5vw, 4.2rem)',
+              color: '#801D24',
+              lineHeight: 1.1,
+              margin: '0 0 8px 0',
+              fontWeight: 400,
+            }}
+          >
+            Thời Gian &amp; Địa Điểm
           </h2>
-          <p style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: 'clamp(0.68rem, 1.2vw, 0.78rem)',
-            fontWeight: 400,
-            color: 'rgba(248,244,236,0.32)',
-            letterSpacing: '0.08em',
-            marginTop: '8px',
-          }}>
-            {WEDDING.venueAddress}
+
+          <p
+            className="gsap-reveal"
+            style={{
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)',
+              fontStyle: 'italic',
+              color: '#584A42',
+            }}
+          >
+            {WEDDING.dateDisplay} — {WEDDING.lunarDate}
           </p>
         </div>
 
-        {/* Events — printed-invitation style, no widget chrome */}
-        <div className="gsap-stagger" style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 'clamp(28px, 5vw, 40px)',
-        }}>
-          {EVENTS.map((event, i) => (
-            <div key={i} style={{
-              borderTop: i === 0
-                ? '0.5px solid rgba(248,244,236,0.12)'
-                : '0.5px solid rgba(248,244,236,0.08)',
-              paddingTop: 'clamp(20px, 3.5vw, 28px)',
-              position: 'relative',
-            }}>
-              {/* Gold accent dot for main event */}
-              {event.isMain && (
-                <div aria-hidden="true" style={{
-                  width: '5px', height: '5px', borderRadius: '50%',
-                  backgroundColor: '#B08C4E',
-                  margin: '0 auto clamp(12px, 2.5vw, 18px)',
-                }} />
-              )}
+        {/* ── 3 LUXURY EVENT CARDS ── */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 'clamp(20px, 4vw, 32px)',
+          }}
+        >
+          {EVENTS.map((event) => {
+            const calUrl = createCalendarUrl(event);
 
-              {/* Time */}
-              <p style={{
-                fontFamily: "'Be Vietnam Pro', sans-serif",
-                fontSize: event.isMain
-                  ? 'clamp(0.68rem, 1.4vw, 0.80rem)'
-                  : 'clamp(0.62rem, 1.2vw, 0.72rem)',
-                fontWeight: 600,
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                color: event.isMain
-                  ? 'rgba(176,140,78,0.90)'
-                  : 'rgba(248,244,236,0.32)',
-                marginBottom: 'clamp(6px, 1.2vw, 10px)',
-              }}>
-                {event.time} {event.period}
-              </p>
+            return (
+              <div
+                key={event.id}
+                className="gsap-reveal"
+                style={{
+                  backgroundColor: event.isMain ? '#FFFFFF' : 'rgba(255, 255, 255, 0.85)',
+                  border: event.isMain ? '2px solid #C5A059' : '1px solid rgba(197, 160, 89, 0.35)',
+                  borderRadius: '20px',
+                  padding: 'clamp(28px, 5vw, 36px) clamp(20px, 4vw, 28px)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  position: 'relative',
+                  boxShadow: event.isMain
+                    ? '0 16px 40px -8px rgba(128, 29, 36, 0.15)'
+                    : '0 8px 24px -4px rgba(50, 30, 15, 0.06)',
+                  transform: event.isMain ? 'scale(1.02)' : 'none',
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = event.isMain ? 'scale(1.04)' : 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 20px 48px -8px rgba(128, 29, 36, 0.20)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = event.isMain ? 'scale(1.02)' : 'none';
+                  e.currentTarget.style.boxShadow = event.isMain
+                    ? '0 16px 40px -8px rgba(128, 29, 36, 0.15)'
+                    : '0 8px 24px -4px rgba(50, 30, 15, 0.06)';
+                }}
+              >
+                {/* Main Event Gold Ribbon */}
+                {event.isMain && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '-12px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      background: 'linear-gradient(135deg, #C5A059 0%, #E6CA85 50%, #A88135 100%)',
+                      color: '#1E1612',
+                      fontFamily: "'Be Vietnam Pro', sans-serif",
+                      fontSize: '0.62rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      padding: '4px 18px',
+                      borderRadius: '999px',
+                      boxShadow: '0 4px 12px rgba(197, 160, 89, 0.35)',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    ✦ Sự Kiện Chính ✦
+                  </div>
+                )}
 
-              {/* Title */}
-              <h3 style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: event.isMain
-                  ? 'clamp(1.45rem, 3.2vw, 2.1rem)'
-                  : 'clamp(1.15rem, 2.5vw, 1.6rem)',
-                fontWeight: event.isMain ? 500 : 400,
-                color: event.isMain
-                  ? 'rgba(248,244,236,0.95)'
-                  : 'rgba(248,244,236,0.65)',
-                lineHeight: 1.15,
-                marginBottom: 'clamp(5px, 1vw, 8px)',
-              }}>
-                {event.title}
-              </h3>
+                {/* Time Badge */}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    color: '#801D24',
+                    marginBottom: '14px',
+                  }}
+                >
+                  <Clock size={16} color="#801D24" />
+                  <span
+                    style={{
+                      fontFamily: "'Cinzel', serif",
+                      fontSize: '1.2rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.04em',
+                    }}
+                  >
+                    {event.time}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "'Be Vietnam Pro', sans-serif",
+                      fontSize: '0.68rem',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.1em',
+                      background: 'rgba(128, 29, 36, 0.08)',
+                      padding: '2px 8px',
+                      borderRadius: '4px',
+                    }}
+                  >
+                    {event.period}
+                  </span>
+                </div>
 
-              {/* Subtitle */}
-              {event.subtitle && (
-                <p style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: 'clamp(0.85rem, 1.5vw, 0.98rem)',
-                  fontStyle: 'italic',
-                  color: 'rgba(248,244,236,0.36)',
-                  marginBottom: event.description ? 'clamp(8px, 1.5vw, 12px)' : 0,
-                }}>
+                {/* Title */}
+                <h3
+                  style={{
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontSize: 'clamp(1.4rem, 2.8vw, 1.8rem)',
+                    fontWeight: 600,
+                    color: '#1E1612',
+                    lineHeight: 1.2,
+                    marginBottom: '6px',
+                  }}
+                >
+                  {event.title}
+                </h3>
+
+                {/* Subtitle */}
+                <p
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: '0.98rem',
+                    fontStyle: 'italic',
+                    color: '#C5A059',
+                    fontWeight: 500,
+                    marginBottom: '14px',
+                  }}
+                >
                   {event.subtitle}
                 </p>
-              )}
 
-              {/* Description for main event */}
-              {event.isMain && event.description && (
-                <p style={{
-                  fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: '0.78rem',
-                  color: 'rgba(248,244,236,0.34)',
-                  lineHeight: 1.72,
-                  marginBottom: 'clamp(8px, 1.5vw, 12px)',
-                  maxWidth: '380px',
-                  margin: '0 auto clamp(8px, 1.5vw, 12px)',
-                }}>
+                {/* Description */}
+                <p
+                  style={{
+                    fontFamily: "'Be Vietnam Pro', sans-serif",
+                    fontSize: '0.80rem',
+                    color: '#584A42',
+                    lineHeight: 1.65,
+                    marginBottom: '18px',
+                    flex: 1,
+                  }}
+                >
                   {event.description}
                 </p>
-              )}
 
-              {/* Location + map */}
-              <div style={{
-                display: 'flex', alignItems: 'center',
-                justifyContent: 'center',
-                gap: '14px', flexWrap: 'wrap',
-                marginTop: 'clamp(6px, 1.2vw, 10px)',
-              }}>
-                <span style={{
-                  fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: '0.70rem',
-                  color: 'rgba(248,244,236,0.28)',
-                }}>
-                  {event.locationName}
-                </span>
+                {/* Location */}
+                <div
+                  style={{
+                    padding: '12px 14px',
+                    borderRadius: '10px',
+                    background: 'rgba(245, 237, 225, 0.6)',
+                    border: '1px solid rgba(197, 160, 89, 0.25)',
+                    marginBottom: '18px',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                    <MapPin size={14} color="#801D24" />
+                    <span
+                      style={{
+                        fontFamily: "'Be Vietnam Pro', sans-serif",
+                        fontSize: '0.78rem',
+                        fontWeight: 600,
+                        color: '#1E1612',
+                      }}
+                    >
+                      {event.locationName}
+                    </span>
+                  </div>
+                  <p
+                    style={{
+                      fontFamily: "'Be Vietnam Pro', sans-serif",
+                      fontSize: '0.72rem',
+                      color: '#7C6E66',
+                      lineHeight: 1.5,
+                      margin: 0,
+                    }}
+                  >
+                    {event.address}
+                  </p>
+                </div>
 
-                {event.mapUrl && event.mapUrl !== '#' && (
+                {/* Action Buttons: Maps & Calendar */}
+                <div style={{ display: 'flex', gap: '10px', marginTop: 'auto' }}>
                   <a
                     href={event.mapUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={`Xem bản đồ: ${event.locationName}`}
                     style={{
-                      display: 'inline-flex', alignItems: 'center', gap: '4px',
+                      flex: 1,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      padding: '10px 14px',
+                      borderRadius: '8px',
+                      backgroundColor: event.isMain ? '#801D24' : '#FFFFFF',
+                      color: event.isMain ? '#FFFFFF' : '#801D24',
+                      border: '1px solid #801D24',
                       fontFamily: "'Be Vietnam Pro', sans-serif",
-                      fontSize: '0.64rem', fontWeight: 500,
-                      letterSpacing: '0.08em', textTransform: 'uppercase',
-                      color: 'rgba(176,140,78,0.55)',
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
                       textDecoration: 'none',
-                      transition: 'color 0.2s ease',
+                      transition: 'all 0.2s ease',
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.color = '#B08C4E'; }}
-                    onMouseLeave={e => { e.currentTarget.style.color = 'rgba(176,140,78,0.55)'; }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.opacity = '0.9';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.opacity = '1';
+                    }}
                   >
-                    <ExternalLink size={10} aria-hidden="true" />
-                    Bản đồ
+                    <ExternalLink size={13} />
+                    Chỉ đường
                   </a>
-                )}
+
+                  <a
+                    href={calUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      flex: 1,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      padding: '10px 14px',
+                      borderRadius: '8px',
+                      backgroundColor: 'rgba(197, 160, 89, 0.15)',
+                      color: '#9A7836',
+                      border: '1px solid rgba(197, 160, 89, 0.4)',
+                      fontFamily: "'Be Vietnam Pro', sans-serif",
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      textDecoration: 'none',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(197, 160, 89, 0.25)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(197, 160, 89, 0.15)';
+                    }}
+                  >
+                    <Calendar size={13} />
+                    Thêm vào lịch
+                  </a>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

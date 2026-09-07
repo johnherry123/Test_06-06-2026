@@ -1,363 +1,346 @@
-/*
-  INTRO — Wedding Invitation Front Cover
-  ─────────────────────────────────────────────────────────────────
-  
-  Philosophy:
-  This is the FRONT COVER of a physical wedding invitation.
-  A guest picks it up, sees the names and date, finds the seal,
-  and breaks it open. That is the entire experience.
-  
-  Design:
-  - Cream/ivory card on a warm paper surface
-  - Clean stationery typography: Cormorant + Be Vietnam Pro
-  - Monogram SVG at top
-  - Names: elegant serif, not huge
-  - Wedding date in Be Vietnam Pro
-  - Wax seal centered at bottom — the only call to action
-  - "Mở thiệp" whisper text below seal
-  
-  Opening animation:
-  - Tap seal → seal presses slightly
-  - Card lifts 10px, shadow deepens
-  - Card fades out in place (does NOT fly away)
-  - Hero fades in beneath
-  - Total: ~900ms
-
-  Rule: The card OPENS. It does NOT disappear.
-*/
 import { useState, useEffect, useCallback } from 'react';
 import { COUPLE, WEDDING } from '../weddingData';
 
-export default function IntroShader({ onComplete }) {
-  const [entered,  setEntered]  = useState(false);
-  const [phase,    setPhase]    = useState('idle');
-  // idle → pressing → lifting → opening → done
+export default function IntroShader({ onComplete, onStartMusic }) {
+  const [entered, setEntered] = useState(false);
+  const [opening, setOpening] = useState(false);
 
   const reducedMotion =
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Entrance */
   useEffect(() => {
-    const t = setTimeout(() => setEntered(true), 60);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setEntered(true), 80);
+    return () => clearTimeout(timer);
   }, []);
 
-  const open = useCallback(() => {
-    if (phase !== 'idle') return;
+  const handleOpen = useCallback(() => {
+    if (opening) return;
+
+    // Immediately trigger music on user click
+    onStartMusic?.();
+
+    setOpening(true);
 
     if (reducedMotion) {
-      setPhase('opening');
       setTimeout(() => onComplete?.(), 300);
       return;
     }
 
-    // 1. Seal presses
-    setPhase('pressing');
+    // Smooth reveal animation
+    setTimeout(() => {
+      onComplete?.();
+    }, 1000);
+  }, [opening, onComplete, onStartMusic, reducedMotion]);
 
-    // 2. Card lifts
-    setTimeout(() => setPhase('lifting'), 200);
-
-    // 3. Card opens (fades in place — not flies away)
-    setTimeout(() => setPhase('opening'), 480);
-
-    // 4. Signal parent
-    setTimeout(() => onComplete?.(), 920);
-  }, [phase, onComplete, reducedMotion]);
-
-  /* Keyboard */
   useEffect(() => {
-    const h = (e) => {
-      if (e.key === 'Enter' || e.key === ' ') open();
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        handleOpen();
+      }
     };
-    window.addEventListener('keydown', h);
-    return () => window.removeEventListener('keydown', h);
-  }, [open]);
-
-  const isPressing = phase === 'pressing';
-  const isLifting  = phase === 'lifting';
-  const isOpening  = phase === 'opening';
-
-  /* Card visual state */
-  const cardY = (() => {
-    if (!entered) return '52px';
-    if (isOpening) return '0px';
-    if (isLifting) return '-10px';
-    if (isPressing) return '3px';
-    return '0px';
-  })();
-
-  const cardScale = (() => {
-    if (!entered)   return '0.92';
-    if (isOpening)  return '1.04';
-    if (isLifting)  return '1.015';
-    if (isPressing) return '0.984';
-    return '1';
-  })();
-
-  const cardOpacity = isOpening ? 0 : entered ? 1 : 0;
-
-  const cardTransition = (() => {
-    if (!entered)   return 'none';
-    if (isOpening)  return 'opacity 0.44s ease, transform 0.44s cubic-bezier(0.4,0,0.6,1)';
-    if (isLifting)  return 'transform 0.32s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.32s ease';
-    if (isPressing) return 'transform 0.18s cubic-bezier(0.55,0,1,1)';
-    return 'opacity 1.0s cubic-bezier(0.16,1,0.3,1), transform 1.4s cubic-bezier(0.16,1,0.3,1)';
-  })();
-
-  const cardShadow = (() => {
-    if (isLifting) return [
-      '0 4px 8px rgba(40,24,6,0.09)',
-      '0 16px 40px rgba(40,24,6,0.18)',
-      '0 40px 90px rgba(40,24,6,0.18)',
-      '0 72px 130px rgba(40,24,6,0.12)',
-    ].join(', ');
-    if (isPressing) return [
-      '0 1px 4px rgba(40,24,6,0.06)',
-      '0 4px 16px rgba(40,24,6,0.10)',
-      '0 10px 36px rgba(40,24,6,0.10)',
-    ].join(', ');
-    return [
-      '0 2px 5px rgba(40,24,6,0.07)',
-      '0 8px 24px rgba(40,24,6,0.13)',
-      '0 24px 64px rgba(40,24,6,0.14)',
-      '0 48px 96px rgba(40,24,6,0.09)',
-    ].join(', ');
-  })();
-
-  /* Seal visual state */
-  const sealScale = isPressing ? 0.86 : 1;
-  const sealTransition = isPressing
-    ? 'transform 0.16s cubic-bezier(0.55,0,1,1)'
-    : 'transform 0.40s cubic-bezier(0.16,1,0.3,1)';
-
-  /* Scene fades with card opening */
-  const sceneOpacity    = isOpening ? 0 : 1;
-  const sceneTransition = isOpening ? 'opacity 0.42s ease 0.06s' : 'none';
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleOpen]);
 
   return (
     <div
+      role="dialog"
+      aria-label="Thiệp cưới Đại Nghĩa & Thị Nhung — Chạm để mở thiệp"
       style={{
-        position: 'fixed', inset: 0, zIndex: 9999,
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
+        position: 'fixed',
+        inset: 0,
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#F5EFE6',
+        background: 'radial-gradient(circle at 50% 40%, #FFFDF9 0%, #EDE3D1 100%)',
+        opacity: opening ? 0 : 1,
+        transform: opening ? 'scale(1.05)' : 'scale(1)',
+        transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)',
+        userSelect: 'none',
         overflow: 'hidden',
-        cursor: isLifting || isOpening ? 'default' : 'pointer',
-        userSelect: 'none', WebkitUserSelect: 'none',
-        opacity: sceneOpacity,
-        transition: sceneTransition,
+        cursor: opening ? 'default' : 'pointer',
+        padding: '16px',
       }}
-      onClick={open}
-      role="button"
-      tabIndex={0}
-      aria-label="Mở thiệp cưới"
+      onClick={handleOpen}
     >
+      {/* Background Soft Glow & Polka Texture */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'radial-gradient(rgba(197, 160, 89, 0.16) 1.5px, transparent 1.5px)',
+          backgroundSize: '28px 28px',
+          opacity: 0.75,
+          pointerEvents: 'none',
+        }}
+      />
 
-      {/* ── Background surface — warm paper, not a gradient ── */}
-      <div aria-hidden="true" style={{
-        position: 'absolute', inset: 0,
-        backgroundColor: '#EDE3C8',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.040'/%3E%3C/svg%3E")`,
-        backgroundRepeat: 'repeat',
-        backgroundSize: '240px 240px',
-        pointerEvents: 'none',
-      }} />
+      {/* Floating Sparkles in Background */}
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+        <span style={{ position: 'absolute', top: '15%', left: '15%', color: '#C5A059', opacity: 0.5, fontSize: '18px', animation: 'floatSlow 4s infinite' }}>✦</span>
+        <span style={{ position: 'absolute', top: '22%', right: '16%', color: '#C5A059', opacity: 0.45, fontSize: '14px', animation: 'floatSlow 5s infinite 1s' }}>✦</span>
+        <span style={{ position: 'absolute', bottom: '18%', left: '18%', color: '#C5A059', opacity: 0.5, fontSize: '16px', animation: 'floatSlow 4.5s infinite 2s' }}>✦</span>
+        <span style={{ position: 'absolute', bottom: '24%', right: '15%', color: '#C5A059', opacity: 0.4, fontSize: '13px', animation: 'floatSlow 6s infinite 1.5s' }}>✦</span>
+      </div>
 
-      {/* Corner vignette — very subtle, just the edges */}
-      <div aria-hidden="true" style={{
-        position: 'absolute', inset: 0,
-        background: 'radial-gradient(ellipse 100% 100% at 50% 50%, transparent 48%, rgba(60,38,10,0.20) 100%)',
-        pointerEvents: 'none',
-      }} />
-
-      {/* ══ THE INVITATION CARD ════════════════════════════════════
-           Physical A5 portrait proportions.
-           This is the FRONT COVER. Nothing more.
-      ════════════════════════════════════════════════════════════ */}
+      {/* ── THE LUXURY EMBOSSED WEDDING CARD ── */}
       <div
         style={{
           position: 'relative',
-          zIndex: 2,
-          width: 'clamp(280px, 82vw, 360px)',
-          opacity: cardOpacity,
-          transform: `translateY(${cardY}) scale(${cardScale})`,
-          transition: cardTransition,
-          boxShadow: cardShadow,
-          willChange: 'transform, opacity',
+          width: 'clamp(330px, 90vw, 440px)',
+          backgroundColor: '#FFFDF9',
+          borderRadius: '20px',
+          border: '2px solid #C5A059',
+          boxShadow: opening
+            ? '0 30px 80px rgba(50, 30, 15, 0.35)'
+            : '0 20px 60px -10px rgba(50, 30, 15, 0.22), 0 8px 25px rgba(50, 30, 15, 0.08)',
+          padding: 'clamp(36px, 7vw, 48px) clamp(24px, 6vw, 36px)',
+          textAlign: 'center',
+          transform: !entered
+            ? 'translateY(40px) scale(0.94)'
+            : opening
+            ? 'translateY(-12px) scale(1.02)'
+            : 'translateY(0) scale(1)',
+          opacity: entered ? 1 : 0,
+          transition: 'transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease',
         }}
       >
-        {/* Card itself */}
-        <div style={{
-          backgroundColor: '#FAF6EC',
-          /* Thin 1px border — like a printed card edge */
-          border: '1px solid rgba(180,148,80,0.18)',
-          /* Paper grain */
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E")`,
-          backgroundRepeat: 'repeat',
-          backgroundSize: '200px 200px',
-          padding: 'clamp(44px, 10vw, 60px) clamp(32px, 7vw, 44px) clamp(40px, 9vw, 52px)',
-          display: 'flex', flexDirection: 'column', alignItems: 'center',
-          textAlign: 'center',
-          position: 'relative',
-        }}>
-
-          {/* Thin inner border — printed stationery detail */}
-          <div aria-hidden="true" style={{
+        {/* Inner Gold Foil Frame */}
+        <div
+          aria-hidden="true"
+          style={{
             position: 'absolute',
-            inset: '8px',
-            border: '0.5px solid rgba(180,148,80,0.14)',
+            inset: '10px',
+            border: '1px solid rgba(197, 160, 89, 0.4)',
+            borderRadius: '14px',
             pointerEvents: 'none',
-          }} />
+          }}
+        >
+          {/* Corner Floral Ornaments */}
+          <span style={{ position: 'absolute', top: 5, left: 7, fontSize: '11px', color: '#C5A059' }}>✦</span>
+          <span style={{ position: 'absolute', top: 5, right: 7, fontSize: '11px', color: '#C5A059' }}>✦</span>
+          <span style={{ position: 'absolute', bottom: 5, left: 7, fontSize: '11px', color: '#C5A059' }}>✦</span>
+          <span style={{ position: 'absolute', bottom: 5, right: 7, fontSize: '11px', color: '#C5A059' }}>✦</span>
+        </div>
 
-          {/* Monogram */}
-          <img
-            src="/Test_06-06-2026/monogram.svg"
-            alt=""
-            aria-hidden="true"
-            width="64"
-            height="42"
+        {/* Top Monogram Seal */}
+        <div style={{ marginBottom: '14px' }}>
+          <div
             style={{
-              opacity: 0.55,
-              marginBottom: 'clamp(14px, 3.5vw, 20px)',
-              filter: 'brightness(0.55) sepia(0.4)',
-            }}
-            onError={e => { e.currentTarget.style.display = 'none'; }}
-          />
-
-          {/* Thin champagne rule */}
-          <div style={{
-            width: 'clamp(28px, 6vw, 40px)', height: '0.5px',
-            background: 'rgba(160,120,50,0.30)',
-            marginBottom: 'clamp(14px, 3.5vw, 20px)',
-          }} aria-hidden="true" />
-
-          {/* "Trân trọng kính mời" — small, quiet */}
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(0.68rem, 1.4vw, 0.82rem)',
-            fontStyle: 'italic',
-            fontWeight: 400,
-            color: 'rgba(80,54,16,0.55)',
-            letterSpacing: '0.04em',
-            marginBottom: 'clamp(20px, 5vw, 28px)',
-          }}>
-            Trân trọng kính mời
-          </p>
-
-          {/* Groom name */}
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(1.55rem, 4.8vw, 2.10rem)',
-            fontWeight: 500,
-            fontStyle: 'normal',
-            color: '#1A1008',
-            lineHeight: 1.10,
-            letterSpacing: '0.01em',
-            margin: 0,
-          }}>
-            {COUPLE.groom.firstName}
-          </p>
-
-          {/* Ampersand — part of the typography, not a big symbol */}
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(0.95rem, 2.2vw, 1.20rem)',
-            fontStyle: 'italic',
-            fontWeight: 300,
-            color: 'rgba(155,115,42,0.80)',
-            margin: 'clamp(4px, 1vw, 7px) 0',
-            lineHeight: 1,
-          }}>
-            &amp;
-          </p>
-
-          {/* Bride name */}
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(1.55rem, 4.8vw, 2.10rem)',
-            fontWeight: 500,
-            fontStyle: 'normal',
-            color: '#1A1008',
-            lineHeight: 1.10,
-            letterSpacing: '0.01em',
-            marginBottom: 'clamp(24px, 6vw, 34px)',
-          }}>
-            {COUPLE.bride.firstName}
-          </p>
-
-          {/* Wedding date */}
-          <p style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: 'clamp(0.65rem, 1.4vw, 0.76rem)',
-            fontWeight: 500,
-            letterSpacing: '0.14em',
-            color: 'rgba(80,54,16,0.50)',
-            textTransform: 'uppercase',
-            marginBottom: 'clamp(28px, 7vw, 38px)',
-          }}>
-            20 · 10 · 2026
-          </p>
-
-          {/* ── WAX SEAL — the interaction point ──
-               Centered. Breathes subtly. Tap to open.
-               Does NOT bounce, spin, or glow.              */}
-          <button
-            onClick={e => { e.stopPropagation(); open(); }}
-            aria-label="Nhấn để mở thiệp"
-            style={{
-              background: 'transparent', border: 'none', padding: 0,
-              cursor: isLifting || isOpening ? 'default' : 'pointer',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
+              width: '56px',
+              height: '56px',
+              margin: '0 auto 10px auto',
+              borderRadius: '50%',
+              border: '1.5px solid #C5A059',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'linear-gradient(135deg, #FFF9ED 0%, #FAF0DE 100%)',
+              boxShadow: '0 4px 14px rgba(197, 160, 89, 0.25)',
             }}
           >
-            <div style={{
-              width: 'clamp(52px, 13vw, 62px)',
-              height: 'clamp(52px, 13vw, 62px)',
-              transform: `scale(${sealScale})`,
-              transition: sealTransition,
-              animation: entered && phase === 'idle'
-                ? 'sealBreath 4.8s ease-in-out infinite'
-                : 'none',
-            }}>
-              <img
-                src="/Test_06-06-2026/wax-seal.svg"
-                alt=""
-                aria-hidden="true"
-                width="62"
-                height="62"
-                style={{ width: '100%', height: '100%', display: 'block' }}
-                onError={e => {
-                  e.currentTarget.outerHTML = `<svg viewBox="0 0 62 62" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="31" cy="31" r="28" fill="#7C1D21" opacity="0.90"/><circle cx="31" cy="31" r="25" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" fill="none"/><circle cx="31" cy="31" r="21" stroke="rgba(248,244,236,0.20)" stroke-width="0.5" fill="none" stroke-dasharray="2 3"/><text x="31" y="36" font-family="Georgia,serif" font-size="13" font-style="italic" fill="#FDF8EC" text-anchor="middle" opacity="0.95">ĐN</text></svg>`;
-                }}
-              />
-            </div>
-
-            {/* "Mở thiệp" — whisper level */}
-            <span style={{
-              fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: 'clamp(0.46rem, 1vw, 0.54rem)',
-              fontWeight: 400,
-              letterSpacing: '0.28em',
-              textTransform: 'uppercase',
-              color: 'rgba(80,54,16,0.38)',
-              display: 'block',
-              opacity: entered ? 1 : 0,
-              transition: 'opacity 0.8s ease',
-              transitionDelay: '2.2s',
-            }}>
-              Mở thiệp
+            <span
+              style={{
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: '1.5rem',
+                fontStyle: 'italic',
+                fontWeight: 600,
+                letterSpacing: '1px',
+                color: '#7D141A',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              ĐN
             </span>
+          </div>
+
+          <p
+            style={{
+              fontFamily: "'Be Vietnam Pro', sans-serif",
+              fontSize: '0.66rem',
+              fontWeight: 700,
+              letterSpacing: '0.24em',
+              textTransform: 'uppercase',
+              color: '#9A7836',
+              margin: 0,
+            }}
+          >
+            Thiệp Cưới Báo Hỷ
+          </p>
+        </div>
+
+        {/* Couple Names in Rich Deep Royal Burgundy */}
+        <div style={{ margin: '10px 0 14px 0' }}>
+          <h1
+            style={{
+              fontFamily: "'Alex Brush', cursive",
+              fontSize: 'clamp(2.8rem, 8vw, 3.8rem)',
+              color: '#7D141A',
+              lineHeight: 1.1,
+              margin: '0 0 6px 0',
+              fontWeight: 400,
+              textShadow: '0 1px 4px rgba(125, 20, 26, 0.1)',
+            }}
+          >
+            {COUPLE.groom.firstName} &amp; {COUPLE.bride.firstName}
+          </h1>
+
+          <p
+            style={{
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontSize: 'clamp(1.1rem, 2.5vw, 1.3rem)',
+              fontStyle: 'italic',
+              fontWeight: 500,
+              color: '#3A2C23',
+              margin: 0,
+            }}
+          >
+            {COUPLE.groom.fullName} &amp; {COUPLE.bride.fullName}
+          </p>
+        </div>
+
+        {/* Symmetrical Gold Divider */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '12px',
+            width: '200px',
+            margin: '0 auto 16px auto',
+          }}
+        >
+          <span style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, #C5A059)' }} />
+          <span style={{ color: '#C5A059', fontSize: '13px' }}>❦</span>
+          <span style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, #C5A059)' }} />
+        </div>
+
+        {/* Date and Venue */}
+        <div style={{ marginBottom: '24px' }}>
+          <p
+            style={{
+              fontFamily: "'Cinzel', serif",
+              fontSize: 'clamp(0.95rem, 2.2vw, 1.15rem)',
+              fontWeight: 700,
+              letterSpacing: '0.18em',
+              color: '#1E1612',
+              marginBottom: '4px',
+            }}
+          >
+            20 . 10 . 2026
+          </p>
+
+          <p
+            style={{
+              fontFamily: "'Be Vietnam Pro', sans-serif",
+              fontSize: 'clamp(0.72rem, 1.4vw, 0.80rem)',
+              fontWeight: 500,
+              color: '#6E5F57',
+              margin: 0,
+            }}
+          >
+            {WEDDING.venue} · TP. Hồ Chí Minh
+          </p>
+        </div>
+
+        {/* ── 3D WAX SEAL TAP TARGET ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <button
+            type="button"
+            aria-label="Chạm để mở thiệp cưới và bật nhạc"
+            style={{
+              position: 'relative',
+              width: '74px',
+              height: '74px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle at 35% 30%, #B22222 0%, #7D141A 55%, #4F0E13 100%)',
+              border: '2.5px solid rgba(255, 230, 180, 0.65)',
+              boxShadow: '0 8px 25px rgba(80, 15, 20, 0.45), 0 0 18px rgba(220, 50, 60, 0.3)',
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              animation: 'sealPulse 2.8s ease-in-out infinite',
+              transition: 'transform 0.2s ease',
+            }}
+          >
+            <div
+              style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '50%',
+                border: '1px dashed rgba(255, 240, 210, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "'Cinzel', serif",
+                  fontSize: '19px',
+                  fontWeight: 700,
+                  color: '#FFE8C2',
+                  textShadow: '0 1px 3px rgba(0, 0, 0, 0.6)',
+                  letterSpacing: '1px',
+                }}
+              >
+                HỶ
+              </span>
+            </div>
           </button>
+
+          {/* Invitation Whisper Pill */}
+          <div
+            style={{
+              marginTop: '12px',
+              padding: '6px 18px',
+              borderRadius: '999px',
+              background: 'rgba(255, 255, 255, 0.95)',
+              border: '1px solid rgba(197, 160, 89, 0.45)',
+              boxShadow: '0 4px 14px rgba(50, 30, 15, 0.08)',
+              animation: 'pulseSlow 2.2s infinite',
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "'Be Vietnam Pro', sans-serif",
+                fontSize: '0.66rem',
+                fontWeight: 700,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: '#7D141A',
+              }}
+            >
+              ✉ Chạm để mở thiệp &amp; bật nhạc
+            </span>
+          </div>
         </div>
       </div>
 
       <style>{`
-        @keyframes sealBreath {
-          0%, 100% { transform: scale(1.00); }
-          50%       { transform: scale(1.05); }
+        @keyframes sealPulse {
+          0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 8px 25px rgba(80, 15, 20, 0.45), 0 0 14px rgba(220, 50, 60, 0.25);
+          }
+          50% {
+            transform: scale(1.07);
+            box-shadow: 0 12px 32px rgba(80, 15, 20, 0.6), 0 0 24px rgba(220, 50, 60, 0.45);
+          }
         }
-        @media (prefers-reduced-motion: reduce) {
-          @keyframes sealBreath { 0%, 100% { transform: none; } }
+        @keyframes pulseSlow {
+          0%, 100% { opacity: 0.9; transform: translateY(0); }
+          50% { opacity: 1; transform: translateY(-2px); }
+        }
+        @keyframes floatSlow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-6px); }
         }
       `}</style>
     </div>

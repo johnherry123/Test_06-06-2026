@@ -1,191 +1,309 @@
-/*
-  STORY — Three moments
-  ─────────────────────────────────────────────────────────────────
-  
-  Philosophy:
-  Pages of a photo album. Compact. Warm.
-  
-  Rules:
-  - Maximum 3 story entries rendered (first 3 from data)
-  - No vertical timeline line
-  - No year badges
-  - No huge photos
-  - Photo is small/medium and secondary to the text
-  - Each entry: year annotation → title → one-line content → small photo
-  - Entry layout alternates: text-left photo-right, then text-right photo-left
-  
-  Section bg: espresso (#1E1410) — keep for contrast, but make it brief and warm.
-*/
-import { useRef, useEffect } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { STORY, COUPLE } from '../weddingData';
-
-gsap.registerPlugin(ScrollTrigger);
-
-function isPlaceholder(s) {
-  return !s || s.startsWith('[') || s.trim() === '';
-}
-
-function StoryEntry({ entry, flip }) {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(ref.current,
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.0, ease: 'power3.out',
-          scrollTrigger: { trigger: ref.current, start: 'top 86%', once: true } }
-      );
-    }, ref);
-    return () => ctx.revert();
-  }, []);
-
-  const hasPhoto = entry.photo?.src;
-  const titleText = isPlaceholder(entry.title) ? 'Câu chuyện chờ được kể...' : entry.title;
-  const contentText = isPlaceholder(entry.content) ? null : entry.content;
-  const yearText = isPlaceholder(entry.year) ? null : entry.year;
-
-  return (
-    <div
-      ref={ref}
-      style={{
-        display: 'grid',
-        gridTemplateColumns: hasPhoto ? (flip ? '1fr clamp(100px, 26vw, 180px)' : 'clamp(100px, 26vw, 180px) 1fr') : '1fr',
-        gap: 'clamp(18px, 4vw, 36px)',
-        alignItems: 'center',
-        paddingBottom: 'clamp(32px, 6vw, 48px)',
-        borderBottom: '0.5px solid rgba(248,244,236,0.07)',
-        marginBottom: 'clamp(32px, 6vw, 48px)',
-      }}
-      className="story-entry"
-    >
-      {/* Text — order changes on flip */}
-      <div style={{ order: flip ? 0 : (hasPhoto ? 1 : 0) }}>
-        {yearText && (
-          <p style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.56rem', fontWeight: 600,
-            letterSpacing: '0.18em', textTransform: 'uppercase',
-            color: '#B08C4E', opacity: 0.80,
-            marginBottom: '8px',
-          }}>{yearText}</p>
-        )}
-        <p style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: isPlaceholder(entry.title)
-            ? 'clamp(1.05rem, 2.2vw, 1.40rem)'
-            : 'clamp(1.30rem, 3.0vw, 1.85rem)',
-          fontWeight: isPlaceholder(entry.title) ? 400 : 500,
-          fontStyle: isPlaceholder(entry.title) ? 'italic' : 'normal',
-          color: isPlaceholder(entry.title)
-            ? 'rgba(248,244,236,0.22)'
-            : 'rgba(248,244,236,0.90)',
-          lineHeight: 1.20,
-          letterSpacing: '0.01em',
-          marginBottom: contentText ? '10px' : 0,
-        }}>
-          {titleText}
-        </p>
-        {contentText && (
-          <p style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: 'clamp(0.76rem, 1.3vw, 0.86rem)',
-            color: 'rgba(248,244,236,0.32)',
-            lineHeight: 1.78, margin: 0,
-          }}>{contentText}</p>
-        )}
-      </div>
-
-      {/* Photo — small, not dominant */}
-      {hasPhoto && (
-        <div style={{
-          order: flip ? 1 : 0,
-          aspectRatio: '3/4',
-          overflow: 'hidden',
-          flexShrink: 0,
-        }}>
-          <img
-            src={entry.photo.src}
-            alt={entry.photo.alt || titleText}
-            loading="lazy" decoding="async"
-            style={{
-              width: '100%', height: '100%',
-              objectFit: 'cover', objectPosition: 'center 15%',
-              display: 'block',
-              filter: 'brightness(0.78) contrast(1.06) saturate(0.82)',
-            }}
-            onError={e => { e.currentTarget.parentElement.style.display = 'none'; }}
-          />
-        </div>
-      )}
-    </div>
-  );
-}
+import { Heart } from 'lucide-react';
 
 export default function Story() {
-  /* Only render first 3 entries; skip the closing entry (no photo = closing) */
-  const entries = (STORY || []).filter(e => e.photo !== null).slice(0, 3);
-
-  if (entries.length === 0) return null;
-
   return (
     <section
       id="story"
-      aria-label="Câu chuyện của chúng mình"
+      aria-label="Câu chuyện tình yêu của chúng mình"
       style={{
-        backgroundColor: '#1E1410',
-        padding: 'clamp(64px, 10vw, 96px) clamp(24px, 5vw, 56px)',
-        overflow: 'hidden',
+        backgroundColor: '#FAF7F2',
+        background: 'linear-gradient(180deg, #FAF7F2 0%, #F5EDE1 50%, #FAF7F2 100%)',
+        padding: 'clamp(70px, 10vw, 110px) clamp(20px, 4vw, 40px)',
         position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <div style={{ maxWidth: '640px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <div
+        style={{
+          maxWidth: '840px',
+          margin: '0 auto',
+          position: 'relative',
+          zIndex: 2,
+        }}
+      >
+        {/* Section Header */}
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(44px, 7vw, 68px)' }}>
+          <div
+            className="gsap-reveal"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '5px 16px',
+              borderRadius: '999px',
+              background: 'rgba(128, 29, 36, 0.08)',
+              color: '#801D24',
+              fontFamily: "'Be Vietnam Pro', sans-serif",
+              fontSize: '0.66rem',
+              fontWeight: 600,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              marginBottom: '14px',
+            }}
+          >
+            <Heart size={12} fill="currentColor" />
+            Câu Chuyện Tình Yêu
+          </div>
 
-        {/* Header — minimal */}
-        <div style={{ marginBottom: 'clamp(40px, 7vw, 60px)' }}>
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(0.78rem, 1.5vw, 0.92rem)',
-            fontStyle: 'italic',
-            color: 'rgba(248,244,236,0.30)',
-            letterSpacing: '0.04em', marginBottom: '7px',
-          }}>
-            Hành trình của chúng mình
-          </p>
-          <h2 style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(1.9rem, 5vw, 2.9rem)',
-            fontWeight: 500, fontStyle: 'italic',
-            color: 'rgba(248,244,236,0.90)',
-            lineHeight: 1.08, letterSpacing: '0.01em', margin: 0,
-          }}>
-            {COUPLE.groom.firstName} &amp; {COUPLE.bride.firstName}
+          <h2
+            className="gsap-reveal"
+            style={{
+              fontFamily: "'Alex Brush', cursive",
+              fontSize: 'clamp(2.8rem, 6.5vw, 4.2rem)',
+              color: '#801D24',
+              lineHeight: 1.1,
+              margin: '0 0 8px 0',
+              fontWeight: 400,
+            }}
+          >
+            Hành Trình Yêu Thương
           </h2>
+
+          <p
+            className="gsap-reveal"
+            style={{
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)',
+              fontStyle: 'italic',
+              color: '#584A42',
+            }}
+          >
+            "Tình yêu không phải là nhìn nhau, mà là cùng nhau nhìn về một hướng."
+          </p>
         </div>
 
-        {/* Three story entries */}
-        {entries.map((entry, i) => (
-          <StoryEntry key={i} entry={entry} flip={i % 2 !== 0} />
-        ))}
+        {/* ── VERTICAL TIMELINE CONTAINER ── */}
+        <div
+          style={{
+            position: 'relative',
+            padding: '20px 0',
+          }}
+        >
+          {/* Central Timeline Golden Line */}
+          <div
+            aria-hidden="true"
+            className="timeline-line"
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: '50%',
+              width: '2px',
+              transform: 'translateX(-50%)',
+              background: 'linear-gradient(180deg, transparent, #C5A059 10%, #C5A059 90%, transparent)',
+            }}
+          />
 
-        {/* Closing line */}
-        <div style={{ textAlign: 'center', paddingTop: 'clamp(4px, 1vw, 8px)' }}>
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(0.88rem, 1.7vw, 1.05rem)',
-            fontStyle: 'italic',
-            color: 'rgba(248,244,236,0.28)',
-          }}>
-            20 tháng Mười, 2026 — Ngày chúng mình về chung một nhà.
+          {/* Timeline Items */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(36px, 6vw, 60px)' }}>
+            {STORY.map((item, idx) => {
+              const isEven = idx % 2 === 0;
+
+              return (
+                <div
+                  key={idx}
+                  className="gsap-reveal story-item-row"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexDirection: isEven ? 'row' : 'row-reverse',
+                    position: 'relative',
+                  }}
+                >
+                  {/* Content Card Side */}
+                  <div
+                    className="story-card-wrapper"
+                    style={{
+                      width: '45%',
+                      textAlign: isEven ? 'right' : 'left',
+                    }}
+                  >
+                    <div
+                      style={{
+                        backgroundColor: '#FFFFFF',
+                        border: '1px solid rgba(197, 160, 89, 0.35)',
+                        borderRadius: '16px',
+                        padding: 'clamp(20px, 4vw, 28px)',
+                        boxShadow: '0 10px 30px -6px rgba(45, 30, 20, 0.07)',
+                        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-3px)';
+                        e.currentTarget.style.boxShadow = '0 16px 36px -6px rgba(45, 30, 20, 0.12)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 10px 30px -6px rgba(45, 30, 20, 0.07)';
+                      }}
+                    >
+                      {/* Year badge */}
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          padding: '3px 12px',
+                          borderRadius: '999px',
+                          backgroundColor: 'rgba(197, 160, 89, 0.15)',
+                          color: '#9A7836',
+                          fontFamily: "'Cinzel', serif",
+                          fontSize: '0.66rem',
+                          fontWeight: 700,
+                          letterSpacing: '0.08em',
+                          marginBottom: '10px',
+                        }}
+                      >
+                        {item.year}
+                      </span>
+
+                      <h3
+                        style={{
+                          fontFamily: "'Cormorant Garamond', Georgia, serif",
+                          fontSize: 'clamp(1.3rem, 2.5vw, 1.65rem)',
+                          fontWeight: 600,
+                          color: '#1E1612',
+                          lineHeight: 1.25,
+                          marginBottom: '8px',
+                        }}
+                      >
+                        {item.title}
+                      </h3>
+
+                      <p
+                        style={{
+                          fontFamily: "'Be Vietnam Pro', sans-serif",
+                          fontSize: '0.82rem',
+                          color: '#584A42',
+                          lineHeight: 1.65,
+                          margin: 0,
+                        }}
+                      >
+                        {item.content}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Central Node Dot with Heart */}
+                  <div
+                    aria-hidden="true"
+                    className="story-node"
+                    style={{
+                      position: 'absolute',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      backgroundColor: '#FFFFFF',
+                      border: '2px solid #C5A059',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#801D24',
+                      boxShadow: '0 0 14px rgba(197, 160, 89, 0.4)',
+                      zIndex: 3,
+                    }}
+                  >
+                    <Heart size={14} fill="#801D24" />
+                  </div>
+
+                  {/* Photo Side */}
+                  <div
+                    className="story-photo-wrapper"
+                    style={{
+                      width: '45%',
+                    }}
+                  >
+                    {item.photo?.src && (
+                      <div
+                        style={{
+                          borderRadius: '16px',
+                          overflow: 'hidden',
+                          aspectRatio: '4 / 3',
+                          border: '2px solid rgba(197, 160, 89, 0.3)',
+                          boxShadow: '0 12px 28px -6px rgba(45, 30, 20, 0.10)',
+                        }}
+                      >
+                        <img
+                          src={item.photo.src}
+                          alt={item.photo.alt || item.title}
+                          loading="lazy"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            display: 'block',
+                            transition: 'transform 0.8s ease',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'scale(1.06)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'scale(1)';
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Bottom Loving Quote */}
+        <div
+          className="gsap-reveal"
+          style={{
+            textAlign: 'center',
+            marginTop: 'clamp(40px, 7vw, 64px)',
+            paddingTop: '24px',
+            borderTop: '1px dashed rgba(197, 160, 89, 0.35)',
+          }}
+        >
+          <p
+            style={{
+              fontFamily: "'Alex Brush', cursive",
+              fontSize: 'clamp(2.0rem, 4.5vw, 2.8rem)',
+              color: '#801D24',
+              margin: '0 0 6px 0',
+            }}
+          >
+            Đại Nghĩa &amp; Thị Nhung
+          </p>
+          <p
+            style={{
+              fontFamily: "'Be Vietnam Pro', sans-serif",
+              fontSize: '0.74rem',
+              color: '#9A7836',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              fontWeight: 600,
+            }}
+          >
+            20 · 10 · 2026 — Hẹn ước trăm năm
           </p>
         </div>
       </div>
 
       <style>{`
-        @media (max-width: 500px) {
-          .story-entry {
-            grid-template-columns: 1fr !important;
+        @media (max-width: 680px) {
+          .timeline-line {
+            left: 20px !important;
+          }
+          .story-node {
+            left: 20px !important;
+          }
+          .story-item-row {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            padding-left: 46px !important;
+            gap: 16px !important;
+          }
+          .story-card-wrapper,
+          .story-photo-wrapper {
+            width: 100% !important;
+            text-align: left !important;
           }
         }
       `}</style>

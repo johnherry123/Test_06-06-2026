@@ -1,276 +1,354 @@
-/*
-  HERO — Inside the Invitation
-  ─────────────────────────────────────────────────────────────────
-  
-  THE PROBLEM WE FIXED:
-  Previous version was a split-screen (photo LEFT | text RIGHT)
-  with a dark vertical divider. That looks like a fashion/editorial
-  landing page. DELETED.
-  
-  NEW COMPOSITION:
-  One centered column. Everything belongs to one invitation.
-  
-  Hierarchy:
-  1. Italic invitation label ("Trân trọng kính mời")
-  2. Groom full name
-  3. Ampersand
-  4. Bride full name  
-  5. Date
-  6. Wedding photograph (tasteful width, NOT full-screen)
-  7. Venue + short countdown
-  8. Single primary CTA
-  
-  This is the INSIDE PAGE of a wedding invitation.
-  Not a landing page. Not a magazine cover. Not a split-screen UI.
-  
-  Desktop:
-  - Max width container, centered
-  - Photo: max 640px wide, natural proportion
-  - Everything centered
-  
-  Mobile (390×844):
-  - Photo: 100% width, 60vw height
-  - Text: readable sizes, comfortable padding
-  
-  Typography:
-  - Cormorant Garamond: names, ampersand, italic labels
-  - Be Vietnam Pro: date, venue, countdown, buttons
-  - NO Playfair Display in this section
-*/
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import { Calendar, Heart, MapPin } from 'lucide-react';
 import { COUPLE, WEDDING } from '../weddingData';
 
-/* Couple photo — replace src with real photo in weddingData */
-const PHOTO = {
-  src:      'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=1200&q=88&fm=webp',
-  fallback: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=900&q=80',
-  alt:      `${COUPLE.groom.firstName} và ${COUPLE.bride.firstName}`,
+const MAIN_PHOTO = {
+  src: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=90&fm=webp',
+  fallback: 'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=900&q=85',
+  alt: `${COUPLE.groom.fullName} và ${COUPLE.bride.fullName}`,
 };
 
-function useCountdownDays() {
-  const [days, setDays] = useState(0);
+function useLiveCountdown(targetISO) {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
   useEffect(() => {
-    const target = new Date(WEDDING.calendarTarget).getTime();
-    const calc = () => {
-      const d = Math.max(0, Math.floor((target - Date.now()) / 86400000));
-      setDays(d);
+    const target = new Date(targetISO).getTime();
+
+    const updateCountdown = () => {
+      const now = Date.now();
+      const diff = Math.max(0, target - now);
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      setTimeLeft({ days, hours, minutes, seconds });
     };
-    calc();
-    const id = setInterval(calc, 60000);
-    return () => clearInterval(id);
-  }, []);
-  return days;
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, [targetISO]);
+
+  return timeLeft;
 }
 
 export default function Hero() {
-  const days    = useCountdownDays();
-  const ref     = useRef(null);
-  const entered = useRef(false);
-
-  /* Simple entrance — just a fade, no stagger complexity */
-  useEffect(() => {
-    if (entered.current || !ref.current) return;
-    entered.current = true;
-    const el = ref.current;
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(12px)';
-    /* rAF to let paint happen first */
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        el.style.transition = 'opacity 1.1s ease, transform 1.1s cubic-bezier(0.16,1,0.3,1)';
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
-      });
-    });
-  }, []);
+  const { days, hours, minutes, seconds } = useLiveCountdown(WEDDING.calendarTarget);
 
   const scrollToRsvp = (e) => {
     e.preventDefault();
     document.querySelector('#rsvp')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleAddToCalendar = () => {
+    // Google Calendar URL generator
+    const title = encodeURIComponent(`Lễ Thành Hôn | ${COUPLE.groom.firstName} & ${COUPLE.bride.firstName}`);
+    const details = encodeURIComponent(`Trân trọng kính mời Quý khách tham dự Lễ Thành Hôn và Tiệc Cưới của ${COUPLE.groom.fullName} & ${COUPLE.bride.fullName} tại ${WEDDING.venueHall} - ${WEDDING.venue}.`);
+    const location = encodeURIComponent(WEDDING.venueAddress);
+    // 2026-10-20 17:30 to 21:30 (UTC+7 -> UTC: 10:30 to 14:30)
+    const dates = '20261020T103000Z/20261020T143000Z';
+    const gCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
+    window.open(gCalUrl, '_blank');
+  };
+
   return (
     <section
       id="hero"
-      aria-label={`Thiệp cưới ${COUPLE.groom.firstName} và ${COUPLE.bride.firstName}`}
+      aria-label={`Thiệp cưới ${COUPLE.groom.fullName} & ${COUPLE.bride.fullName}`}
       style={{
-        /* Warm ivory — same as the invitation card */
-        backgroundColor: '#FAF6EC',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.018'/%3E%3C/svg%3E")`,
-        backgroundRepeat: 'repeat',
-        backgroundSize: '200px 200px',
-        /* Centered column */
+        position: 'relative',
+        backgroundColor: '#FAF7F2',
+        background: 'radial-gradient(ellipse 90% 80% at 50% 10%, #FFFDF9 0%, #F5EDE0 100%)',
+        padding: 'clamp(64px, 10vw, 110px) clamp(20px, 4vw, 40px) clamp(70px, 10vw, 110px)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         textAlign: 'center',
-        padding: 'clamp(52px, 9vw, 80px) clamp(24px, 6vw, 48px) clamp(56px, 9vw, 88px)',
-        /* NO split, NO grid, NO dark divider */
+        overflow: 'hidden',
       }}
     >
+      {/* Background Floral Accents */}
       <div
-        ref={ref}
+        aria-hidden="true"
         style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'radial-gradient(rgba(197, 160, 89, 0.12) 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
+          pointerEvents: 'none',
+        }}
+      />
+
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 2,
+          maxWidth: '780px',
           width: '100%',
-          maxWidth: '560px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
         }}
       >
-
-        {/* Thin rule — echo of invitation card */}
-        <div style={{
-          width: '32px', height: '0.5px',
-          background: 'rgba(160,120,50,0.30)',
-          marginBottom: 'clamp(20px, 4vw, 28px)',
-        }} aria-hidden="true" />
-
-        {/* Invitation label */}
-        <p style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 'clamp(0.78rem, 1.4vw, 0.90rem)',
-          fontStyle: 'italic',
-          color: 'rgba(80,54,16,0.45)',
-          letterSpacing: '0.03em',
-          marginBottom: 'clamp(18px, 3.5vw, 26px)',
-        }}>
-          Trân trọng kính mời
-        </p>
-
-        {/* GROOM NAME — h1, invitation typography, not editorial */}
-        <h1 style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 'clamp(1.90rem, 4.5vw, 2.80rem)',
-          fontWeight: 500,
-          fontStyle: 'normal',
-          color: '#1A1008',
-          lineHeight: 1.12,
-          letterSpacing: '0.01em',
-          margin: 0,
-        }}>
-          {COUPLE.groom.fullName}
-        </h1>
-
-        {/* Ampersand */}
-        <p style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 'clamp(1.1rem, 2.2vw, 1.45rem)',
-          fontStyle: 'italic',
-          fontWeight: 300,
-          color: 'rgba(155,115,42,0.70)',
-          margin: 'clamp(3px, 0.6vw, 6px) 0',
-          lineHeight: 1,
-        }}>
-          &amp;
-        </p>
-
-        {/* BRIDE NAME */}
-        <p style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 'clamp(1.90rem, 4.5vw, 2.80rem)',
-          fontWeight: 500,
-          fontStyle: 'normal',
-          color: '#1A1008',
-          lineHeight: 1.12,
-          letterSpacing: '0.01em',
-          margin: 0,
-          marginBottom: 'clamp(20px, 3.5vw, 28px)',
-        }}>
-          {COUPLE.bride.fullName}
-        </p>
-
-        {/* DATE — clear, not tiny */}
-        <p style={{
-          fontFamily: "'Be Vietnam Pro', sans-serif",
-          fontSize: 'clamp(0.72rem, 1.3vw, 0.82rem)',
-          fontWeight: 600,
-          letterSpacing: '0.12em',
-          color: '#1A1008',
-          marginBottom: 'clamp(26px, 5vw, 38px)',
-          opacity: 0.55,
-        }}>
-          20 · 10 · 2026
-        </p>
-
-        {/* ── WEDDING PHOTOGRAPH ──
-             Centered. Tasteful proportion. NOT full-bleed.
-             Max width 580px on desktop. Photo is secondary to names.  */}
-        <div style={{
-          width: '100%',
-          maxWidth: '520px',
-          aspectRatio: '4/3',
-          overflow: 'hidden',
-          position: 'relative',
-          backgroundColor: '#1A120D',
-          marginBottom: 'clamp(22px, 4vw, 32px)',
-        }}>
-          <img
-            src={PHOTO.src}
-            alt={PHOTO.alt}
-            loading="eager"
-            decoding="async"
-            style={{
-              width: '100%', height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center 22%',
-              display: 'block',
-              filter: 'brightness(0.86) contrast(1.04) saturate(0.85)',
-            }}
-            onError={e => { e.currentTarget.src = PHOTO.fallback; }}
-          />
-        </div>
-
-        {/* VENUE */}
-        <p style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 'clamp(0.88rem, 1.5vw, 1.02rem)',
-          fontStyle: 'italic',
-          color: 'rgba(80,54,16,0.50)',
-          lineHeight: 1.55,
-          marginBottom: 'clamp(6px, 1.2vw, 10px)',
-        }}>
-          {WEDDING.venue} · {WEDDING.venueHall}
-        </p>
-
-        {/* COUNTDOWN — one restrained line, not a widget */}
-        {days > 0 && (
-          <p
-            aria-label={`Còn ${days} ngày đến ngày cưới`}
+        {/* Top Monogram Ribbon */}
+        <div
+          className="gsap-reveal"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '12px',
+            padding: '6px 20px',
+            borderRadius: '999px',
+            background: 'rgba(255, 255, 255, 0.9)',
+            border: '1px solid rgba(197, 160, 89, 0.35)',
+            boxShadow: '0 2px 10px rgba(50, 30, 15, 0.04)',
+            marginBottom: '22px',
+          }}
+        >
+          <span style={{ color: '#C5A059', fontSize: '13px' }}>✦</span>
+          <span
             style={{
               fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: 'clamp(0.66rem, 1.2vw, 0.74rem)',
-              fontWeight: 400,
-              color: 'rgba(80,54,16,0.38)',
-              letterSpacing: '0.05em',
-              marginBottom: 'clamp(28px, 5vw, 40px)',
-            }}>
-            Còn {days} ngày
-          </p>
-        )}
+              fontSize: '0.68rem',
+              fontWeight: 600,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: '#801D24',
+            }}
+          >
+            Lễ Thành Hôn · Save The Date
+          </span>
+          <span style={{ color: '#C5A059', fontSize: '13px' }}>✦</span>
+        </div>
 
-        {/* SINGLE CTA */}
-        <a
-          href="#rsvp"
-          onClick={scrollToRsvp}
-          className="btn-primary"
-          aria-label="Xác nhận tham dự"
-          style={{ textAlign: 'center', minWidth: '200px' }}
+        {/* Groom & Bride Names in Romantic Calligraphy & Serif */}
+        <h1
+          className="gsap-reveal"
+          style={{
+            fontFamily: "'Alex Brush', cursive",
+            fontSize: 'clamp(3.0rem, 8.5vw, 5.0rem)',
+            color: '#801D24',
+            lineHeight: 1.05,
+            margin: '0 0 6px 0',
+            fontWeight: 400,
+            textShadow: '0 2px 12px rgba(128, 29, 36, 0.08)',
+          }}
         >
-          Xác nhận tham dự
-        </a>
+          {COUPLE.groom.firstName}
+          <span
+            style={{
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontStyle: 'italic',
+              fontWeight: 300,
+              color: '#C5A059',
+              margin: '0 clamp(10px, 2.5vw, 24px)',
+              fontSize: '0.75em',
+            }}
+          >
+            &amp;
+          </span>
+          {COUPLE.bride.firstName}
+        </h1>
 
-        {/* Scroll cue — barely visible */}
-        <p style={{
-          fontFamily: "'Be Vietnam Pro', sans-serif",
-          fontSize: '0.60rem',
-          color: 'rgba(80,54,16,0.22)',
-          letterSpacing: '0.18em',
-          textTransform: 'uppercase',
-          marginTop: 'clamp(32px, 6vw, 48px)',
-        }}>
-          Cuộn để khám phá
+        {/* Full Names for Formal Elegance */}
+        <p
+          className="gsap-reveal"
+          style={{
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
+            fontSize: 'clamp(1.15rem, 2.6vw, 1.45rem)',
+            fontStyle: 'italic',
+            color: '#42332A',
+            letterSpacing: '0.04em',
+            marginBottom: 'clamp(24px, 4.5vw, 36px)',
+          }}
+        >
+          {COUPLE.groom.fullName} &amp; {COUPLE.bride.fullName}
         </p>
+
+        {/* ── ROMAN ARCH PORTRAIT ── */}
+        <div
+          className="gsap-reveal arch-gold-border"
+          style={{
+            width: '100%',
+            maxWidth: '460px',
+            marginBottom: 'clamp(28px, 5vw, 40px)',
+          }}
+        >
+          <div
+            className="arch-frame"
+            style={{
+              width: '100%',
+              aspectRatio: '4 / 5',
+              backgroundColor: '#EDE5D8',
+            }}
+          >
+            <img
+              src={MAIN_PHOTO.src}
+              alt={MAIN_PHOTO.alt}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center 20%',
+                display: 'block',
+                transition: 'transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.04)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+              onError={(e) => {
+                e.currentTarget.src = MAIN_PHOTO.fallback;
+              }}
+            />
+            {/* Subtle bottom vignette */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(to top, rgba(20, 10, 5, 0.35) 0%, transparent 40%)',
+                pointerEvents: 'none',
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Date and Location Badge */}
+        <div
+          className="gsap-reveal"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '8px',
+            marginBottom: 'clamp(26px, 5vw, 38px)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#801D24' }}>
+            <Calendar size={18} />
+            <span
+              style={{
+                fontFamily: "'Cinzel', serif",
+                fontSize: 'clamp(1.05rem, 2.4vw, 1.35rem)',
+                fontWeight: 600,
+                letterSpacing: '0.14em',
+                color: '#1E1612',
+              }}
+            >
+              20 . 10 . 2026
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#7C6E66', fontSize: '0.88rem' }}>
+            <MapPin size={15} color="#C5A059" />
+            <span style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontWeight: 500 }}>
+              {WEDDING.venueHall} · {WEDDING.venue}
+            </span>
+          </div>
+        </div>
+
+        {/* ── LIVE 4-CARD COUNTDOWN TIMER ── */}
+        <div
+          className="gsap-reveal"
+          style={{
+            width: '100%',
+            maxWidth: '440px',
+            marginBottom: 'clamp(32px, 6vw, 44px)',
+          }}
+        >
+          <p
+            style={{
+              fontFamily: "'Be Vietnam Pro', sans-serif",
+              fontSize: '0.66rem',
+              fontWeight: 600,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: '#9A7836',
+              marginBottom: '12px',
+            }}
+          >
+            Đếm ngược ngày chung đôi
+          </p>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: 'clamp(8px, 2vw, 14px)',
+            }}
+          >
+            {[
+              { val: days, label: 'Ngày' },
+              { val: hours, label: 'Giờ' },
+              { val: minutes, label: 'Phút' },
+              { val: seconds, label: 'Giây' },
+            ].map((item, idx) => (
+              <div key={idx} className="countdown-box">
+                <span
+                  style={{
+                    fontFamily: "'Cinzel', serif",
+                    fontSize: 'clamp(1.35rem, 3.2vw, 1.8rem)',
+                    fontWeight: 700,
+                    color: '#801D24',
+                    lineHeight: 1.1,
+                  }}
+                >
+                  {String(item.val).padStart(2, '0')}
+                </span>
+                <span
+                  style={{
+                    fontFamily: "'Be Vietnam Pro', sans-serif",
+                    fontSize: '0.62rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    color: '#7C6E66',
+                    marginTop: '4px',
+                  }}
+                >
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Action Buttons: RSVP & Calendar */}
+        <div
+          className="gsap-reveal"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '14px',
+            flexWrap: 'wrap',
+          }}
+        >
+          <a
+            href="#rsvp"
+            onClick={scrollToRsvp}
+            className="btn-luxury btn-luxury-primary"
+            aria-label="Xác nhận tham dự tiệc cưới"
+          >
+            <Heart size={16} fill="currentColor" />
+            Xác nhận tham dự
+          </a>
+
+          <button
+            type="button"
+            onClick={handleAddToCalendar}
+            className="btn-luxury btn-luxury-outline"
+            aria-label="Lưu ngày cưới vào lịch"
+          >
+            <Calendar size={16} color="#801D24" />
+            Thêm vào lịch
+          </button>
+        </div>
       </div>
     </section>
   );
