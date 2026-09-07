@@ -61,12 +61,15 @@ export default function Hero() {
         position: 'relative',
         backgroundColor: '#FAF7F2',
         background: 'radial-gradient(ellipse 90% 80% at 50% 10%, #FFFDF9 0%, #F5EDE0 100%)',
-        padding: 'clamp(64px, 10vw, 110px) clamp(20px, 4vw, 40px) clamp(70px, 10vw, 110px)',
+        padding: 'clamp(100px, 14vw, 130px) clamp(14px, 3.5vw, 36px) clamp(50px, 8vw, 85px)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         textAlign: 'center',
         overflow: 'hidden',
+        width: '100%',
+        maxWidth: '100vw',
+        boxSizing: 'border-box',
       }}
     >
       {/* Background Floral Accents */}
@@ -87,6 +90,7 @@ export default function Hero() {
           zIndex: 2,
           maxWidth: '780px',
           width: '100%',
+          boxSizing: 'border-box',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -98,29 +102,32 @@ export default function Hero() {
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '12px',
-            padding: '6px 20px',
+            gap: '8px',
+            padding: '5px 16px',
             borderRadius: '999px',
-            background: 'rgba(255, 255, 255, 0.9)',
+            background: 'rgba(255, 255, 255, 0.92)',
             border: '1px solid rgba(197, 160, 89, 0.35)',
             boxShadow: '0 2px 10px rgba(50, 30, 15, 0.04)',
-            marginBottom: '22px',
+            marginBottom: '18px',
+            maxWidth: '100%',
+            boxSizing: 'border-box',
           }}
         >
-          <span style={{ color: '#C5A059', fontSize: '13px' }}>✦</span>
+          <span style={{ color: '#C5A059', fontSize: '11px' }}>✦</span>
           <span
             style={{
               fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: '0.68rem',
+              fontSize: 'clamp(0.58rem, 1.8vw, 0.66rem)',
               fontWeight: 600,
-              letterSpacing: '0.22em',
+              letterSpacing: '0.12em',
               textTransform: 'uppercase',
               color: '#801D24',
+              whiteSpace: 'nowrap',
             }}
           >
             Lễ Thành Hôn · Save The Date
           </span>
-          <span style={{ color: '#C5A059', fontSize: '13px' }}>✦</span>
+          <span style={{ color: '#C5A059', fontSize: '11px' }}>✦</span>
         </div>
 
         {/* Groom & Bride Names in Romantic Calligraphy & Serif */}
@@ -128,28 +135,35 @@ export default function Hero() {
           className="gsap-reveal"
           style={{
             fontFamily: "'Alex Brush', cursive",
-            fontSize: 'clamp(3.0rem, 8.5vw, 5.0rem)',
+            fontSize: 'clamp(1.9rem, 6.2vw, 4.2rem)',
             color: '#801D24',
-            lineHeight: 1.05,
+            lineHeight: 1.15,
             margin: '0 0 6px 0',
             fontWeight: 400,
             textShadow: '0 2px 12px rgba(128, 29, 36, 0.08)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+            gap: '2px 8px',
+            maxWidth: '100%',
+            wordBreak: 'break-word',
           }}
         >
-          {COUPLE.groom.firstName}
+          <span>{COUPLE.groom.firstName}</span>
           <span
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
               fontStyle: 'italic',
               fontWeight: 300,
               color: '#C5A059',
-              margin: '0 clamp(10px, 2.5vw, 24px)',
+              margin: '0 4px',
               fontSize: '0.75em',
             }}
           >
             &amp;
           </span>
-          {COUPLE.bride.firstName}
+          <span>{COUPLE.bride.firstName}</span>
         </h1>
 
         {/* Full Names for Formal Elegance */}
@@ -157,11 +171,13 @@ export default function Hero() {
           className="gsap-reveal"
           style={{
             fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize: 'clamp(1.15rem, 2.6vw, 1.45rem)',
+            fontSize: 'clamp(1.05rem, 2.5vw, 1.4rem)',
             fontStyle: 'italic',
             color: '#42332A',
             letterSpacing: '0.04em',
-            marginBottom: 'clamp(24px, 4.5vw, 36px)',
+            marginBottom: 'clamp(20px, 4vw, 32px)',
+            maxWidth: '100%',
+            wordBreak: 'break-word',
           }}
         >
           {COUPLE.groom.fullName} &amp; {COUPLE.bride.fullName}
@@ -172,8 +188,9 @@ export default function Hero() {
           className="gsap-reveal arch-gold-border"
           style={{
             width: '100%',
-            maxWidth: '460px',
-            marginBottom: 'clamp(28px, 5vw, 40px)',
+            maxWidth: 'min(310px, 80vw)',
+            marginBottom: 'clamp(24px, 4.5vw, 36px)',
+            boxSizing: 'border-box',
           }}
         >
           <div
@@ -226,7 +243,9 @@ export default function Hero() {
             flexDirection: 'column',
             alignItems: 'center',
             gap: '8px',
-            marginBottom: 'clamp(26px, 5vw, 38px)',
+            marginBottom: 'clamp(22px, 4vw, 32px)',
+            maxWidth: '100%',
+            boxSizing: 'border-box',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#801D24' }}>
@@ -244,8 +263,8 @@ export default function Hero() {
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#7C6E66', fontSize: '0.88rem' }}>
-            <MapPin size={15} color="#C5A059" />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', color: '#7C6E66', fontSize: 'clamp(0.78rem, 2vw, 0.88rem)', flexWrap: 'wrap' }}>
+            <MapPin size={15} color="#C5A059" style={{ flexShrink: 0 }} />
             <span style={{ fontFamily: "'Be Vietnam Pro', sans-serif", fontWeight: 500 }}>
               {WEDDING.venueHall} · {WEDDING.venue}
             </span>
@@ -257,8 +276,9 @@ export default function Hero() {
           className="gsap-reveal"
           style={{
             width: '100%',
-            maxWidth: '440px',
-            marginBottom: 'clamp(32px, 6vw, 44px)',
+            maxWidth: '380px',
+            boxSizing: 'border-box',
+            marginBottom: 'clamp(28px, 5vw, 40px)',
           }}
         >
           <p
@@ -266,10 +286,10 @@ export default function Hero() {
               fontFamily: "'Be Vietnam Pro', sans-serif",
               fontSize: '0.66rem',
               fontWeight: 600,
-              letterSpacing: '0.22em',
+              letterSpacing: '0.20em',
               textTransform: 'uppercase',
               color: '#9A7836',
-              marginBottom: '12px',
+              marginBottom: '10px',
             }}
           >
             Đếm ngược ngày chung đôi
@@ -278,8 +298,10 @@ export default function Hero() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: 'clamp(8px, 2vw, 14px)',
+              gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+              gap: 'clamp(4px, 1.5vw, 10px)',
+              width: '100%',
+              boxSizing: 'border-box',
             }}
           >
             {[
@@ -292,7 +314,7 @@ export default function Hero() {
                 <span
                   style={{
                     fontFamily: "'Cinzel', serif",
-                    fontSize: 'clamp(1.35rem, 3.2vw, 1.8rem)',
+                    fontSize: 'clamp(1.05rem, 3.8vw, 1.65rem)',
                     fontWeight: 700,
                     color: '#801D24',
                     lineHeight: 1.1,
@@ -303,12 +325,13 @@ export default function Hero() {
                 <span
                   style={{
                     fontFamily: "'Be Vietnam Pro', sans-serif",
-                    fontSize: '0.62rem',
+                    fontSize: 'clamp(0.52rem, 1.6vw, 0.64rem)',
                     fontWeight: 600,
-                    letterSpacing: '0.08em',
+                    letterSpacing: '0.04em',
                     textTransform: 'uppercase',
                     color: '#7C6E66',
-                    marginTop: '4px',
+                    marginTop: '2px',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   {item.label}
@@ -325,8 +348,11 @@ export default function Hero() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '14px',
+            gap: '10px',
             flexWrap: 'wrap',
+            width: '100%',
+            maxWidth: '100%',
+            boxSizing: 'border-box',
           }}
         >
           <a
@@ -335,7 +361,7 @@ export default function Hero() {
             className="btn-luxury btn-luxury-primary"
             aria-label="Xác nhận tham dự tiệc cưới"
           >
-            <Heart size={16} fill="currentColor" />
+            <Heart size={15} fill="currentColor" />
             Xác nhận tham dự
           </a>
 
@@ -345,7 +371,7 @@ export default function Hero() {
             className="btn-luxury btn-luxury-outline"
             aria-label="Lưu ngày cưới vào lịch"
           >
-            <Calendar size={16} color="#801D24" />
+            <Calendar size={15} color="#801D24" />
             Thêm vào lịch
           </button>
         </div>

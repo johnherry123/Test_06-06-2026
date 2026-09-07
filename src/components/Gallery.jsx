@@ -212,21 +212,26 @@ export default function Gallery() {
       style={{
         backgroundColor: '#FAF7F2',
         background: 'radial-gradient(circle at center, #FFFDF9 0%, #F5EDE0 100%)',
-        padding: 'clamp(70px, 10vw, 110px) clamp(16px, 4vw, 40px)',
+        padding: 'clamp(50px, 8vw, 90px) clamp(12px, 3vw, 36px)',
         position: 'relative',
         overflow: 'hidden',
+        width: '100%',
+        maxWidth: '100vw',
+        boxSizing: 'border-box',
       }}
     >
       <div
         style={{
           maxWidth: '1080px',
+          width: '100%',
           margin: '0 auto',
           position: 'relative',
           zIndex: 2,
+          boxSizing: 'border-box',
         }}
       >
         {/* Section Header */}
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(36px, 6vw, 56px)' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(32px, 5vw, 50px)' }}>
           <div
             className="gsap-reveal"
             style={{
@@ -242,7 +247,7 @@ export default function Gallery() {
               fontWeight: 600,
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              marginBottom: '12px',
+              marginBottom: '10px',
             }}
           >
             <Camera size={13} />
@@ -253,11 +258,12 @@ export default function Gallery() {
             className="gsap-reveal"
             style={{
               fontFamily: "'Alex Brush', cursive",
-              fontSize: 'clamp(2.8rem, 6.5vw, 4.2rem)',
+              fontSize: 'clamp(2.2rem, 6vw, 4.2rem)',
               color: '#801D24',
-              lineHeight: 1.1,
+              lineHeight: 1.15,
               margin: '0 0 8px 0',
               fontWeight: 400,
+              wordBreak: 'break-word',
             }}
           >
             Album Kỷ Niệm
@@ -267,7 +273,7 @@ export default function Gallery() {
             className="gsap-reveal"
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
-              fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)',
+              fontSize: 'clamp(1.0rem, 2.2vw, 1.25rem)',
               fontStyle: 'italic',
               color: '#584A42',
             }}
@@ -281,9 +287,11 @@ export default function Gallery() {
             style={{
               display: 'flex',
               justifyContent: 'center',
-              gap: '8px',
+              gap: '6px',
               flexWrap: 'wrap',
-              marginTop: '24px',
+              marginTop: '20px',
+              width: '100%',
+              boxSizing: 'border-box',
             }}
           >
             {[
@@ -297,13 +305,13 @@ export default function Gallery() {
                 type="button"
                 onClick={() => setFilter(tab.key)}
                 style={{
-                  padding: '6px 18px',
+                  padding: '5px 14px',
                   borderRadius: '999px',
                   border: filter === tab.key ? '1px solid #801D24' : '1px solid rgba(197, 160, 89, 0.35)',
                   background: filter === tab.key ? '#801D24' : 'rgba(255, 255, 255, 0.8)',
                   color: filter === tab.key ? '#FFFFFF' : '#584A42',
                   fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: '0.72rem',
+                  fontSize: '0.70rem',
                   fontWeight: 600,
                   letterSpacing: '0.04em',
                   cursor: 'pointer',
@@ -318,10 +326,13 @@ export default function Gallery() {
 
         {/* ── MASONRY EDITORIAL PHOTO GRID ── */}
         <div
+          className="gallery-masonry-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: 'clamp(14px, 2.5vw, 24px)',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))',
+            gap: 'clamp(10px, 2vw, 20px)',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
           {filteredPhotos.map((photo, idx) => (
@@ -411,6 +422,15 @@ export default function Gallery() {
         onPrev={() => setActiveIdx((i) => (i > 0 ? i - 1 : filteredPhotos.length - 1))}
         onNext={() => setActiveIdx((i) => (i < filteredPhotos.length - 1 ? i + 1 : 0))}
       />
+
+      <style>{`
+        @media (max-width: 640px) {
+          .gallery-masonry-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 10px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

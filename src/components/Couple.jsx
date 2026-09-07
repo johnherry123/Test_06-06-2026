@@ -10,8 +10,10 @@ function PersonCard({ person, side }) {
         flexDirection: 'column',
         alignItems: 'center',
         textAlign: 'center',
-        maxWidth: '340px',
+        maxWidth: 'min(300px, 100%)',
+        width: '100%',
         margin: '0 auto',
+        boxSizing: 'border-box',
       }}
     >
       {/* Roman Arch Portrait Frame */}
@@ -19,8 +21,9 @@ function PersonCard({ person, side }) {
         className="arch-gold-border"
         style={{
           width: '100%',
-          maxWidth: '300px',
-          marginBottom: '20px',
+          maxWidth: 'min(250px, 75vw)',
+          marginBottom: '18px',
+          boxSizing: 'border-box',
         }}
       >
         <div
@@ -60,16 +63,16 @@ function PersonCard({ person, side }) {
       <div
         style={{
           display: 'inline-block',
-          padding: '4px 16px',
+          padding: '4px 14px',
           borderRadius: '999px',
           background: 'rgba(128, 29, 36, 0.08)',
           color: '#801D24',
           fontFamily: "'Be Vietnam Pro', sans-serif",
-          fontSize: '0.66rem',
+          fontSize: '0.64rem',
           fontWeight: 700,
-          letterSpacing: '0.14em',
+          letterSpacing: '0.12em',
           textTransform: 'uppercase',
-          marginBottom: '10px',
+          marginBottom: '8px',
         }}
       >
         {person.role} · {person.roleLabel}
@@ -79,11 +82,12 @@ function PersonCard({ person, side }) {
       <h3
         style={{
           fontFamily: "'Cormorant Garamond', Georgia, serif",
-          fontSize: 'clamp(1.6rem, 3.5vw, 2.1rem)',
+          fontSize: 'clamp(1.5rem, 3.2vw, 2.0rem)',
           fontWeight: 600,
           color: '#1E1612',
           lineHeight: 1.15,
-          marginBottom: '6px',
+          marginBottom: '4px',
+          wordBreak: 'break-word',
         }}
       >
         {person.fullName}
@@ -93,11 +97,11 @@ function PersonCard({ person, side }) {
       <p
         style={{
           fontFamily: "'Cinzel', serif",
-          fontSize: '0.74rem',
+          fontSize: '0.72rem',
           color: '#C5A059',
           letterSpacing: '0.08em',
           fontWeight: 600,
-          marginBottom: '14px',
+          marginBottom: '12px',
         }}
       >
         {person.title}
@@ -107,12 +111,13 @@ function PersonCard({ person, side }) {
       <p
         style={{
           fontFamily: "'Cormorant Garamond', serif",
-          fontSize: '0.98rem',
+          fontSize: '0.95rem',
           fontStyle: 'italic',
           color: '#584A42',
           lineHeight: 1.6,
-          marginBottom: '18px',
-          padding: '0 8px',
+          marginBottom: '16px',
+          padding: '0 4px',
+          wordBreak: 'break-word',
         }}
       >
         {person.quote}
@@ -125,9 +130,10 @@ function PersonCard({ person, side }) {
           backgroundColor: '#FFFFFF',
           border: '1px solid rgba(197, 160, 89, 0.28)',
           borderRadius: '12px',
-          padding: '12px 16px',
+          padding: '12px 14px',
           boxShadow: '0 4px 16px rgba(50, 30, 15, 0.04)',
           textAlign: 'left',
+          boxSizing: 'border-box',
         }}
       >
         {person.details?.map((det, i) => (
@@ -140,10 +146,11 @@ function PersonCard({ person, side }) {
               padding: '6px 0',
               borderBottom: i < person.details.length - 1 ? '1px dashed rgba(197, 160, 89, 0.2)' : 'none',
               fontSize: '0.76rem',
+              gap: '8px',
             }}
           >
-            <span style={{ color: '#801D24', fontWeight: 600 }}>{det.label}:</span>
-            <span style={{ color: '#584A42' }}>{det.value}</span>
+            <span style={{ color: '#801D24', fontWeight: 600, flexShrink: 0 }}>{det.label}:</span>
+            <span style={{ color: '#584A42', textAlign: 'right', wordBreak: 'break-word' }}>{det.value}</span>
           </div>
         ))}
       </div>
@@ -159,31 +166,36 @@ export default function Couple() {
       style={{
         backgroundColor: '#FAF7F2',
         background: 'radial-gradient(ellipse 90% 70% at 50% 20%, #FFFDF9 0%, #F5EDE0 100%)',
-        padding: 'clamp(70px, 10vw, 110px) clamp(20px, 4vw, 40px)',
+        padding: 'clamp(50px, 8vw, 90px) clamp(14px, 3.5vw, 36px)',
         position: 'relative',
         overflow: 'hidden',
+        width: '100%',
+        maxWidth: '100vw',
+        boxSizing: 'border-box',
       }}
     >
       <div
         style={{
           maxWidth: '860px',
+          width: '100%',
           margin: '0 auto',
           position: 'relative',
           zIndex: 2,
+          boxSizing: 'border-box',
         }}
       >
         {/* Section Header */}
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(44px, 7vw, 68px)' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(36px, 6vw, 60px)' }}>
           <p
             className="gsap-reveal"
             style={{
               fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: '0.68rem',
+              fontSize: '0.66rem',
               fontWeight: 600,
-              letterSpacing: '0.22em',
+              letterSpacing: '0.20em',
               textTransform: 'uppercase',
               color: '#801D24',
-              marginBottom: '10px',
+              marginBottom: '8px',
             }}
           >
             Đôi Uyên Ương
@@ -193,11 +205,12 @@ export default function Couple() {
             className="gsap-reveal"
             style={{
               fontFamily: "'Alex Brush', cursive",
-              fontSize: 'clamp(2.8rem, 6.5vw, 4.2rem)',
+              fontSize: 'clamp(2.2rem, 6vw, 4.2rem)',
               color: '#801D24',
-              lineHeight: 1.1,
+              lineHeight: 1.15,
               margin: 0,
               fontWeight: 400,
+              wordBreak: 'break-word',
             }}
           >
             Chú Rể &amp; Cô Dâu
@@ -206,12 +219,15 @@ export default function Couple() {
 
         {/* ── TWO ARCH PORTRAIT CARDS WITH ROMANTIC UNITY ── */}
         <div
+          className="couple-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: 'clamp(32px, 6vw, 56px)',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(260px, 100%), 1fr))',
+            gap: 'clamp(24px, 5vw, 48px)',
             alignItems: 'start',
             justifyContent: 'center',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
           <PersonCard person={COUPLE.groom} side="left" />
@@ -223,8 +239,8 @@ export default function Couple() {
           className="gsap-reveal"
           style={{
             textAlign: 'center',
-            marginTop: 'clamp(44px, 7vw, 68px)',
-            padding: '24px',
+            marginTop: 'clamp(36px, 6vw, 56px)',
+            padding: '20px 16px',
             borderRadius: '16px',
             background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(250, 245, 235, 0.9) 100%)',
             border: '1px solid rgba(197, 160, 89, 0.35)',
@@ -232,25 +248,37 @@ export default function Couple() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '16px',
+            gap: '12px',
             flexWrap: 'wrap',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
-          <Heart size={20} color="#801D24" fill="#801D24" />
+          <Heart size={18} color="#801D24" fill="#801D24" style={{ flexShrink: 0 }} />
           <p
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
-              fontSize: 'clamp(1.15rem, 2.4vw, 1.35rem)',
+              fontSize: 'clamp(1.05rem, 2.2vw, 1.3rem)',
               fontStyle: 'italic',
               color: '#2C221C',
               margin: 0,
+              wordBreak: 'break-word',
             }}
           >
             "Hai trái tim hòa cùng một nhịp đập, hai cuộc đời gắn kết trọn yêu thương."
           </p>
-          <Heart size={20} color="#801D24" fill="#801D24" />
+          <Heart size={18} color="#801D24" fill="#801D24" style={{ flexShrink: 0 }} />
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .couple-grid {
+            grid-template-columns: 1fr !important;
+            gap: 28px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

@@ -91,14 +91,16 @@ export default function IntroShader({ onComplete, onStartMusic }) {
       <div
         style={{
           position: 'relative',
-          width: 'clamp(330px, 90vw, 440px)',
+          width: '100%',
+          maxWidth: 'min(420px, 92vw)',
+          boxSizing: 'border-box',
           backgroundColor: '#FFFDF9',
           borderRadius: '20px',
           border: '2px solid #C5A059',
           boxShadow: opening
             ? '0 30px 80px rgba(50, 30, 15, 0.35)'
             : '0 20px 60px -10px rgba(50, 30, 15, 0.22), 0 8px 25px rgba(50, 30, 15, 0.08)',
-          padding: 'clamp(36px, 7vw, 48px) clamp(24px, 6vw, 36px)',
+          padding: 'clamp(28px, 6vw, 44px) clamp(16px, 5vw, 32px)',
           textAlign: 'center',
           transform: !entered
             ? 'translateY(40px) scale(0.94)'
@@ -114,26 +116,26 @@ export default function IntroShader({ onComplete, onStartMusic }) {
           aria-hidden="true"
           style={{
             position: 'absolute',
-            inset: '10px',
+            inset: '8px',
             border: '1px solid rgba(197, 160, 89, 0.4)',
             borderRadius: '14px',
             pointerEvents: 'none',
           }}
         >
           {/* Corner Floral Ornaments */}
-          <span style={{ position: 'absolute', top: 5, left: 7, fontSize: '11px', color: '#C5A059' }}>✦</span>
-          <span style={{ position: 'absolute', top: 5, right: 7, fontSize: '11px', color: '#C5A059' }}>✦</span>
-          <span style={{ position: 'absolute', bottom: 5, left: 7, fontSize: '11px', color: '#C5A059' }}>✦</span>
-          <span style={{ position: 'absolute', bottom: 5, right: 7, fontSize: '11px', color: '#C5A059' }}>✦</span>
+          <span style={{ position: 'absolute', top: 4, left: 6, fontSize: '10px', color: '#C5A059' }}>✦</span>
+          <span style={{ position: 'absolute', top: 4, right: 6, fontSize: '10px', color: '#C5A059' }}>✦</span>
+          <span style={{ position: 'absolute', bottom: 4, left: 6, fontSize: '10px', color: '#C5A059' }}>✦</span>
+          <span style={{ position: 'absolute', bottom: 4, right: 6, fontSize: '10px', color: '#C5A059' }}>✦</span>
         </div>
 
         {/* Top Monogram Seal */}
-        <div style={{ marginBottom: '14px' }}>
+        <div style={{ marginBottom: '12px' }}>
           <div
             style={{
-              width: '56px',
-              height: '56px',
-              margin: '0 auto 10px auto',
+              width: '52px',
+              height: '52px',
+              margin: '0 auto 8px auto',
               borderRadius: '50%',
               border: '1.5px solid #C5A059',
               display: 'flex',
@@ -146,7 +148,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             <span
               style={{
                 fontFamily: "'Cormorant Garamond', Georgia, serif",
-                fontSize: '1.5rem',
+                fontSize: '1.4rem',
                 fontStyle: 'italic',
                 fontWeight: 600,
                 letterSpacing: '1px',
@@ -161,9 +163,9 @@ export default function IntroShader({ onComplete, onStartMusic }) {
           <p
             style={{
               fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: '0.66rem',
+              fontSize: '0.64rem',
               fontWeight: 700,
-              letterSpacing: '0.24em',
+              letterSpacing: '0.20em',
               textTransform: 'uppercase',
               color: '#9A7836',
               margin: 0,
@@ -174,16 +176,17 @@ export default function IntroShader({ onComplete, onStartMusic }) {
         </div>
 
         {/* Couple Names in Rich Deep Royal Burgundy */}
-        <div style={{ margin: '10px 0 14px 0' }}>
+        <div style={{ margin: '8px 0 12px 0' }}>
           <h1
             style={{
               fontFamily: "'Alex Brush', cursive",
-              fontSize: 'clamp(2.8rem, 8vw, 3.8rem)',
+              fontSize: 'clamp(2.0rem, 6.5vw, 3.6rem)',
               color: '#7D141A',
-              lineHeight: 1.1,
-              margin: '0 0 6px 0',
+              lineHeight: 1.15,
+              margin: '0 0 4px 0',
               fontWeight: 400,
               textShadow: '0 1px 4px rgba(125, 20, 26, 0.1)',
+              wordBreak: 'break-word',
             }}
           >
             {COUPLE.groom.firstName} &amp; {COUPLE.bride.firstName}

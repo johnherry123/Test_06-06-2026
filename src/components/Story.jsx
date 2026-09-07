@@ -9,21 +9,26 @@ export default function Story() {
       style={{
         backgroundColor: '#FAF7F2',
         background: 'linear-gradient(180deg, #FAF7F2 0%, #F5EDE1 50%, #FAF7F2 100%)',
-        padding: 'clamp(70px, 10vw, 110px) clamp(20px, 4vw, 40px)',
+        padding: 'clamp(50px, 8vw, 90px) clamp(14px, 3.5vw, 36px)',
         position: 'relative',
         overflow: 'hidden',
+        width: '100%',
+        maxWidth: '100vw',
+        boxSizing: 'border-box',
       }}
     >
       <div
         style={{
           maxWidth: '840px',
+          width: '100%',
           margin: '0 auto',
           position: 'relative',
           zIndex: 2,
+          boxSizing: 'border-box',
         }}
       >
         {/* Section Header */}
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(44px, 7vw, 68px)' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(36px, 6vw, 60px)' }}>
           <div
             className="gsap-reveal"
             style={{
@@ -39,7 +44,7 @@ export default function Story() {
               fontWeight: 600,
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              marginBottom: '14px',
+              marginBottom: '12px',
             }}
           >
             <Heart size={12} fill="currentColor" />
@@ -50,11 +55,12 @@ export default function Story() {
             className="gsap-reveal"
             style={{
               fontFamily: "'Alex Brush', cursive",
-              fontSize: 'clamp(2.8rem, 6.5vw, 4.2rem)',
+              fontSize: 'clamp(2.2rem, 6vw, 4.2rem)',
               color: '#801D24',
-              lineHeight: 1.1,
+              lineHeight: 1.15,
               margin: '0 0 8px 0',
               fontWeight: 400,
+              wordBreak: 'break-word',
             }}
           >
             Hành Trình Yêu Thương
@@ -64,9 +70,11 @@ export default function Story() {
             className="gsap-reveal"
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
-              fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)',
+              fontSize: 'clamp(1.0rem, 2.2vw, 1.25rem)',
               fontStyle: 'italic',
               color: '#584A42',
+              maxWidth: '540px',
+              margin: '0 auto',
             }}
           >
             "Tình yêu không phải là nhìn nhau, mà là cùng nhau nhìn về một hướng."
@@ -78,6 +86,8 @@ export default function Story() {
           style={{
             position: 'relative',
             padding: '20px 0',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
           {/* Central Timeline Golden Line */}
@@ -96,7 +106,7 @@ export default function Story() {
           />
 
           {/* Timeline Items */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(36px, 6vw, 60px)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(32px, 5vw, 56px)', width: '100%', boxSizing: 'border-box' }}>
             {STORY.map((item, idx) => {
               const isEven = idx % 2 === 0;
 
@@ -110,6 +120,8 @@ export default function Story() {
                     justifyContent: 'space-between',
                     flexDirection: isEven ? 'row' : 'row-reverse',
                     position: 'relative',
+                    width: '100%',
+                    boxSizing: 'border-box',
                   }}
                 >
                   {/* Content Card Side */}
@@ -118,6 +130,7 @@ export default function Story() {
                     style={{
                       width: '45%',
                       textAlign: isEven ? 'right' : 'left',
+                      boxSizing: 'border-box',
                     }}
                   >
                     <div
@@ -125,9 +138,11 @@ export default function Story() {
                         backgroundColor: '#FFFFFF',
                         border: '1px solid rgba(197, 160, 89, 0.35)',
                         borderRadius: '16px',
-                        padding: 'clamp(20px, 4vw, 28px)',
+                        padding: 'clamp(18px, 3.5vw, 26px)',
                         boxShadow: '0 10px 30px -6px rgba(45, 30, 20, 0.07)',
                         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                        width: '100%',
+                        boxSizing: 'border-box',
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.transform = 'translateY(-3px)';
@@ -147,10 +162,10 @@ export default function Story() {
                           backgroundColor: 'rgba(197, 160, 89, 0.15)',
                           color: '#9A7836',
                           fontFamily: "'Cinzel', serif",
-                          fontSize: '0.66rem',
+                          fontSize: '0.64rem',
                           fontWeight: 700,
                           letterSpacing: '0.08em',
-                          marginBottom: '10px',
+                          marginBottom: '8px',
                         }}
                       >
                         {item.year}
@@ -159,11 +174,12 @@ export default function Story() {
                       <h3
                         style={{
                           fontFamily: "'Cormorant Garamond', Georgia, serif",
-                          fontSize: 'clamp(1.3rem, 2.5vw, 1.65rem)',
+                          fontSize: 'clamp(1.2rem, 2.3vw, 1.55rem)',
                           fontWeight: 600,
                           color: '#1E1612',
                           lineHeight: 1.25,
-                          marginBottom: '8px',
+                          marginBottom: '6px',
+                          wordBreak: 'break-word',
                         }}
                       >
                         {item.title}
@@ -172,10 +188,11 @@ export default function Story() {
                       <p
                         style={{
                           fontFamily: "'Be Vietnam Pro', sans-serif",
-                          fontSize: '0.82rem',
+                          fontSize: '0.80rem',
                           color: '#584A42',
-                          lineHeight: 1.65,
+                          lineHeight: 1.6,
                           margin: 0,
+                          wordBreak: 'break-word',
                         }}
                       >
                         {item.content}
@@ -191,8 +208,8 @@ export default function Story() {
                       position: 'absolute',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      width: '32px',
-                      height: '32px',
+                      width: '30px',
+                      height: '30px',
                       borderRadius: '50%',
                       backgroundColor: '#FFFFFF',
                       border: '2px solid #C5A059',
@@ -204,7 +221,7 @@ export default function Story() {
                       zIndex: 3,
                     }}
                   >
-                    <Heart size={14} fill="#801D24" />
+                    <Heart size={13} fill="#801D24" />
                   </div>
 
                   {/* Photo Side */}
@@ -212,6 +229,7 @@ export default function Story() {
                     className="story-photo-wrapper"
                     style={{
                       width: '45%',
+                      boxSizing: 'border-box',
                     }}
                   >
                     {item.photo?.src && (
@@ -222,6 +240,8 @@ export default function Story() {
                           aspectRatio: '4 / 3',
                           border: '2px solid rgba(197, 160, 89, 0.3)',
                           boxShadow: '0 12px 28px -6px rgba(45, 30, 20, 0.10)',
+                          width: '100%',
+                          boxSizing: 'border-box',
                         }}
                       >
                         <img
@@ -256,17 +276,20 @@ export default function Story() {
           className="gsap-reveal"
           style={{
             textAlign: 'center',
-            marginTop: 'clamp(40px, 7vw, 64px)',
-            paddingTop: '24px',
+            marginTop: 'clamp(36px, 6vw, 56px)',
+            paddingTop: '20px',
             borderTop: '1px dashed rgba(197, 160, 89, 0.35)',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
           <p
             style={{
               fontFamily: "'Alex Brush', cursive",
-              fontSize: 'clamp(2.0rem, 4.5vw, 2.8rem)',
+              fontSize: 'clamp(1.9rem, 4.5vw, 2.8rem)',
               color: '#801D24',
-              margin: '0 0 6px 0',
+              margin: '0 0 4px 0',
+              wordBreak: 'break-word',
             }}
           >
             Đại Nghĩa &amp; Thị Nhung
@@ -274,9 +297,9 @@ export default function Story() {
           <p
             style={{
               fontFamily: "'Be Vietnam Pro', sans-serif",
-              fontSize: '0.74rem',
+              fontSize: '0.72rem',
               color: '#9A7836',
-              letterSpacing: '0.12em',
+              letterSpacing: '0.10em',
               textTransform: 'uppercase',
               fontWeight: 600,
             }}
@@ -289,21 +312,42 @@ export default function Story() {
       <style>{`
         @media (max-width: 680px) {
           .timeline-line {
-            left: 20px !important;
+            left: 15px !important;
+            top: 10px !important;
+            bottom: 20px !important;
+            width: 2px !important;
+            transform: none !important;
           }
           .story-node {
-            left: 20px !important;
+            position: absolute !important;
+            left: 4px !important;
+            top: 16px !important;
+            transform: none !important;
+            width: 24px !important;
+            height: 24px !important;
           }
           .story-item-row {
             flex-direction: column !important;
-            align-items: flex-start !important;
-            padding-left: 46px !important;
-            gap: 16px !important;
+            align-items: stretch !important;
+            padding-left: 38px !important;
+            padding-right: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            gap: 12px !important;
+            position: relative !important;
           }
           .story-card-wrapper,
           .story-photo-wrapper {
             width: 100% !important;
+            max-width: 100% !important;
             text-align: left !important;
+            box-sizing: border-box !important;
+          }
+          .story-card-wrapper > div {
+            padding: 16px 14px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
           }
         }
       `}</style>

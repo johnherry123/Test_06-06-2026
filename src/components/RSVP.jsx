@@ -66,21 +66,26 @@ export default function RSVP() {
       style={{
         backgroundColor: '#F8F4EC',
         background: 'linear-gradient(180deg, #F5EDE0 0%, #FAF7F2 100%)',
-        padding: 'clamp(70px, 10vw, 110px) clamp(20px, 4vw, 40px)',
+        padding: 'clamp(50px, 8vw, 90px) clamp(14px, 3.5vw, 36px)',
         position: 'relative',
         overflow: 'hidden',
+        width: '100%',
+        maxWidth: '100vw',
+        boxSizing: 'border-box',
       }}
     >
       <div
         style={{
           maxWidth: '640px',
+          width: '100%',
           margin: '0 auto',
           position: 'relative',
           zIndex: 2,
+          boxSizing: 'border-box',
         }}
       >
         {/* Section Header */}
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(36px, 6vw, 54px)' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(32px, 5vw, 48px)' }}>
           <div
             className="gsap-reveal"
             style={{
@@ -96,7 +101,7 @@ export default function RSVP() {
               fontWeight: 600,
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              marginBottom: '12px',
+              marginBottom: '10px',
             }}
           >
             <Heart size={13} fill="currentColor" />
@@ -107,11 +112,12 @@ export default function RSVP() {
             className="gsap-reveal"
             style={{
               fontFamily: "'Alex Brush', cursive",
-              fontSize: 'clamp(2.8rem, 6.5vw, 4.2rem)',
+              fontSize: 'clamp(2.2rem, 6vw, 4.2rem)',
               color: '#801D24',
-              lineHeight: 1.1,
+              lineHeight: 1.15,
               margin: '0 0 8px 0',
               fontWeight: 400,
+              wordBreak: 'break-word',
             }}
           >
             Xác Nhận Tham Dự
@@ -121,7 +127,7 @@ export default function RSVP() {
             className="gsap-reveal"
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
-              fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)',
+              fontSize: 'clamp(1.0rem, 2.2vw, 1.25rem)',
               fontStyle: 'italic',
               color: '#584A42',
             }}
@@ -135,13 +141,15 @@ export default function RSVP() {
           className="gsap-reveal stationery-card"
           style={{
             borderRadius: '20px',
-            padding: 'clamp(28px, 6vw, 48px) clamp(22px, 5vw, 40px)',
+            padding: 'clamp(24px, 5vw, 44px) clamp(16px, 4vw, 36px)',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
           {!submitted ? (
-            <form onSubmit={handleSubmit} noValidate>
+            <form onSubmit={handleSubmit} noValidate style={{ width: '100%', boxSizing: 'border-box' }}>
               {/* Name */}
-              <div style={{ marginBottom: '18px' }}>
+              <div style={{ marginBottom: '16px' }}>
                 <label
                   htmlFor="rsvp-name"
                   style={{
@@ -164,12 +172,13 @@ export default function RSVP() {
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   style={{
                     width: '100%',
-                    padding: '13px 16px',
+                    boxSizing: 'border-box',
+                    padding: '12px 14px',
                     borderRadius: '10px',
                     border: '1px solid rgba(197, 160, 89, 0.4)',
                     background: '#FFFFFF',
                     fontFamily: "'Be Vietnam Pro', sans-serif",
-                    fontSize: '0.88rem',
+                    fontSize: '0.85rem',
                     color: '#1E1612',
                     outline: 'none',
                     transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
@@ -186,7 +195,7 @@ export default function RSVP() {
               </div>
 
               {/* Phone */}
-              <div style={{ marginBottom: '18px' }}>
+              <div style={{ marginBottom: '16px' }}>
                 <label
                   htmlFor="rsvp-phone"
                   style={{
@@ -208,12 +217,13 @@ export default function RSVP() {
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   style={{
                     width: '100%',
-                    padding: '13px 16px',
+                    boxSizing: 'border-box',
+                    padding: '12px 14px',
                     borderRadius: '10px',
                     border: '1px solid rgba(197, 160, 89, 0.4)',
                     background: '#FFFFFF',
                     fontFamily: "'Be Vietnam Pro', sans-serif",
-                    fontSize: '0.88rem',
+                    fontSize: '0.85rem',
                     color: '#1E1612',
                     outline: 'none',
                   }}
@@ -227,7 +237,7 @@ export default function RSVP() {
               </div>
 
               {/* Attendance Choice */}
-              <div style={{ marginBottom: '18px' }}>
+              <div style={{ marginBottom: '16px' }}>
                 <span
                   style={{
                     display: 'block',
@@ -241,45 +251,45 @@ export default function RSVP() {
                   Bạn sẽ đến chung vui chứ? *
                 </span>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div className="rsvp-choice-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                   <button
                     type="button"
                     onClick={() => setForm({ ...form, attend: 'yes' })}
                     style={{
-                      padding: '14px 12px',
+                      padding: '12px 8px',
                       borderRadius: '10px',
                       border: form.attend === 'yes' ? '2px solid #801D24' : '1px solid rgba(197, 160, 89, 0.35)',
                       backgroundColor: form.attend === 'yes' ? 'rgba(128, 29, 36, 0.08)' : '#FFFFFF',
                       color: form.attend === 'yes' ? '#801D24' : '#584A42',
                       fontFamily: "'Be Vietnam Pro', sans-serif",
-                      fontSize: '0.82rem',
+                      fontSize: '0.78rem',
                       fontWeight: 600,
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
                       textAlign: 'center',
                     }}
                   >
-                    🎉 Chắc chắn tham dự
+                    🎉 Sẽ tham dự
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setForm({ ...form, attend: 'no' })}
                     style={{
-                      padding: '14px 12px',
+                      padding: '12px 8px',
                       borderRadius: '10px',
                       border: form.attend === 'no' ? '2px solid #801D24' : '1px solid rgba(197, 160, 89, 0.35)',
                       backgroundColor: form.attend === 'no' ? 'rgba(128, 29, 36, 0.08)' : '#FFFFFF',
                       color: form.attend === 'no' ? '#801D24' : '#584A42',
                       fontFamily: "'Be Vietnam Pro', sans-serif",
-                      fontSize: '0.82rem',
+                      fontSize: '0.78rem',
                       fontWeight: 600,
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
                       textAlign: 'center',
                     }}
                   >
-                    💌 Rất tiếc không thể đến
+                    💌 Tiếc quá, không thể đến
                   </button>
                 </div>
               </div>
@@ -513,6 +523,15 @@ export default function RSVP() {
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 480px) {
+          .rsvp-choice-grid {
+            grid-template-columns: 1fr !important;
+            gap: 8px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

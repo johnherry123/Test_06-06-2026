@@ -27,21 +27,26 @@ export default function Events() {
       style={{
         backgroundColor: '#F5EDE1',
         background: 'linear-gradient(180deg, #FAF7F2 0%, #F5EDE1 50%, #FAF7F2 100%)',
-        padding: 'clamp(70px, 10vw, 110px) clamp(20px, 4vw, 40px)',
+        padding: 'clamp(50px, 8vw, 90px) clamp(14px, 3.5vw, 36px)',
         position: 'relative',
         overflow: 'hidden',
+        width: '100%',
+        maxWidth: '100vw',
+        boxSizing: 'border-box',
       }}
     >
       <div
         style={{
           maxWidth: '920px',
+          width: '100%',
           margin: '0 auto',
           position: 'relative',
           zIndex: 2,
+          boxSizing: 'border-box',
         }}
       >
         {/* Section Header */}
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(44px, 7vw, 68px)' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(36px, 6vw, 60px)' }}>
           <div
             className="gsap-reveal"
             style={{
@@ -57,7 +62,7 @@ export default function Events() {
               fontWeight: 600,
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              marginBottom: '12px',
+              marginBottom: '10px',
             }}
           >
             <Calendar size={13} />
@@ -68,11 +73,12 @@ export default function Events() {
             className="gsap-reveal"
             style={{
               fontFamily: "'Alex Brush', cursive",
-              fontSize: 'clamp(2.8rem, 6.5vw, 4.2rem)',
+              fontSize: 'clamp(2.2rem, 6vw, 4.2rem)',
               color: '#801D24',
-              lineHeight: 1.1,
+              lineHeight: 1.15,
               margin: '0 0 8px 0',
               fontWeight: 400,
+              wordBreak: 'break-word',
             }}
           >
             Thời Gian &amp; Địa Điểm
@@ -82,7 +88,7 @@ export default function Events() {
             className="gsap-reveal"
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
-              fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)',
+              fontSize: 'clamp(1.0rem, 2.2vw, 1.25rem)',
               fontStyle: 'italic',
               color: '#584A42',
             }}
@@ -93,10 +99,13 @@ export default function Events() {
 
         {/* ── 3 LUXURY EVENT CARDS ── */}
         <div
+          className="events-cards-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: 'clamp(20px, 4vw, 32px)',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(270px, 100%), 1fr))',
+            gap: 'clamp(18px, 4vw, 32px)',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
           {EVENTS.map((event) => {
@@ -105,30 +114,35 @@ export default function Events() {
             return (
               <div
                 key={event.id}
-                className="gsap-reveal"
+                className={`gsap-reveal event-card-item ${event.isMain ? 'event-card-main' : ''}`}
                 style={{
                   backgroundColor: event.isMain ? '#FFFFFF' : 'rgba(255, 255, 255, 0.85)',
                   border: event.isMain ? '2px solid #C5A059' : '1px solid rgba(197, 160, 89, 0.35)',
                   borderRadius: '20px',
-                  padding: 'clamp(28px, 5vw, 36px) clamp(20px, 4vw, 28px)',
+                  padding: 'clamp(24px, 4vw, 36px) clamp(18px, 3.5vw, 28px)',
                   display: 'flex',
                   flexDirection: 'column',
                   position: 'relative',
                   boxShadow: event.isMain
                     ? '0 16px 40px -8px rgba(128, 29, 36, 0.15)'
                     : '0 8px 24px -4px rgba(50, 30, 15, 0.06)',
-                  transform: event.isMain ? 'scale(1.02)' : 'none',
                   transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  width: '100%',
+                  boxSizing: 'border-box',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = event.isMain ? 'scale(1.04)' : 'translateY(-4px)';
-                  e.currentTarget.style.boxShadow = '0 20px 48px -8px rgba(128, 29, 36, 0.20)';
+                  if (window.innerWidth > 640) {
+                    e.currentTarget.style.transform = event.isMain ? 'scale(1.03)' : 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 20px 48px -8px rgba(128, 29, 36, 0.20)';
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = event.isMain ? 'scale(1.02)' : 'none';
-                  e.currentTarget.style.boxShadow = event.isMain
-                    ? '0 16px 40px -8px rgba(128, 29, 36, 0.15)'
-                    : '0 8px 24px -4px rgba(50, 30, 15, 0.06)';
+                  if (window.innerWidth > 640) {
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.boxShadow = event.isMain
+                      ? '0 16px 40px -8px rgba(128, 29, 36, 0.15)'
+                      : '0 8px 24px -4px rgba(50, 30, 15, 0.06)';
+                  }
                 }}
               >
                 {/* Main Event Gold Ribbon */}
@@ -342,6 +356,18 @@ export default function Events() {
           })}
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .events-cards-grid {
+            grid-template-columns: 1fr !important;
+            gap: 20px !important;
+          }
+          .event-card-main {
+            transform: none !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

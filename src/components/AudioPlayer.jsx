@@ -50,6 +50,7 @@ const AudioPlayer = forwardRef(function AudioPlayer({ shouldPlay }, ref) {
 
   return (
     <div
+      className="audio-player-container"
       style={{
         position: 'fixed',
         bottom: '24px',
@@ -83,13 +84,14 @@ const AudioPlayer = forwardRef(function AudioPlayer({ shouldPlay }, ref) {
       <button
         type="button"
         onClick={togglePlay}
+        className="audio-toggle-btn"
         title={isPlaying ? 'Tạm dừng nhạc nền' : 'Bật nhạc nền lãng mạn (Canon in D)'}
         aria-label={isPlaying ? 'Tạm dừng nhạc nền' : 'Bật nhạc nền lãng mạn'}
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '10px',
-          padding: '8px 18px',
+          gap: '8px',
+          padding: '8px 16px',
           borderRadius: '999px',
           background: isPlaying
             ? 'linear-gradient(135deg, #801D24 0%, #5A1217 100%)'
@@ -104,19 +106,19 @@ const AudioPlayer = forwardRef(function AudioPlayer({ shouldPlay }, ref) {
       >
         {/* Animated Soundwave Equalizer Bars */}
         {isPlaying ? (
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', height: '16px' }}>
-            <span style={{ width: '3px', backgroundColor: '#E6CA85', borderRadius: '2px', animation: 'barWave 1.0s ease-in-out infinite' }} />
-            <span style={{ width: '3px', backgroundColor: '#E6CA85', borderRadius: '2px', animation: 'barWave 0.7s ease-in-out infinite 0.2s' }} />
-            <span style={{ width: '3px', backgroundColor: '#E6CA85', borderRadius: '2px', animation: 'barWave 1.2s ease-in-out infinite 0.4s' }} />
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', height: '14px' }}>
+            <span style={{ width: '2.5px', backgroundColor: '#E6CA85', borderRadius: '2px', animation: 'barWave 1.0s ease-in-out infinite' }} />
+            <span style={{ width: '2.5px', backgroundColor: '#E6CA85', borderRadius: '2px', animation: 'barWave 0.7s ease-in-out infinite 0.2s' }} />
+            <span style={{ width: '2.5px', backgroundColor: '#E6CA85', borderRadius: '2px', animation: 'barWave 1.2s ease-in-out infinite 0.4s' }} />
           </div>
         ) : (
-          <Music size={16} color="#801D24" />
+          <Music size={15} color="#801D24" />
         )}
 
         <span
           style={{
             fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.72rem',
+            fontSize: '0.70rem',
             fontWeight: 600,
             letterSpacing: '0.04em',
             whiteSpace: 'nowrap',
@@ -125,13 +127,23 @@ const AudioPlayer = forwardRef(function AudioPlayer({ shouldPlay }, ref) {
           {isPlaying ? 'Canon in D' : 'Bật Nhạc'}
         </span>
 
-        {isPlaying ? <Volume2 size={16} /> : <VolumeX size={16} />}
+        {isPlaying ? <Volume2 size={15} /> : <VolumeX size={15} />}
       </button>
 
       <style>{`
         @keyframes barWave {
-          0%, 100% { height: 4px; }
-          50% { height: 16px; }
+          0%, 100% { height: 3px; }
+          50% { height: 14px; }
+        }
+        @media (max-width: 640px) {
+          .audio-player-container {
+            bottom: 16px !important;
+            right: 14px !important;
+          }
+          .audio-toggle-btn {
+            padding: 6px 12px !important;
+            gap: 6px !important;
+          }
         }
       `}</style>
     </div>

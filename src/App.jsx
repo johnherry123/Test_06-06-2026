@@ -43,9 +43,21 @@ export default function App() {
   const tickerFnRef = useRef(null);
   const audioPlayerRef = useRef(null);
 
-  /* ── Lenis smooth scroll ── */
+  /* ── Lenis smooth scroll (desktop only) ── */
   useEffect(() => {
     if (!hasOpened) return;
+
+    // On mobile / small screens, use native momentum scrolling for 100% stability and zero horizontal jitter
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      const handleNativeScroll = () => {
+        const scroll = window.scrollY;
+        setScrolled(scroll > 40);
+        setShowScrollTop(scroll > 450);
+      };
+      window.addEventListener('scroll', handleNativeScroll, { passive: true });
+      return () => window.removeEventListener('scroll', handleNativeScroll);
+    }
 
     const lenis = new Lenis({
       duration: 1.1,
@@ -53,7 +65,7 @@ export default function App() {
       orientation: 'vertical',
       smoothWheel: true,
       wheelMultiplier: 1.0,
-      touchMultiplier: 2.0,
+      touchMultiplier: 1.5,
       infinite: false,
     });
 
@@ -129,24 +141,34 @@ export default function App() {
   }, []);
 
   const scrollToTop = useCallback(() => {
-    lenisRef.current?.scrollTo(0, { duration: 1.4 });
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { duration: 1.4 });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }, []);
 
   const scrollTo = useCallback((href) => {
     const el = document.querySelector(href);
-    if (el && lenisRef.current) {
-      lenisRef.current.scrollTo(el, { offset: -70, duration: 1.3 });
+    if (el) {
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(el, { offset: -60, duration: 1.2 });
+      } else {
+        const top = el.getBoundingClientRect().top + window.scrollY - 60;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
     }
     setMobileMenu(false);
   }, []);
 
   const handleIntroComplete = useCallback(() => {
+    window.scrollTo({ left: 0, top: 0, behavior: 'instant' });
     setHasOpened(true);
     setTimeout(() => setIntroDone(true), 1200);
   }, []);
 
   return (
-    <div style={{ backgroundColor: '#FAF7F2', minHeight: '100vh', position: 'relative' }}>
+    <div style={{ backgroundColor: '#FAF7F2', minHeight: '100vh', position: 'relative', width: '100%', maxWidth: '100vw', overflowX: 'hidden', boxSizing: 'border-box' }}>
       {/* 1. Intro 3D Envelope Screen */}
       {!introDone && (
         <IntroShader
@@ -165,6 +187,10 @@ export default function App() {
           opacity: hasOpened ? 1 : 0,
           transition: hasOpened ? 'opacity 0.6s ease 0.15s' : 'none',
           pointerEvents: hasOpened ? 'auto' : 'none',
+          width: '100%',
+          maxWidth: '100vw',
+          overflowX: 'hidden',
+          boxSizing: 'border-box',
         }}
       >
         {/* Navigation Header */}
@@ -175,12 +201,16 @@ export default function App() {
               top: 0,
               left: 0,
               right: 0,
+              width: '100%',
+              maxWidth: '100vw',
+              boxSizing: 'border-box',
+              overflowX: 'hidden',
               zIndex: 8000,
-              backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.92)' : 'rgba(250, 247, 242, 0.65)',
+              backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.95)' : 'rgba(250, 247, 242, 0.85)',
               backdropFilter: 'blur(16px)',
               borderBottom: scrolled ? '1px solid rgba(197, 160, 89, 0.28)' : '1px solid transparent',
               boxShadow: scrolled ? '0 4px 20px rgba(50, 30, 15, 0.05)' : 'none',
-              padding: scrolled ? '12px 28px' : '18px 28px',
+              padding: scrolled ? '8px clamp(12px, 3vw, 24px)' : '10px clamp(12px, 3vw, 24px)',
               transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
           >
@@ -191,6 +221,8 @@ export default function App() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                width: '100%',
+                boxSizing: 'border-box',
               }}
             >
               {/* Logo / Monogram */}
@@ -202,16 +234,20 @@ export default function App() {
                 }}
                 style={{
                   fontFamily: "'Alex Brush', cursive",
-                  fontSize: '1.75rem',
+                  fontSize: 'clamp(1.15rem, 4vw, 1.6rem)',
                   color: '#801D24',
                   textDecoration: 'none',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
+                  gap: '5px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: 'calc(100% - 44px)',
                 }}
               >
                 <span>{COUPLE.groom.firstName}</span>
-                <span style={{ color: '#C5A059', fontSize: '1.2rem', fontFamily: 'serif' }}>&amp;</span>
+                <span style={{ color: '#C5A059', fontSize: '0.9rem', fontFamily: 'serif' }}>&amp;</span>
                 <span>{COUPLE.bride.firstName}</span>
               </a>
 
@@ -338,19 +374,23 @@ export default function App() {
                 backgroundColor: '#1C1510',
                 background: 'radial-gradient(circle at 50% 30%, #2A1E17 0%, #150E0A 100%)',
                 color: '#FAF7F2',
-                padding: 'clamp(70px, 10vw, 100px) 24px 50px',
+                padding: 'clamp(50px, 8vw, 80px) 16px 40px',
                 textAlign: 'center',
                 position: 'relative',
                 borderTop: '2px solid #C5A059',
+                width: '100%',
+                maxWidth: '100vw',
+                boxSizing: 'border-box',
+                overflowX: 'hidden',
               }}
             >
-              <div style={{ maxWidth: '560px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+              <div style={{ maxWidth: '560px', width: '100%', margin: '0 auto', position: 'relative', zIndex: 1, boxSizing: 'border-box' }}>
                 {/* Monogram Badge */}
                 <div
                   style={{
-                    width: '64px',
-                    height: '64px',
-                    margin: '0 auto 24px auto',
+                    width: '56px',
+                    height: '56px',
+                    margin: '0 auto 20px auto',
                     borderRadius: '50%',
                     border: '1.5px solid #C5A059',
                     display: 'flex',
@@ -363,7 +403,7 @@ export default function App() {
                   <span
                     style={{
                       fontFamily: "'Cormorant Garamond', serif",
-                      fontSize: '1.6rem',
+                      fontSize: '1.4rem',
                       fontStyle: 'italic',
                       fontWeight: 600,
                       color: '#E6CA85',
@@ -377,10 +417,11 @@ export default function App() {
                 <h3
                   style={{
                     fontFamily: "'Alex Brush', cursive",
-                    fontSize: 'clamp(2.6rem, 6.5vw, 3.8rem)',
+                    fontSize: 'clamp(2.0rem, 6vw, 3.6rem)',
                     color: '#E6CA85',
                     margin: '0 0 10px 0',
                     fontWeight: 400,
+                    wordBreak: 'break-word',
                   }}
                 >
                   {COUPLE.groom.firstName} &amp; {COUPLE.bride.firstName}
