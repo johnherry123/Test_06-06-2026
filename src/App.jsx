@@ -409,43 +409,26 @@ export default function App() {
                   </svg>
                   <div style={{ width: '60px', height: '1px', background: 'linear-gradient(to left, transparent, #C5A059)' }} />
                 </div>
-
-                {/* Royal Monogram Crest Badge */}
-                <div
-                  style={{
-                    width: '64px',
-                    height: '64px',
-                    margin: '0 auto 18px auto',
-                    borderRadius: '50%',
-                    border: '1.5px solid #C5A059',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background: 'radial-gradient(circle, rgba(197, 160, 89, 0.2) 0%, rgba(128, 29, 36, 0.4) 100%)',
-                    boxShadow: '0 0 25px rgba(197, 160, 89, 0.35)',
-                  }}
-                >
-                  <svg width="34" height="34" viewBox="0 0 40 40" fill="none">
-                    <circle cx="15" cy="23" r="10" stroke="#F3DEC2" strokeWidth="2.2" fill="none" />
-                    <circle cx="25" cy="23" r="10" stroke="#C5A059" strokeWidth="2.2" fill="none" />
-                    <path d="M15 9L18 13L15 15.5L12 13L15 9Z" fill="#FFF2D4" stroke="#C5A059" strokeWidth="0.8" />
-                    <circle cx="15" cy="12.5" r="1.5" fill="#FFFFFF" />
-                  </svg>
-                </div>
-
-                {/* Calligraphy Names */}
+                {/* Calligraphy Names — Always unified on one line or cleanly split */}
                 <h3
                   style={{
                     fontFamily: "'Alex Brush', cursive",
-                    fontSize: 'clamp(2.2rem, 6.5vw, 3.8rem)',
+                    fontSize: 'clamp(1.9rem, 5.2vw, 3.4rem)',
                     color: '#F5E4CE',
-                    margin: '0 0 10px 0',
+                    margin: '10px 0 16px 0',
                     fontWeight: 400,
                     textShadow: '0 2px 14px rgba(0, 0, 0, 0.5)',
-                    wordBreak: 'break-word',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '12px',
+                    flexWrap: 'wrap',
+                    lineHeight: 1.25,
                   }}
                 >
-                  {COUPLE.groom.firstName} &amp; {COUPLE.bride.firstName}
+                  <span style={{ whiteSpace: 'nowrap' }}>{COUPLE.groom.firstName}</span>
+                  <span style={{ color: '#E6CA85', fontSize: '0.82em', fontFamily: 'serif' }}>&amp;</span>
+                  <span style={{ whiteSpace: 'nowrap' }}>{COUPLE.bride.firstName}</span>
                 </h3>
 
                 {/* Heartfelt Thank You Message */}

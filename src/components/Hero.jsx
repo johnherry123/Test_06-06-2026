@@ -150,7 +150,7 @@ export default function Hero() {
             wordBreak: 'break-word',
           }}
         >
-          <span>{COUPLE.groom.firstName}</span>
+          <span style={{ whiteSpace: 'nowrap' }}>{COUPLE.groom.firstName}</span>
           <span
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
@@ -163,7 +163,7 @@ export default function Hero() {
           >
             &amp;
           </span>
-          <span>{COUPLE.bride.firstName}</span>
+          <span style={{ whiteSpace: 'nowrap' }}>{COUPLE.bride.firstName}</span>
         </h1>
 
         {/* Full Names for Formal Elegance */}

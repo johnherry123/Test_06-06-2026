@@ -320,12 +320,19 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               <path d="M76 53C79 52 82 54 82 56C81 58 77 57 76 53Z" fill="url(#crestGold)" />
               <path d="M71 62C74 62 76 65 75 67C74 69 70 67 71 62Z" fill="url(#crestGold)" />
 
-              {/* Centered Intertwined Wedding Rings with Solitaire Diamond */}
-              <circle cx="43" cy="49" r="14" stroke="url(#ringGoldLight)" strokeWidth="2.2" fill="none" />
-              <circle cx="57" cy="49" r="14" stroke="url(#crestGold)" strokeWidth="2.2" fill="none" />
-              {/* Diamond Solitaire Accent on Left Ring */}
-              <path d="M43 31L46.5 35.5L43 38L39.5 35.5L43 31Z" fill="#FFF9E6" stroke="#C5A059" strokeWidth="0.8" />
-              <circle cx="43" cy="35" r="1.5" fill="#FFFFFF" />
+              {/* Traditional Song Hỷ (囍) in Metallic Gold inside Laurel Wreath */}
+              <text
+                x="50"
+                y="56"
+                fontFamily="'Playfair Display', 'Cinzel', 'Songti SC', serif"
+                fontSize="24"
+                fontWeight="700"
+                fill="url(#crestGold)"
+                textAnchor="middle"
+                style={{ filter: 'drop-shadow(0 1px 2px rgba(197, 160, 89, 0.45))' }}
+              >
+                囍
+              </text>
 
               {/* Bottom Ribbon */}
               <path

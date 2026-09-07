@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 're
 import { Volume2, VolumeX, Music } from 'lucide-react';
 
 const AUDIO_LOCAL = `${import.meta.env.BASE_URL}wedding-music.mp3`;
-const AUDIO_FALLBACK = 'https://archive.org/download/100ClassicalMusicMasterpieces/1698%20Pachelbel%20%2C%20Canon%20in%20D.mp3';
+const AUDIO_FALLBACK = 'https://archive.org/download/westlifebeautifulinwhite_201911/Westlife%20-%20Beautiful%20in%20White.mp3';
 
 const AudioPlayer = forwardRef(function AudioPlayer({ shouldPlay }, ref) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -10,7 +10,7 @@ const AudioPlayer = forwardRef(function AudioPlayer({ shouldPlay }, ref) {
 
   const startPlay = () => {
     if (!audioRef.current) return;
-    audioRef.current.volume = 0.6;
+    audioRef.current.volume = 0.65;
     audioRef.current
       .play()
       .then(() => {
@@ -85,7 +85,7 @@ const AudioPlayer = forwardRef(function AudioPlayer({ shouldPlay }, ref) {
         type="button"
         onClick={togglePlay}
         className="audio-toggle-btn"
-        title={isPlaying ? 'Tạm dừng nhạc nền' : 'Bật nhạc nền lãng mạn (Canon in D)'}
+        title={isPlaying ? 'Tạm dừng nhạc nền' : 'Bật nhạc nền lãng mạn (Beautiful in White)'}
         aria-label={isPlaying ? 'Tạm dừng nhạc nền' : 'Bật nhạc nền lãng mạn'}
         style={{
           display: 'flex',
@@ -124,7 +124,7 @@ const AudioPlayer = forwardRef(function AudioPlayer({ shouldPlay }, ref) {
             whiteSpace: 'nowrap',
           }}
         >
-          {isPlaying ? 'Canon in D' : 'Bật Nhạc'}
+          {isPlaying ? 'Beautiful in White' : 'Bật Nhạc'}
         </span>
 
         {isPlaying ? <Volume2 size={15} /> : <VolumeX size={15} />}
