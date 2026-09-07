@@ -157,8 +157,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
       <div
         style={{
           position: 'relative',
-          width: 'min(380px, 92vw)',
-          maxHeight: 'min(560px, 86vh)',
+          width: 'min(365px, 90vw)',
+          minHeight: 'min(545px, 83vh)',
           transformStyle: 'preserve-3d',
           transform: isOpen
             ? 'scale(1.18) translateZ(80px)'
@@ -177,14 +177,15 @@ export default function IntroShader({ onComplete, onStartMusic }) {
           style={{
             position: 'relative',
             width: '100%',
+            minHeight: 'min(545px, 83vh)',
             backgroundColor: '#FFFDF9',
-            background: 'linear-gradient(160deg, #FFFFFF 0%, #FAF6EE 50%, #F5EFE3 100%)',
-            borderRadius: '16px',
+            background: 'linear-gradient(165deg, #FFFFFF 0%, #FAF6EE 55%, #F4ECE0 100%)',
+            borderRadius: '18px',
             border: '2px solid #C5A059',
             boxShadow: isOpen
               ? '0 30px 80px rgba(0, 0, 0, 0.65), 0 0 45px rgba(197, 160, 89, 0.45)'
-              : '0 25px 60px rgba(0, 0, 0, 0.55), 0 8px 24px rgba(0, 0, 0, 0.35)',
-            padding: 'clamp(14px, 2.4vh, 20px) clamp(14px, 3.5vw, 22px) clamp(12px, 2vh, 18px)',
+              : '0 25px 65px rgba(0, 0, 0, 0.60), 0 8px 25px rgba(0, 0, 0, 0.35)',
+            padding: 'clamp(20px, 3vh, 28px) clamp(16px, 4vw, 24px) clamp(18px, 2.6vh, 24px)',
             boxSizing: 'border-box',
             textAlign: 'center',
             display: 'flex',
@@ -355,12 +356,12 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             <p
               style={{
                 fontFamily: "'Be Vietnam Pro', sans-serif",
-                fontSize: 'clamp(0.58rem, 1.4vw, 0.64rem)',
+                fontSize: 'clamp(0.60rem, 1.4vw, 0.68rem)',
                 fontWeight: 700,
-                letterSpacing: '0.22em',
+                letterSpacing: '0.24em',
                 textTransform: 'uppercase',
                 color: '#9A7836',
-                margin: '2px 0 0 0',
+                margin: '6px 0 0 0',
               }}
             >
               Thiệp Cưới Báo Hỷ
@@ -368,36 +369,36 @@ export default function IntroShader({ onComplete, onStartMusic }) {
           </div>
 
           {/* ── SECTION 2: COUPLE NAMES & EVENT INFO ── */}
-          <div style={{ margin: 'clamp(2px, 0.8vh, 6px) 0', width: '100%' }}>
+          <div style={{ margin: 'clamp(6px, 1.8vh, 16px) 0', width: '100%' }}>
             <h1
               style={{
                 fontFamily: "'Alex Brush', cursive",
-                fontSize: 'clamp(1.9rem, 4.8vh, 2.7rem)',
+                fontSize: 'clamp(1.75rem, 4.2vh, 2.45rem)',
                 color: '#801D24',
-                lineHeight: 1.12,
-                margin: '0 0 2px 0',
+                lineHeight: 1.2,
+                margin: '0 0 3px 0',
                 fontWeight: 400,
                 textShadow: '0 1px 4px rgba(128, 29, 36, 0.12)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '8px',
-                flexWrap: 'wrap',
+                whiteSpace: 'nowrap',
               }}
             >
-              <span style={{ whiteSpace: 'nowrap' }}>{COUPLE.groom.firstName}</span>
+              <span>{COUPLE.groom.firstName}</span>
               <span style={{ fontSize: '0.85em', color: '#C5A059' }}>&amp;</span>
-              <span style={{ whiteSpace: 'nowrap' }}>{COUPLE.bride.firstName}</span>
+              <span>{COUPLE.bride.firstName}</span>
             </h1>
 
             <p
               style={{
-                fontFamily: "'Cormorant Garamond', Georgia, serif",
-                fontSize: 'clamp(0.88rem, 1.8vh, 1.05rem)',
-                fontStyle: 'italic',
-                fontWeight: 600,
-                color: '#42332A',
-                margin: 0,
+                fontFamily: "'Be Vietnam Pro', sans-serif",
+                fontSize: 'clamp(0.74rem, 1.5vh, 0.86rem)',
+                fontWeight: 500,
+                color: '#584A42',
+                letterSpacing: '0.02em',
+                margin: '0 0 6px 0',
               }}
             >
               ({COUPLE.groom.fullName} &amp; {COUPLE.bride.fullName})
@@ -411,7 +412,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 justifyContent: 'center',
                 gap: '8px',
                 width: '140px',
-                margin: 'clamp(3px, 0.8vh, 6px) auto',
+                margin: 'clamp(6px, 1.2vh, 10px) auto',
               }}
             >
               <span style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, #C5A059)' }} />
@@ -424,11 +425,11 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               <p
                 style={{
                   fontFamily: "'Cinzel', serif",
-                  fontSize: 'clamp(0.82rem, 1.8vh, 0.96rem)',
+                  fontSize: 'clamp(0.86rem, 1.8vh, 1.0rem)',
                   fontWeight: 700,
-                  letterSpacing: '0.18em',
+                  letterSpacing: '0.20em',
                   color: '#1E1612',
-                  margin: '0 0 2px 0',
+                  margin: '0 0 3px 0',
                 }}
               >
                 20 · 10 · 2026
@@ -437,9 +438,9 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               <p
                 style={{
                   fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: 'clamp(0.60rem, 1.3vh, 0.68rem)',
+                  fontSize: 'clamp(0.62rem, 1.3vh, 0.70rem)',
                   fontWeight: 600,
-                  letterSpacing: '0.12em',
+                  letterSpacing: '0.14em',
                   textTransform: 'uppercase',
                   color: '#801D24',
                   margin: 0,
@@ -458,7 +459,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              marginTop: 'clamp(4px, 1vh, 8px)',
+              marginTop: 'clamp(8px, 1.8vh, 16px)',
             }}
           >
             {/* Edge-to-Edge Silk Ribbon */}
@@ -633,8 +634,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 startOpening();
               }}
               style={{
-                marginTop: '8px',
-                padding: '5px 16px',
+                marginTop: 'clamp(10px, 1.8vh, 16px)',
+                padding: '7px 20px',
                 borderRadius: '999px',
                 background: 'rgba(255, 253, 249, 0.96)',
                 border: '1.5px solid #C5A059',
