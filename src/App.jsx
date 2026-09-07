@@ -7,11 +7,7 @@ import './index.css';
 
 /* Components */
 import IntroShader from './components/IntroShader';
-import Hero from './components/Hero';
-import Events from './components/Events';
-import Gallery from './components/Gallery';
-import RSVP from './components/RSVP';
-import Gifts from './components/Gifts';
+import StationerySuite from './components/StationerySuite';
 import AudioPlayer from './components/AudioPlayer';
 import PetalsCanvas from './components/PetalsCanvas';
 import { COUPLE, WEDDING } from './weddingData';
@@ -144,6 +140,7 @@ export default function App() {
   }, []);
 
   const scrollTo = useCallback((href) => {
+    window.location.hash = href;
     const el = document.querySelector(href);
     if (el) {
       if (lenisRef.current) {
@@ -426,14 +423,10 @@ export default function App() {
           </header>
         )}
 
-        {/* Main Sections - 4 Curated Chapters */}
+        {/* Main Experiential Centerpiece: The Royal Interactive Flatlay Suite */}
         {hasOpened && (
           <main>
-            <Hero />
-            <Events />
-            <Gallery />
-            <RSVP />
-            <Gifts />
+            <StationerySuite />
 
             {/* ── LUXURY ROYAL WEDDING FOOTER ── */}
             <footer

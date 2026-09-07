@@ -317,3 +317,73 @@ section {
     border-radius: 8px !important;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   ROYAL FLATLAY STATIONERY SUITE — 3D & TACTILE UTILITIES
+   ══════════════════════════════════════════════════════════════════════ */
+
+.perspective-container {
+  perspective: 1200px;
+  -webkit-perspective: 1200px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.flatlay-card-paper {
+  background: #FFFDF9;
+  border-radius: 20px;
+  border: 1px solid rgba(197, 160, 89, 0.4);
+  box-shadow: 
+    0 4px 12px rgba(45, 30, 15, 0.05),
+    0 16px 36px -6px rgba(45, 30, 15, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.flatlay-card-paper:hover {
+  box-shadow: 
+    0 8px 20px rgba(45, 30, 15, 0.08),
+    0 24px 50px -8px rgba(128, 29, 36, 0.18),
+    0 0 0 1px rgba(212, 175, 55, 0.5) inset;
+}
+
+.gold-foil-badge {
+  background: linear-gradient(135deg, rgba(197, 160, 89, 0.18) 0%, rgba(229, 205, 148, 0.3) 50%, rgba(197, 160, 89, 0.18) 100%);
+  border: 1px solid rgba(197, 160, 89, 0.5);
+  color: #801D24;
+}
+
+@keyframes ticketShimmer {
+  0% { transform: translateX(-100%) rotate(25deg); }
+  100% { transform: translateX(250%) rotate(25deg); }
+}
+
+.ticket-shimmer-effect::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 65%
+  );
+  animation: ticketShimmer 3.5s infinite;
+  pointer-events: none;
+}
+
