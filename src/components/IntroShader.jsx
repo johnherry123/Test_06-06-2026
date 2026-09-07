@@ -99,12 +99,12 @@ export default function IntroShader({ onComplete, onStartMusic }) {
       const touch = e.changedTouches?.[0];
       setIsInteracting(false);
 
-      // Check if user did a quick tap (< 300ms, < 15px movement) -> open card
+      // Check if user did a quick tap (< 600ms, < 20px movement) -> open card
       if (touch && start.time) {
         const dx = Math.abs(touch.clientX - start.x);
         const dy = Math.abs(touch.clientY - start.y);
         const dt = Date.now() - start.time;
-        if (dt < 300 && dx < 15 && dy < 15) {
+        if (dt < 600 && dx < 20 && dy < 20) {
           handleCardClick();
           return;
         }
@@ -147,6 +147,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
   return (
     <div
       role="dialog"
+      className="intro-dialog"
       aria-label={`Thiệp cưới ${COUPLE.groom.firstName} & ${COUPLE.bride.firstName} — Chạm để mở thiệp`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -155,6 +156,10 @@ export default function IntroShader({ onComplete, onStartMusic }) {
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
       onClick={handleCardClick}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       style={{
         position: 'fixed',
         inset: 0,
@@ -166,6 +171,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
         backgroundColor: '#160508',
         background: 'radial-gradient(circle at 50% 45%, #340F16 0%, #1C060A 60%, #0C0204 100%)',
         userSelect: 'none',
+        WebkitUserSelect: 'none',
+        WebkitTouchCallout: 'none',
         overflow: 'hidden',
         cursor: 'pointer',
         perspective: '1200px',
@@ -245,14 +252,15 @@ export default function IntroShader({ onComplete, onStartMusic }) {
           width: 'min(340px, 88vw)',
           maxHeight: 'calc(100dvh - 36px)',
           transformStyle: 'preserve-3d',
+          WebkitTransformStyle: 'preserve-3d',
           transform: isOpen
             ? 'scale(1.18) translateZ(80px)'
             : `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
           transition: isOpen
             ? 'transform 0.75s cubic-bezier(0.22, 1, 0.36, 1)'
             : isInteracting
-            ? 'none'
-            : 'transform 0.28s ease-out',
+            ? 'transform 0.12s ease-out'
+            : 'transform 0.35s ease-out',
         }}
       >
         {/* Ambient 3D Floating Sub-wrapper (Ensures tactile 3D floating presence on mobile before interaction) */}
@@ -261,6 +269,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             position: 'relative',
             width: '100%',
             transformStyle: 'preserve-3d',
+            WebkitTransformStyle: 'preserve-3d',
             animation: isOpen
               ? 'none'
               : isInteracting
@@ -270,6 +279,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
         >
           {/* MAIN LUXURY INVITATION CARD (Pearl Ivory with Double Gold Foil Borders - Balanced Tall Royal Ratio) */}
           <div
+            className="intro-card-inner"
             style={{
               position: 'relative',
               width: '100%',
@@ -287,6 +297,10 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               flexDirection: 'column',
               alignItems: 'center',
               overflow: 'hidden',
+              WebkitBackfaceVisibility: 'hidden',
+              backfaceVisibility: 'hidden',
+              transform: 'translateZ(0)',
+              WebkitTransform: 'translateZ(0)',
             }}
           >
             {/* Inner Golden Foil Inset Border */}
@@ -297,6 +311,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 border: '1px solid rgba(197, 160, 89, 0.45)',
                 borderRadius: '12px',
                 pointerEvents: 'none',
+                zIndex: 1,
               }}
             />
 
@@ -306,7 +321,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               height="22"
               viewBox="0 0 28 28"
               fill="none"
-              style={{ position: 'absolute', top: '9px', left: '9px', opacity: 0.65 }}
+              draggable={false}
+              style={{ position: 'absolute', top: '9px', left: '9px', opacity: 0.65, pointerEvents: 'none', zIndex: 2 }}
             >
               <path d="M2 26V6C2 3.79086 3.79086 2 6 2H26" stroke="#C5A059" strokeWidth="1.2" />
               <circle cx="8" cy="8" r="2" fill="#C5A059" />
@@ -316,7 +332,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               height="22"
               viewBox="0 0 28 28"
               fill="none"
-              style={{ position: 'absolute', top: '9px', right: '9px', opacity: 0.65 }}
+              draggable={false}
+              style={{ position: 'absolute', top: '9px', right: '9px', opacity: 0.65, pointerEvents: 'none', zIndex: 2 }}
             >
               <path d="M26 26V6C26 3.79086 24.2091 2 22 2H2" stroke="#C5A059" strokeWidth="1.2" />
               <circle cx="20" cy="8" r="2" fill="#C5A059" />
@@ -326,7 +343,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               height="22"
               viewBox="0 0 28 28"
               fill="none"
-              style={{ position: 'absolute', bottom: '9px', left: '9px', opacity: 0.65 }}
+              draggable={false}
+              style={{ position: 'absolute', bottom: '9px', left: '9px', opacity: 0.65, pointerEvents: 'none', zIndex: 2 }}
             >
               <path d="M2 2V22C2 24.2091 3.79086 26 6 26H26" stroke="#C5A059" strokeWidth="1.2" />
               <circle cx="8" cy="20" r="2" fill="#C5A059" />
@@ -336,7 +354,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               height="22"
               viewBox="0 0 28 28"
               fill="none"
-              style={{ position: 'absolute', bottom: '9px', right: '9px', opacity: 0.65 }}
+              draggable={false}
+              style={{ position: 'absolute', bottom: '9px', right: '9px', opacity: 0.65, pointerEvents: 'none', zIndex: 2 }}
             >
               <path d="M26 2V22C26 24.2091 24.2091 26 22 26H2" stroke="#C5A059" strokeWidth="1.2" />
               <circle cx="20" cy="20" r="2" fill="#C5A059" />
@@ -353,21 +372,41 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 background:
                   'linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.45) 50%, transparent 60%)',
                 pointerEvents: 'none',
-                transform: 'rotate(25deg)',
+                zIndex: 3,
+                transform: 'rotate(25deg) translateZ(1px)',
+                WebkitTransform: 'rotate(25deg) translateZ(1px)',
                 animation: 'cardShimmer 6s ease-in-out infinite',
               }}
             />
 
-            {/* ── SECTION 1: HEADER & LAUREL CREST ── */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-              {/* Royal Wedding Crest SVG (Complete Oval Laurel Wreath with Song Hỷ 囍) */}
-              <svg
-                width="66"
-                height="58"
-                viewBox="0 0 100 90"
-                fill="none"
-                style={{ filter: 'drop-shadow(0 2px 5px rgba(197, 160, 89, 0.35))', flexShrink: 0 }}
-              >
+            {/* ── CARD FOREGROUND CONTENT WRAPPER (Guarantees z-depth separation & prevents WebKit culling) ── */}
+            <div
+              className="intro-card-content"
+              style={{
+                position: 'relative',
+                zIndex: 10,
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                transform: 'translateZ(10px)',
+                WebkitTransform: 'translateZ(10px)',
+                WebkitBackfaceVisibility: 'hidden',
+                backfaceVisibility: 'hidden',
+                willChange: 'transform',
+              }}
+            >
+              {/* ── SECTION 1: HEADER & LAUREL CREST ── */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                {/* Royal Wedding Crest SVG (Complete Oval Laurel Wreath with Song Hỷ 囍) */}
+                <svg
+                  width="66"
+                  height="58"
+                  viewBox="0 0 100 90"
+                  fill="none"
+                  draggable={false}
+                  style={{ filter: 'drop-shadow(0 2px 5px rgba(197, 160, 89, 0.35))', flexShrink: 0, pointerEvents: 'none' }}
+                >
                 <defs>
                   <linearGradient id="crestGold" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stopColor="#FFF2D4" />
@@ -640,6 +679,10 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                       e.stopPropagation();
                       startOpening();
                     }}
+                    onContextMenu={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
                     style={{
                       position: 'relative',
                       width: '64px',
@@ -662,6 +705,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                       height="64"
                       viewBox="0 0 100 100"
                       fill="none"
+                      draggable={false}
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <defs>
@@ -742,6 +786,10 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                   e.stopPropagation();
                   startOpening();
                 }}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
                 style={{
                   marginTop: 'clamp(24px, 3.4vh, 30px)',
                   padding: '7px 20px',
@@ -774,12 +822,48 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 </span>
               </div>
             </div>
+            {/* End Section 3 */}
           </div>
+          {/* End .intro-card-content */}
         </div>
+        {/* End .intro-card-inner */}
       </div>
+      {/* End floating sub-wrapper */}
+    </div>
+    {/* End .intro-folio-card */}
 
-      {/* ── GLOBAL LUXURY KEYFRAME ANIMATIONS ── */}
+      {/* ── GLOBAL LUXURY KEYFRAME ANIMATIONS & MOBILE PROTECTION ── */}
       <style>{`
+        .intro-dialog,
+        .intro-dialog *,
+        .intro-folio-card,
+        .intro-folio-card * {
+          -webkit-touch-callout: none !important;
+          -webkit-user-select: none !important;
+          -moz-user-select: none !important;
+          -ms-user-select: none !important;
+          user-select: none !important;
+          -webkit-user-drag: none !important;
+          -webkit-tap-highlight-color: transparent !important;
+        }
+        .intro-folio-card {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-transform-style: preserve-3d;
+          transform-style: preserve-3d;
+        }
+        .intro-card-inner {
+          -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+          -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+        }
+        .intro-card-content {
+          -webkit-transform: translateZ(10px);
+          transform: translateZ(10px);
+          -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+        }
         @keyframes luxuryCardFloat3D {
           0% {
             transform: rotateX(3deg) rotateY(-3.2deg) translateZ(4px);
