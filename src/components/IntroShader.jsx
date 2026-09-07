@@ -241,7 +241,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
       <div
         style={{
           position: 'relative',
-          width: 'min(356px, 92vw)',
+          width: 'min(340px, 88vw)',
           maxHeight: 'calc(100dvh - 36px)',
           transformStyle: 'preserve-3d',
           transform: isOpen
@@ -267,12 +267,11 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               : 'luxuryCardFloat3D 6.5s ease-in-out infinite',
           }}
         >
-          {/* MAIN LUXURY INVITATION CARD (Pearl Ivory with Double Gold Foil Borders - Tall Slender Royal Ratio) */}
+          {/* MAIN LUXURY INVITATION CARD (Pearl Ivory with Double Gold Foil Borders - Balanced Tall Royal Ratio) */}
           <div
             style={{
               position: 'relative',
               width: '100%',
-              minHeight: 'clamp(470px, 71vh, 525px)',
               backgroundColor: '#FFFDF9',
               background: 'linear-gradient(165deg, #FFFFFF 0%, #FAF6EE 55%, #F4ECE0 100%)',
               borderRadius: '18px',
@@ -280,12 +279,11 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               boxShadow: isOpen
                 ? '0 30px 80px rgba(0, 0, 0, 0.65), 0 0 45px rgba(197, 160, 89, 0.45)'
                 : '0 25px 65px rgba(0, 0, 0, 0.60), 0 8px 25px rgba(0, 0, 0, 0.35)',
-              padding: 'clamp(24px, 3.8vh, 32px) clamp(10px, 2.5vw, 18px) clamp(18px, 2.8vh, 24px)',
+              padding: 'clamp(22px, 3.4vh, 30px) clamp(14px, 3.5vw, 22px) clamp(18px, 2.8vh, 24px)',
               boxSizing: 'border-box',
               textAlign: 'center',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
               alignItems: 'center',
               overflow: 'hidden',
             }}
@@ -363,8 +361,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
               {/* Royal Wedding Crest SVG (Complete Oval Laurel Wreath with Song Hỷ 囍) */}
               <svg
-                width="68"
-                height="60"
+                width="66"
+                height="58"
                 viewBox="0 0 100 90"
                 fill="none"
                 style={{ filter: 'drop-shadow(0 2px 5px rgba(197, 160, 89, 0.35))', flexShrink: 0 }}
@@ -453,10 +451,10 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                   fontFamily: "'Be Vietnam Pro', sans-serif",
                   fontSize: 'clamp(0.60rem, 1.3vh, 0.68rem)',
                   fontWeight: 700,
-                  letterSpacing: '0.24em',
+                  letterSpacing: '0.22em',
                   textTransform: 'uppercase',
                   color: '#9A7836',
-                  margin: '6px 0 0 0',
+                  margin: '4px 0 0 0',
                 }}
               >
                 Thiệp Cưới Báo Hỷ
@@ -466,10 +464,10 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               <p
                 style={{
                   fontFamily: "'Cormorant Garamond', Georgia, serif",
-                  fontSize: 'clamp(0.92rem, 1.8vh, 1.05rem)',
+                  fontSize: 'clamp(0.90rem, 1.7vh, 1.02rem)',
                   fontStyle: 'italic',
                   color: '#584A42',
-                  margin: '8px 0 0 0',
+                  margin: '5px 0 0 0',
                 }}
               >
                 Trân trọng kính báo Lễ Thành Hôn
@@ -477,11 +475,11 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             </div>
 
             {/* ── SECTION 2: COUPLE NAMES & EVENT INFO ── */}
-            <div style={{ width: '100%', margin: 'clamp(10px, 1.8vh, 16px) 0', padding: '0 4px', boxSizing: 'border-box' }}>
+            <div style={{ width: '100%', margin: 'clamp(8px, 1.4vh, 12px) 0 clamp(10px, 1.6vh, 14px)', padding: '0 4px', boxSizing: 'border-box' }}>
               <h1
                 style={{
                   fontFamily: "'Alex Brush', cursive",
-                  fontSize: 'clamp(1.42rem, 4.4vw, 2.35rem)',
+                  fontSize: 'clamp(1.58rem, 4.6vw, 2.25rem)',
                   color: '#801D24',
                   lineHeight: 1.25,
                   margin: '0 0 3px 0',
@@ -490,10 +488,9 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: 'clamp(4px, 1.2vw, 8px)',
+                  gap: 'clamp(4px, 1.2vw, 7px)',
                   whiteSpace: 'nowrap',
                   maxWidth: '100%',
-                  overflow: 'visible',
                 }}
               >
                 <span>{COUPLE.groom.firstName}</span>
@@ -504,7 +501,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               <p
                 style={{
                   fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: 'clamp(0.64rem, 1.8vw, 0.78rem)',
+                  fontSize: 'clamp(0.68rem, 1.6vw, 0.80rem)',
                   fontWeight: 500,
                   color: '#584A42',
                   letterSpacing: '0.01em',
@@ -522,12 +519,12 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '8px',
-                  width: '140px',
+                  width: '130px',
                   margin: '0 auto 8px',
                 }}
               >
                 <span style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, #C5A059)' }} />
-                <span style={{ color: '#C5A059', fontSize: '10px' }}>❦</span>
+                <span style={{ color: '#C5A059', fontSize: '9px' }}>❦</span>
                 <span style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, #C5A059)' }} />
               </div>
 
@@ -536,11 +533,11 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 <p
                   style={{
                     fontFamily: "'Cinzel', serif",
-                    fontSize: 'clamp(0.85rem, 1.7vh, 0.98rem)',
+                    fontSize: 'clamp(0.84rem, 1.7vh, 0.96rem)',
                     fontWeight: 700,
-                    letterSpacing: '0.20em',
+                    letterSpacing: '0.18em',
                     color: '#1E1612',
-                    margin: '0 0 3px 0',
+                    margin: '0 0 2px 0',
                   }}
                 >
                   20 · 10 · 2026
@@ -549,9 +546,9 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 <p
                   style={{
                     fontFamily: "'Be Vietnam Pro', sans-serif",
-                    fontSize: 'clamp(0.60rem, 1.2vh, 0.68rem)',
+                    fontSize: 'clamp(0.58rem, 1.2vh, 0.66rem)',
                     fontWeight: 600,
-                    letterSpacing: '0.14em',
+                    letterSpacing: '0.12em',
                     textTransform: 'uppercase',
                     color: '#801D24',
                     margin: 0,
@@ -783,19 +780,19 @@ export default function IntroShader({ onComplete, onStartMusic }) {
       <style>{`
         @keyframes luxuryCardFloat3D {
           0% {
-            transform: rotateX(4.5deg) rotateY(-5.5deg) translateZ(8px);
+            transform: rotateX(3deg) rotateY(-3.2deg) translateZ(4px);
           }
           25% {
-            transform: rotateX(-3.5deg) rotateY(-4deg) translateZ(12px);
+            transform: rotateX(-2.5deg) rotateY(-2deg) translateZ(6px);
           }
           50% {
-            transform: rotateX(-4.5deg) rotateY(5.5deg) translateZ(8px);
+            transform: rotateX(-3deg) rotateY(3.2deg) translateZ(4px);
           }
           75% {
-            transform: rotateX(3.5deg) rotateY(4deg) translateZ(12px);
+            transform: rotateX(2.5deg) rotateY(2deg) translateZ(6px);
           }
           100% {
-            transform: rotateX(4.5deg) rotateY(-5.5deg) translateZ(8px);
+            transform: rotateX(3deg) rotateY(-3.2deg) translateZ(4px);
           }
         }
         @keyframes waxSealPulse {
