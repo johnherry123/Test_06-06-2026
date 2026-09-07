@@ -239,6 +239,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
 
       {/* ── 3D LUXURY INVITATION FOLIO CARD (Interaction Tilt Wrapper) ── */}
       <div
+        className="intro-folio-card"
         style={{
           position: 'relative',
           width: 'min(340px, 88vw)',
@@ -477,9 +478,10 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             {/* ── SECTION 2: COUPLE NAMES & EVENT INFO ── */}
             <div style={{ width: '100%', margin: 'clamp(8px, 1.4vh, 12px) 0 clamp(10px, 1.6vh, 14px)', padding: '0 4px', boxSizing: 'border-box' }}>
               <h1
+                className="intro-couple-names"
                 style={{
                   fontFamily: "'Alex Brush', cursive",
-                  fontSize: 'clamp(1.58rem, 4.6vw, 2.25rem)',
+                  fontSize: '1.54rem',
                   color: '#801D24',
                   lineHeight: 1.25,
                   margin: '0 0 3px 0',
@@ -488,7 +490,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: 'clamp(4px, 1.2vw, 7px)',
+                  gap: '6px',
                   whiteSpace: 'nowrap',
                   maxWidth: '100%',
                 }}
@@ -501,7 +503,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               <p
                 style={{
                   fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: 'clamp(0.68rem, 1.6vw, 0.80rem)',
+                  fontSize: '0.72rem',
                   fontWeight: 500,
                   color: '#584A42',
                   letterSpacing: '0.01em',
@@ -826,6 +828,19 @@ export default function IntroShader({ onComplete, onStartMusic }) {
           100% {
             transform: translateX(200%) rotate(25deg);
             opacity: 0;
+          }
+        }
+        @media (min-width: 768px) {
+          .intro-folio-card {
+            width: 380px !important;
+          }
+          .intro-couple-names {
+            font-size: 1.68rem !important;
+          }
+        }
+        @media (max-width: 400px) {
+          .intro-couple-names {
+            font-size: 1.46rem !important;
           }
         }
       `}</style>
