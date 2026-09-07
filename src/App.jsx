@@ -371,10 +371,9 @@ export default function App() {
             <footer
               role="contentinfo"
               style={{
-                backgroundColor: '#1C1510',
-                background: 'radial-gradient(circle at 50% 30%, #2A1E17 0%, #150E0A 100%)',
+                background: 'radial-gradient(ellipse at 50% 20%, #3D1016 0%, #24070B 55%, #140306 100%)',
                 color: '#FAF7F2',
-                padding: 'clamp(50px, 8vw, 80px) 16px 40px',
+                padding: 'clamp(56px, 9vw, 90px) 20px 44px',
                 textAlign: 'center',
                 position: 'relative',
                 borderTop: '2px solid #C5A059',
@@ -384,29 +383,56 @@ export default function App() {
                 overflowX: 'hidden',
               }}
             >
-              <div style={{ maxWidth: '560px', width: '100%', margin: '0 auto', position: 'relative', zIndex: 1, boxSizing: 'border-box' }}>
-                {/* Monogram Badge */}
+              {/* Ambient Gold Glow */}
+              <div
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 'min(600px, 90vw)',
+                  height: '240px',
+                  background: 'radial-gradient(ellipse at top, rgba(197, 160, 89, 0.22) 0%, transparent 70%)',
+                  pointerEvents: 'none',
+                }}
+              />
+
+              <div style={{ maxWidth: '600px', width: '100%', margin: '0 auto', position: 'relative', zIndex: 1, boxSizing: 'border-box' }}>
+                {/* Ornate Gold Filigree Top Divider */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', marginBottom: '24px' }}>
+                  <div style={{ width: '60px', height: '1px', background: 'linear-gradient(to right, transparent, #C5A059)' }} />
+                  <svg width="36" height="20" viewBox="0 0 36 20" fill="none">
+                    <path d="M18 3L21 9L27 10L22.5 14L24 20L18 16.5L12 20L13.5 14L9 10L15 9L18 3Z" fill="#C5A059" opacity="0.85" />
+                    <circle cx="5" cy="10" r="2" fill="#C5A059" opacity="0.6" />
+                    <circle cx="31" cy="10" r="2" fill="#C5A059" opacity="0.6" />
+                  </svg>
+                  <div style={{ width: '60px', height: '1px', background: 'linear-gradient(to left, transparent, #C5A059)' }} />
+                </div>
+
+                {/* Royal Monogram Crest Badge */}
                 <div
                   style={{
-                    width: '56px',
-                    height: '56px',
-                    margin: '0 auto 20px auto',
+                    width: '64px',
+                    height: '64px',
+                    margin: '0 auto 18px auto',
                     borderRadius: '50%',
                     border: '1.5px solid #C5A059',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    background: 'rgba(197, 160, 89, 0.12)',
-                    boxShadow: '0 0 20px rgba(197, 160, 89, 0.25)',
+                    background: 'radial-gradient(circle, rgba(197, 160, 89, 0.2) 0%, rgba(128, 29, 36, 0.4) 100%)',
+                    boxShadow: '0 0 25px rgba(197, 160, 89, 0.35)',
                   }}
                 >
                   <span
                     style={{
                       fontFamily: "'Cormorant Garamond', serif",
-                      fontSize: '1.4rem',
+                      fontSize: '1.45rem',
                       fontStyle: 'italic',
-                      fontWeight: 600,
-                      color: '#E6CA85',
+                      fontWeight: 700,
+                      color: '#F3DEC2',
+                      letterSpacing: '0.04em',
                     }}
                   >
                     Đ &amp; N
@@ -417,82 +443,135 @@ export default function App() {
                 <h3
                   style={{
                     fontFamily: "'Alex Brush', cursive",
-                    fontSize: 'clamp(2.0rem, 6vw, 3.6rem)',
-                    color: '#E6CA85',
+                    fontSize: 'clamp(2.2rem, 6.5vw, 3.8rem)',
+                    color: '#F5E4CE',
                     margin: '0 0 10px 0',
                     fontWeight: 400,
+                    textShadow: '0 2px 14px rgba(0, 0, 0, 0.5)',
                     wordBreak: 'break-word',
                   }}
                 >
                   {COUPLE.groom.firstName} &amp; {COUPLE.bride.firstName}
                 </h3>
 
+                {/* Heartfelt Thank You Message */}
                 <p
                   style={{
                     fontFamily: "'Cormorant Garamond', serif",
-                    fontSize: 'clamp(1.1rem, 2.4vw, 1.35rem)',
+                    fontSize: 'clamp(1.15rem, 2.5vw, 1.4rem)',
                     fontStyle: 'italic',
-                    color: 'rgba(250, 247, 242, 0.85)',
+                    color: 'rgba(250, 247, 242, 0.92)',
                     lineHeight: 1.7,
-                    marginBottom: '24px',
+                    margin: '0 auto 20px auto',
+                    maxWidth: '480px',
                   }}
                 >
-                  Chân thành cảm ơn sự hiện diện và những lời chúc phúc quý báu<br />
-                  từ toàn thể Quý khách và Người thân thương!
+                  Chân thành cảm ơn sự hiện diện, tình cảm và những lời chúc phúc quý báu từ toàn thể Quý khách và Người thân thương!
                 </p>
 
-                {/* Golden Line */}
+                {/* Date & Venue Badge */}
                 <div
                   style={{
-                    width: '60px',
-                    height: '1px',
-                    background: 'linear-gradient(to right, transparent, #C5A059, transparent)',
-                    margin: '0 auto 22px auto',
-                  }}
-                />
-
-                <p
-                  style={{
-                    fontFamily: "'Cinzel', serif",
-                    fontSize: '0.82rem',
-                    letterSpacing: '0.2em',
-                    color: '#C5A059',
-                    marginBottom: '32px',
-                    fontWeight: 600,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '8px 20px',
+                    borderRadius: '999px',
+                    border: '1px solid rgba(197, 160, 89, 0.45)',
+                    background: 'rgba(197, 160, 89, 0.08)',
+                    marginBottom: '28px',
                   }}
                 >
-                  20 · 10 · 2026 — GEM CENTER TP.HCM
-                </p>
+                  <span
+                    style={{
+                      fontFamily: "'Cinzel', serif",
+                      fontSize: 'clamp(0.72rem, 1.8vw, 0.82rem)',
+                      letterSpacing: '0.18em',
+                      color: '#E6CA85',
+                      fontWeight: 600,
+                    }}
+                  >
+                    20 · 10 · 2026 — GEM CENTER TP.HCM
+                  </span>
+                </div>
 
                 {/* Share Button */}
-                <button
-                  type="button"
-                  onClick={handleShare}
-                  className="btn-luxury btn-luxury-outline"
-                  style={{
-                    backgroundColor: 'transparent',
-                    color: '#E6CA85',
-                    borderColor: 'rgba(197, 160, 89, 0.5)',
-                    marginBottom: '36px',
-                  }}
-                >
-                  <Share2 size={16} />
-                  Chia sẻ thiệp cưới
-                </button>
+                <div style={{ marginBottom: '36px' }}>
+                  <button
+                    type="button"
+                    onClick={handleShare}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      padding: '12px 28px',
+                      borderRadius: '999px',
+                      backgroundColor: '#801D24',
+                      background: 'linear-gradient(135deg, #99232C 0%, #70161C 100%)',
+                      border: '1.5px solid #C5A059',
+                      color: '#FFF8F0',
+                      fontFamily: "'Be Vietnam Pro', sans-serif",
+                      fontSize: '0.84rem',
+                      fontWeight: 600,
+                      letterSpacing: '0.04em',
+                      cursor: 'pointer',
+                      boxShadow: '0 6px 20px rgba(0, 0, 0, 0.35), 0 0 16px rgba(197, 160, 89, 0.25)',
+                      transition: 'all 0.25s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.45), 0 0 24px rgba(197, 160, 89, 0.45)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.35), 0 0 16px rgba(197, 160, 89, 0.25)';
+                    }}
+                  >
+                    <Share2 size={16} color="#E6CA85" />
+                    Chia sẻ thiệp cưới
+                  </button>
+                </div>
 
-                {/* Copyright Line */}
-                <p
+                {/* Formal Invitation Line */}
+                <div
                   style={{
-                    fontFamily: "'Be Vietnam Pro', sans-serif",
-                    fontSize: '0.68rem',
-                    color: 'rgba(250, 247, 242, 0.4)',
-                    borderTop: '1px solid rgba(197, 160, 89, 0.2)',
-                    paddingTop: '20px',
-                    letterSpacing: '0.06em',
+                    borderTop: '1px solid rgba(197, 160, 89, 0.25)',
+                    paddingTop: '22px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                    alignItems: 'center',
                   }}
                 >
-                  Hai họ trân trọng kính báo &amp; kính mời
-                </p>
+                  <p
+                    style={{
+                      fontFamily: "'Be Vietnam Pro', sans-serif",
+                      fontSize: '0.74rem',
+                      color: 'rgba(250, 247, 242, 0.72)',
+                      letterSpacing: '0.08em',
+                      margin: 0,
+                    }}
+                  >
+                    Họ Nhà Trai &amp; Họ Nhà Gái đồng trân trọng kính báo &amp; kính mời
+                  </p>
+
+                  <p
+                    style={{
+                      fontFamily: "'Cormorant Garamond', serif",
+                      fontSize: '0.86rem',
+                      fontStyle: 'italic',
+                      color: '#C5A059',
+                      margin: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                    }}
+                  >
+                    <span>Forever &amp; Always</span>
+                    <Heart size={11} fill="#C5A059" color="#C5A059" />
+                    <span>Đại Nghĩa &amp; Trịnh Nhung</span>
+                  </p>
+                </div>
               </div>
             </footer>
           </main>

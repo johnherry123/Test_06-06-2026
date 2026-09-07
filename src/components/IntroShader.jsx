@@ -2,15 +2,15 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { COUPLE, WEDDING } from '../weddingData';
 
 export default function IntroShader({ onComplete, onStartMusic }) {
-  // Phases: 'idle' -> 'opening' -> 'presented' -> 'zooming' -> 'done'
+  // Phases: 'idle' -> 'opening' -> 'zooming' -> 'done'
   const [phase, setPhase] = useState('idle');
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
-  // 18 golden sparks radiating outward when wax seal pops
+  // 24 golden sparks radiating outward when wax seal breaks
   const sparks = useMemo(() => {
-    return Array.from({ length: 18 }).map((_, i) => {
-      const angle = (i / 18) * 360 + (Math.random() * 20 - 10);
-      const dist = 80 + Math.random() * 80;
+    return Array.from({ length: 24 }).map((_, i) => {
+      const angle = (i / 24) * 360 + (Math.random() * 15 - 7.5);
+      const dist = 90 + Math.random() * 90;
       const rad = (angle * Math.PI) / 180;
       return {
         id: i,
@@ -26,8 +26,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
     (e) => {
       if (phase !== 'idle' || window.innerWidth <= 768) return;
       const { innerWidth, innerHeight } = window;
-      const x = (e.clientX / innerWidth - 0.5) * 12;
-      const y = (e.clientY / innerHeight - 0.5) * -10;
+      const x = (e.clientX / innerWidth - 0.5) * 10;
+      const y = (e.clientY / innerHeight - 0.5) * -8;
       setTilt({ x: y, y: x });
     },
     [phase]
@@ -39,36 +39,31 @@ export default function IntroShader({ onComplete, onStartMusic }) {
     // Immediately trigger music on user interaction
     onStartMusic?.();
 
-    // Step 1: Trigger opening sequence (seal bursts, flap swings up, card slides out)
+    // Step 1: Trigger opening sequence (seal bursts, ribbon slides, golden glow blooms)
     setPhase('opening');
 
-    // Step 2: Card reaches peak presentation height
-    setTimeout(() => {
-      setPhase('presented');
-    }, 1100);
-
-    // Step 3: Cinematic zoom into the card & fade out
+    // Step 2: Cinematic zoom into the invitation card
     setTimeout(() => {
       setPhase('zooming');
-    }, 3200);
+    }, 1200);
 
-    // Step 4: Complete handoff to main wedding experience
+    // Step 3: Complete handoff to main wedding experience
     setTimeout(() => {
       setPhase('done');
       onComplete?.();
-    }, 3900);
+    }, 1900);
   }, [phase, onComplete, onStartMusic]);
 
-  // Click anywhere while card is presented to fast-forward into main page immediately
+  // Click anywhere while opening to fast-forward into main page
   const handleCardClick = useCallback(() => {
     if (phase === 'idle') {
       startOpening();
-    } else if (phase === 'opening' || phase === 'presented') {
+    } else if (phase === 'opening') {
       setPhase('zooming');
       setTimeout(() => {
         setPhase('done');
         onComplete?.();
-      }, 650);
+      }, 500);
     }
   }, [phase, startOpening, onComplete]);
 
@@ -83,7 +78,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleCardClick]);
 
-  const isOpen = phase === 'opening' || phase === 'presented' || phase === 'zooming' || phase === 'done';
+  const isOpen = phase === 'opening' || phase === 'zooming' || phase === 'done';
   const isZooming = phase === 'zooming' || phase === 'done';
 
   return (
@@ -100,26 +95,26 @@ export default function IntroShader({ onComplete, onStartMusic }) {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#150E0C',
-        background: 'radial-gradient(circle at 50% 45%, #2B1914 0%, #170E0B 75%, #0B0605 100%)',
+        backgroundColor: '#160508',
+        background: 'radial-gradient(circle at 50% 45%, #340F16 0%, #1C060A 60%, #0C0204 100%)',
         userSelect: 'none',
         overflow: 'hidden',
         cursor: 'pointer',
         perspective: '1400px',
-        padding: '14px',
+        padding: '16px',
         opacity: isZooming ? 0 : 1,
         transition: isZooming ? 'opacity 0.75s ease-in 0.1s' : 'none',
       }}
     >
-      {/* ── AMBIENT GOLDEN LIGHT & POLKA TEXTURE ── */}
+      {/* ── AMBIENT GOLDEN BOKEH LIGHTS ── */}
       <div
         aria-hidden="true"
         style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: 'radial-gradient(rgba(212, 175, 55, 0.16) 1.5px, transparent 1.5px)',
-          backgroundSize: '34px 34px',
-          opacity: 0.65,
+          backgroundImage: 'radial-gradient(rgba(225, 185, 100, 0.18) 1.5px, transparent 1.5px)',
+          backgroundSize: '36px 36px',
+          opacity: 0.7,
           pointerEvents: 'none',
         }}
       />
@@ -127,14 +122,14 @@ export default function IntroShader({ onComplete, onStartMusic }) {
         aria-hidden="true"
         style={{
           position: 'absolute',
-          top: '32%',
+          top: '40%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 'min(620px, 110vw)',
-          height: 'min(620px, 110vw)',
+          width: 'min(640px, 115vw)',
+          height: 'min(640px, 115vw)',
           background:
-            'radial-gradient(circle, rgba(197, 160, 89, 0.24) 0%, rgba(128, 29, 36, 0.12) 45%, transparent 70%)',
-          filter: 'blur(45px)',
+            'radial-gradient(circle, rgba(197, 160, 89, 0.22) 0%, rgba(128, 29, 36, 0.15) 50%, transparent 75%)',
+          filter: 'blur(50px)',
           pointerEvents: 'none',
         }}
       />
@@ -142,200 +137,200 @@ export default function IntroShader({ onComplete, onStartMusic }) {
       {/* ── TOP HEADER CALLOUT ── */}
       <div
         style={{
-          marginBottom: 'clamp(8px, 2vh, 18px)',
+          marginBottom: 'clamp(10px, 2.5vh, 22px)',
           textAlign: 'center',
           transition: 'all 0.5s ease',
           opacity: phase === 'idle' ? 1 : 0.4,
-          transform: phase === 'idle' ? 'translateY(0)' : 'translateY(-8px)',
+          transform: phase === 'idle' ? 'translateY(0)' : 'translateY(-10px)',
         }}
       >
         <p
           style={{
             fontFamily: "'Cinzel', serif",
-            fontSize: 'clamp(0.70rem, 1.8vw, 0.84rem)',
-            letterSpacing: '0.28em',
+            fontSize: 'clamp(0.72rem, 1.9vw, 0.86rem)',
+            letterSpacing: '0.3em',
             color: '#E6CA85',
             textTransform: 'uppercase',
             margin: 0,
-            textShadow: '0 2px 10px rgba(0,0,0,0.6)',
+            textShadow: '0 2px 10px rgba(0, 0, 0, 0.7)',
+            fontWeight: 600,
           }}
         >
           ✦ Wedding Invitation · Lễ Thành Hôn ✦
         </p>
       </div>
 
-      {/* ── 3D PHYSICAL ENVELOPE STAGE ── */}
+      {/* ── 3D LUXURY INVITATION FOLIO CARD ── */}
       <div
         style={{
           position: 'relative',
-          width: 'min(350px, 88vw)',
-          height: 'min(450px, 66vh)',
+          width: 'min(380px, 92vw)',
+          height: 'min(550px, 80vh)',
           transformStyle: 'preserve-3d',
           transform: isZooming
-            ? 'scale(1.22) translateZ(100px)'
+            ? 'scale(1.32) translateZ(120px)'
             : isOpen
-            ? 'translateY(56px) scale(1)'
+            ? 'scale(1.04) translateZ(30px)'
             : phase === 'idle'
             ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(1)`
-            : 'translateY(0) scale(1)',
+            : 'scale(1)',
           transition: isZooming
             ? 'transform 0.85s cubic-bezier(0.16, 1, 0.3, 1)'
             : isOpen
-            ? 'transform 0.95s cubic-bezier(0.16, 1, 0.3, 1)'
+            ? 'transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)'
             : phase === 'idle'
             ? 'transform 0.15s ease-out'
-            : 'transform 0.65s cubic-bezier(0.16, 1, 0.3, 1)',
+            : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
-        {/* 1. ENVELOPE BACK (Lưng phong bì) */}
+        {/* MAIN LUXURY INVITATION CARD (Pearl Ivory with Double Gold Foil Borders) */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            borderRadius: '16px',
-            background: 'linear-gradient(145deg, #2E1B17 0%, #1A0F0D 100%)',
-            border: '1.5px solid rgba(197, 160, 89, 0.45)',
-            boxShadow:
-              '0 30px 70px -10px rgba(0, 0, 0, 0.75), 0 10px 25px rgba(0, 0, 0, 0.5)',
-            overflow: 'hidden',
-          }}
-        >
-          {/* Inner Golden Dot Lining */}
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              opacity: 0.14,
-              backgroundImage:
-                'radial-gradient(#C5A059 1px, transparent 1px), radial-gradient(#C5A059 1px, transparent 1px)',
-              backgroundSize: '18px 18px',
-              backgroundPosition: '0 0, 9px 9px',
-            }}
-          />
-        </div>
-
-        {/* 2. INNER INVITATION CARD (Thiệp cưới trượt lên cao ngoạn mục) */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '5%',
-            left: '4%',
-            width: '92%',
-            height: '90%',
             backgroundColor: '#FFFDF9',
-            borderRadius: '12px',
+            background: 'linear-gradient(160deg, #FFFFFF 0%, #FAF6EE 50%, #F5EFE3 100%)',
+            borderRadius: '16px',
             border: '2px solid #C5A059',
             boxShadow: isOpen
-              ? '0 25px 60px rgba(0, 0, 0, 0.55), 0 0 30px rgba(197, 160, 89, 0.35)'
-              : '0 4px 15px rgba(0, 0, 0, 0.2)',
-            padding: 'clamp(18px, 3.5vw, 26px) clamp(14px, 3vw, 20px)',
+              ? '0 30px 80px rgba(0, 0, 0, 0.65), 0 0 45px rgba(197, 160, 89, 0.45)'
+              : '0 25px 60px rgba(0, 0, 0, 0.55), 0 8px 24px rgba(0, 0, 0, 0.35)',
+            padding: '24px 18px 20px',
             boxSizing: 'border-box',
             textAlign: 'center',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            zIndex: isOpen ? 30 : 5,
-            transform: isOpen
-              ? 'translateY(-56%) translateZ(45px) scale(1.04)'
-              : 'translateY(0) translateZ(0) scale(1)',
-            transition:
-              'transform 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, z-index 0.01s 0.3s',
             overflow: 'hidden',
           }}
         >
-          {/* Inner Double Gold Border */}
+          {/* Inner Golden Foil Inset Border */}
           <div
             style={{
               position: 'absolute',
-              inset: '6px',
+              inset: '8px',
               border: '1px solid rgba(197, 160, 89, 0.45)',
-              borderRadius: '8px',
+              borderRadius: '11px',
               pointerEvents: 'none',
             }}
+          />
+
+          {/* Corner Floral Ornaments (SVG) */}
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 28 28"
+            fill="none"
+            style={{ position: 'absolute', top: '12px', left: '12px', opacity: 0.65 }}
           >
-            <span style={{ position: 'absolute', top: 3, left: 4, color: '#C5A059', fontSize: '9px' }}>✦</span>
-            <span style={{ position: 'absolute', top: 3, right: 4, color: '#C5A059', fontSize: '9px' }}>✦</span>
-            <span style={{ position: 'absolute', bottom: 3, left: 4, color: '#C5A059', fontSize: '9px' }}>✦</span>
-            <span style={{ position: 'absolute', bottom: 3, right: 4, color: '#C5A059', fontSize: '9px' }}>✦</span>
-          </div>
+            <path d="M2 26V6C2 3.79086 3.79086 2 6 2H26" stroke="#C5A059" strokeWidth="1.2" />
+            <circle cx="8" cy="8" r="2" fill="#C5A059" />
+          </svg>
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 28 28"
+            fill="none"
+            style={{ position: 'absolute', top: '12px', right: '12px', opacity: 0.65 }}
+          >
+            <path d="M26 26V6C26 3.79086 24.2091 2 22 2H2" stroke="#C5A059" strokeWidth="1.2" />
+            <circle cx="20" cy="8" r="2" fill="#C5A059" />
+          </svg>
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 28 28"
+            fill="none"
+            style={{ position: 'absolute', bottom: '12px', left: '12px', opacity: 0.65 }}
+          >
+            <path d="M2 2V22C2 24.2091 3.79086 26 6 26H26" stroke="#C5A059" strokeWidth="1.2" />
+            <circle cx="8" cy="20" r="2" fill="#C5A059" />
+          </svg>
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 28 28"
+            fill="none"
+            style={{ position: 'absolute', bottom: '12px', right: '12px', opacity: 0.65 }}
+          >
+            <path d="M26 2V22C26 24.2091 24.2091 26 22 26H2" stroke="#C5A059" strokeWidth="1.2" />
+            <circle cx="20" cy="20" r="2" fill="#C5A059" />
+          </svg>
 
-          {/* Shimmer Light Bar Gliding Across Card */}
-          {isOpen && (
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                background:
-                  'linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.75) 50%, transparent 65%)',
-                animation: 'cardShimmer 1.8s ease-out 0.4s',
-                pointerEvents: 'none',
-              }}
-            />
-          )}
+          {/* Light Sheen Effect */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '-50%',
+              left: '-50%',
+              width: '200%',
+              height: '200%',
+              background:
+                'linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.45) 50%, transparent 60%)',
+              pointerEvents: 'none',
+              transform: 'rotate(25deg)',
+              animation: 'cardShimmer 6s ease-in-out infinite',
+            }}
+          />
 
-          {/* ── LUXURY ROYAL MONOGRAM CREST (Mạ vàng, vương miện nhẫn cưới và vòng nguyệt quế) ── */}
-          <div style={{ marginTop: '2px' }}>
+          {/* ── CARD HEADER: MONOGRAM CREST ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Royal Monogram Crest SVG (Đ & N with Laurel Wreath & Rings) */}
             <svg
-              width="70"
-              height="70"
-              viewBox="0 0 100 100"
+              width="74"
+              height="66"
+              viewBox="0 0 100 90"
               fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              style={{ filter: 'drop-shadow(0 2px 4px rgba(128, 29, 36, 0.18))' }}
+              style={{ filter: 'drop-shadow(0 2px 5px rgba(197, 160, 89, 0.35))' }}
             >
               <defs>
                 <linearGradient id="crestGold" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#F9E8C4" />
-                  <stop offset="30%" stopColor="#D4AF37" />
-                  <stop offset="70%" stopColor="#9C7224" />
-                  <stop offset="100%" stopColor="#E2C98D" />
+                  <stop offset="0%" stopColor="#DFC37C" />
+                  <stop offset="50%" stopColor="#B38734" />
+                  <stop offset="100%" stopColor="#DFC37C" />
                 </linearGradient>
                 <linearGradient id="crestWine" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#8A131B" />
-                  <stop offset="100%" stopColor="#5E0C11" />
+                  <stop offset="0%" stopColor="#9C242C" />
+                  <stop offset="100%" stopColor="#661016" />
                 </linearGradient>
               </defs>
 
               {/* Intertwined Wedding Rings Crown */}
-              <circle cx="44" cy="13" r="5" stroke="url(#crestGold)" strokeWidth="1.6" fill="none" />
-              <circle cx="56" cy="13" r="5" stroke="url(#crestGold)" strokeWidth="1.6" fill="none" />
-              <path
-                d="M50 7L51.5 10.5L55 11L52.5 13L53.5 16.5L50 14.5L46.5 16.5L47.5 13L45 11L48.5 10.5L50 7Z"
-                fill="url(#crestGold)"
-              />
+              <circle cx="45" cy="15" r="9" stroke="url(#crestGold)" strokeWidth="1.8" fill="none" />
+              <circle cx="55" cy="15" r="9" stroke="url(#crestGold)" strokeWidth="1.8" fill="none" />
+              <path d="M49 8L50 6L51 8Z" fill="#C5A059" />
 
-              {/* Left Laurel Branch */}
+              {/* Classical Laurel Wreath */}
               <path
-                d="M32 78C20 66 18 45 28 28C30 32 30 38 28 42C24 50 25 62 32 70C34 66 38 64 40 68"
+                d="M26 38C22 47 24 60 33 68C37 72 43 75 50 75"
                 stroke="url(#crestGold)"
-                strokeWidth="1.5"
+                strokeWidth="1.6"
                 strokeLinecap="round"
                 fill="none"
               />
-              <path d="M22 36C18 34 16 38 18 42C20 40 22 38 22 36Z" fill="url(#crestGold)" />
-              <path d="M21 47C17 46 16 51 18 55C20 53 22 50 21 47Z" fill="url(#crestGold)" />
-              <path d="M24 59C20 60 21 65 24 68C25 65 26 62 24 59Z" fill="url(#crestGold)" />
-
-              {/* Right Laurel Branch */}
               <path
-                d="M68 78C80 66 82 45 72 28C70 32 70 38 72 42C76 50 75 62 68 70C66 66 62 64 60 68"
+                d="M74 38C78 47 76 60 67 68C63 72 57 75 50 75"
                 stroke="url(#crestGold)"
-                strokeWidth="1.5"
+                strokeWidth="1.6"
                 strokeLinecap="round"
                 fill="none"
               />
-              <path d="M78 36C82 34 84 38 82 42C80 40 78 38 78 36Z" fill="url(#crestGold)" />
-              <path d="M79 47C83 46 84 51 82 55C80 53 78 50 79 47Z" fill="url(#crestGold)" />
-              <path d="M76 59C80 60 79 65 76 68C75 65 74 62 76 59Z" fill="url(#crestGold)" />
 
-              {/* Central Intertwined Monogram: Đ & N */}
+              {/* Laurel Leaf Sprigs */}
+              <path d="M22 44C20 42 17 43 17 45C17 47 21 47 22 44Z" fill="url(#crestGold)" />
+              <path d="M24 53C21 52 18 54 18 56C19 58 23 57 24 53Z" fill="url(#crestGold)" />
+              <path d="M29 62C26 62 24 65 25 67C26 69 30 67 29 62Z" fill="url(#crestGold)" />
+              <path d="M78 44C80 42 83 43 83 45C83 47 79 47 78 44Z" fill="url(#crestGold)" />
+              <path d="M76 53C79 52 82 54 82 56C81 58 77 57 76 53Z" fill="url(#crestGold)" />
+              <path d="M71 62C74 62 76 65 75 67C74 69 70 67 71 62Z" fill="url(#crestGold)" />
+
+              {/* Monogram Letters: Đ & N */}
               <text
                 x="37"
-                y="54"
+                y="52"
                 fontFamily="'Playfair Display', Georgia, serif"
                 fontStyle="italic"
-                fontSize="25"
+                fontSize="24"
                 fontWeight="700"
                 fill="url(#crestWine)"
                 textAnchor="middle"
@@ -344,10 +339,10 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               </text>
               <text
                 x="50"
-                y="48"
-                fontFamily="'Cormorant Garamond', serif"
+                y="50"
+                fontFamily="'Cormorant Garamond', Georgia, serif"
                 fontStyle="italic"
-                fontSize="16"
+                fontSize="15"
                 fontWeight="300"
                 fill="url(#crestGold)"
                 textAnchor="middle"
@@ -356,10 +351,10 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               </text>
               <text
                 x="63"
-                y="54"
+                y="52"
                 fontFamily="'Playfair Display', Georgia, serif"
                 fontStyle="italic"
-                fontSize="25"
+                fontSize="24"
                 fontWeight="700"
                 fill="url(#crestWine)"
                 textAnchor="middle"
@@ -369,7 +364,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
 
               {/* Bottom Ribbon */}
               <path
-                d="M36 74C44 77 56 77 64 74M45 80L50 83L55 80"
+                d="M36 72C44 75 56 75 64 72M45 78L50 81L55 78"
                 stroke="url(#crestGold)"
                 strokeWidth="1.3"
                 strokeLinecap="round"
@@ -379,9 +374,9 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             <p
               style={{
                 fontFamily: "'Be Vietnam Pro', sans-serif",
-                fontSize: '0.62rem',
+                fontSize: '0.64rem',
                 fontWeight: 700,
-                letterSpacing: '0.22em',
+                letterSpacing: '0.24em',
                 textTransform: 'uppercase',
                 color: '#9A7836',
                 margin: '2px 0 0 0',
@@ -391,17 +386,17 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             </p>
           </div>
 
-          {/* Couple Names in Rich Burgundy */}
-          <div style={{ margin: '4px 0' }}>
+          {/* ── COUPLE NAMES IN ROYAL WINE CURSIVE ── */}
+          <div style={{ margin: '4px 0 2px 0' }}>
             <h1
               style={{
                 fontFamily: "'Alex Brush', cursive",
-                fontSize: 'clamp(2.1rem, 6vw, 3.4rem)',
-                color: '#7D141A',
-                lineHeight: 1.15,
-                margin: '0 0 4px 0',
+                fontSize: 'clamp(2.1rem, 6.2vw, 3.2rem)',
+                color: '#801D24',
+                lineHeight: 1.12,
+                margin: '0 0 2px 0',
                 fontWeight: 400,
-                textShadow: '0 1px 4px rgba(125, 20, 26, 0.1)',
+                textShadow: '0 1px 4px rgba(128, 29, 36, 0.12)',
                 wordBreak: 'break-word',
               }}
             >
@@ -411,9 +406,9 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             <p
               style={{
                 fontFamily: "'Cormorant Garamond', Georgia, serif",
-                fontSize: 'clamp(0.98rem, 2.3vw, 1.2rem)',
+                fontSize: 'clamp(0.96rem, 2.2vw, 1.15rem)',
                 fontStyle: 'italic',
-                fontWeight: 500,
+                fontWeight: 600,
                 color: '#42332A',
                 margin: 0,
               }}
@@ -422,15 +417,15 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             </p>
           </div>
 
-          {/* Gold Divider */}
+          {/* Gold Floral Flourish Divider */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '10px',
-              width: '180px',
-              margin: '2px auto',
+              gap: '8px',
+              width: '160px',
+              margin: '3px auto',
             }}
           >
             <span style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, #C5A059)' }} />
@@ -438,187 +433,73 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             <span style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, #C5A059)' }} />
           </div>
 
-          {/* Date & Venue */}
-          <div>
+          {/* ── DATE & VENUE ── */}
+          <div style={{ margin: '2px 0 4px 0' }}>
             <p
               style={{
                 fontFamily: "'Cinzel', serif",
-                fontSize: 'clamp(0.92rem, 2vw, 1.08rem)',
+                fontSize: 'clamp(0.88rem, 2vw, 1.02rem)',
                 fontWeight: 700,
                 letterSpacing: '0.18em',
                 color: '#1E1612',
                 margin: '0 0 2px 0',
               }}
             >
-              {WEDDING.date}
+              20 · 10 · 2026
             </p>
 
             <p
               style={{
                 fontFamily: "'Be Vietnam Pro', sans-serif",
-                fontSize: 'clamp(0.68rem, 1.3vw, 0.76rem)',
-                fontWeight: 500,
-                color: '#6E5F57',
-                margin: 0,
-              }}
-            >
-              {WEDDING.venue} · TP. Hồ Chí Minh
-            </p>
-          </div>
-
-          {/* Interactive Hint */}
-          <div
-            style={{
-              marginTop: '4px',
-              padding: '4px 14px',
-              borderRadius: '999px',
-              backgroundColor: 'rgba(128, 29, 36, 0.08)',
-              border: '1px solid rgba(197, 160, 89, 0.4)',
-              opacity: isOpen ? 1 : 0,
-              transition: 'opacity 0.4s ease 0.6s',
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "'Be Vietnam Pro', sans-serif",
-                fontSize: '0.64rem',
+                fontSize: 'clamp(0.62rem, 1.4vw, 0.70rem)',
                 fontWeight: 600,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
                 color: '#801D24',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Chạm để xem toàn bộ thiệp ✦
-            </span>
-          </div>
-        </div>
-
-        {/* 3. ENVELOPE FRONT POCKET (Túi đựng đằng trước giữ thiệp) */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '62%',
-            background: 'linear-gradient(175deg, #38201B 0%, #221310 100%)',
-            borderRadius: '0 0 16px 16px',
-            border: '1.5px solid rgba(197, 160, 89, 0.5)',
-            borderTop: 'none',
-            zIndex: 10,
-            overflow: 'hidden',
-            boxShadow: '0 -4px 18px rgba(0, 0, 0, 0.3)',
-          }}
-        >
-          {/* Subtle V-Neck Pocket Stitching */}
-          <svg
-            width="100%"
-            height="100%"
-            viewBox="0 0 350 280"
-            preserveAspectRatio="none"
-            style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
-          >
-            <path
-              d="M0 0 L175 95 L350 0"
-              stroke="rgba(197, 160, 89, 0.55)"
-              strokeWidth="2"
-              fill="rgba(24, 13, 10, 0.65)"
-            />
-            <path
-              d="M0 8 L175 103 L350 8"
-              stroke="rgba(197, 160, 89, 0.3)"
-              strokeWidth="1"
-              strokeDasharray="4 4"
-              fill="none"
-            />
-          </svg>
-
-          {/* Foil Inscription on Lower Pocket */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '18px',
-              left: 0,
-              right: 0,
-              textAlign: 'center',
-            }}
-          >
-            <p
-              style={{
-                fontFamily: "'Cinzel', serif",
-                fontSize: '0.68rem',
-                letterSpacing: '0.25em',
-                color: '#C5A059',
                 margin: 0,
-                textTransform: 'uppercase',
-                opacity: 0.85,
               }}
             >
-              Trân Trọng Kính Mời
+              Trung Tâm GEM Center · TP.HCM
             </p>
           </div>
         </div>
 
-        {/* 4. 3D ENVELOPE TOP FLAP (Nắp phong bì lật mở mượt mà) */}
+        {/* ── ROYAL BURGUNDY SILK BELLY BAND / RIBBON ── */}
         <div
           style={{
             position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '44%',
-            transformOrigin: 'top center',
-            transformStyle: 'preserve-3d',
-            zIndex: isOpen ? 1 : 15,
-            transform: isOpen ? 'rotateX(170deg) translateZ(-20px)' : 'rotateX(0deg) translateZ(10px)',
-            opacity: isOpen ? 0.35 : 1,
-            transition: 'transform 0.75s cubic-bezier(0.35, 0, 0.15, 1), opacity 0.6s ease, z-index 0.01s 0.2s',
+            top: '80%',
+            left: '-6px',
+            right: '-6px',
+            height: '48px',
+            transform: 'translateY(-50%)',
+            background: 'linear-gradient(90deg, #6B141A 0%, #8A1D25 25%, #A82C35 50%, #8A1D25 75%, #6B141A 100%)',
+            boxShadow: '0 6px 18px rgba(0, 0, 0, 0.45)',
+            borderTop: '1px solid rgba(225, 185, 100, 0.7)',
+            borderBottom: '1px solid rgba(225, 185, 100, 0.7)',
+            zIndex: 20,
             pointerEvents: 'none',
+            opacity: isOpen ? 0 : 1,
+            transform: isOpen ? 'translateY(-50%) scaleX(1.15)' : 'translateY(-50%) scaleX(1)',
+            transition: 'all 0.5s ease',
           }}
         >
-          {/* Outer Flap Graphic */}
+          {/* Subtle Ribbon Texture Lines */}
           <div
             style={{
               position: 'absolute',
               inset: 0,
-              filter: 'drop-shadow(0 10px 14px rgba(0,0,0,0.5))',
+              opacity: 0.18,
+              backgroundImage: 'repeating-linear-gradient(90deg, #000, #000 1px, transparent 1px, transparent 4px)',
             }}
-          >
-            <svg
-              width="100%"
-              height="100%"
-              viewBox="0 0 350 200"
-              preserveAspectRatio="none"
-              style={{ display: 'block' }}
-            >
-              <defs>
-                <linearGradient id="flapOuterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#3E251F" />
-                  <stop offset="100%" stopColor="#281612" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M0 0 L350 0 L175 200 Z"
-                fill="url(#flapOuterGrad)"
-                stroke="rgba(197, 160, 89, 0.55)"
-                strokeWidth="2"
-              />
-              <path
-                d="M14 6 L336 6 L175 186 Z"
-                fill="none"
-                stroke="rgba(197, 160, 89, 0.3)"
-                strokeWidth="1"
-                strokeDasharray="4 4"
-              />
-            </svg>
-          </div>
+          />
         </div>
 
-        {/* ── 5. REALISTIC 3D WAX SEAL WITH GOLD SONG HỶ (囍) ── */}
+        {/* ── 3D WAX SEAL WITH GOLD SONG HỶ (囍) ── */}
         <div
           style={{
             position: 'absolute',
-            top: '38%',
+            top: '80%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
             zIndex: 25,
@@ -660,24 +541,24 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             }}
             style={{
               position: 'relative',
-              width: '86px',
-              height: '86px',
+              width: '82px',
+              height: '82px',
               border: 'none',
               background: 'transparent',
               cursor: 'pointer',
               padding: 0,
               outline: 'none',
-              transform: isOpen ? 'scale(1.25) rotate(12deg)' : 'scale(1)',
+              transform: isOpen ? 'scale(1.25) rotate(14deg)' : 'scale(1)',
               opacity: isOpen ? 0 : 1,
               transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease',
               filter:
-                'drop-shadow(0 12px 28px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 18px rgba(180, 30, 40, 0.45))',
+                'drop-shadow(0 10px 24px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 18px rgba(180, 30, 40, 0.45))',
               animation: phase === 'idle' ? 'waxSealPulse 3s ease-in-out infinite' : 'none',
             }}
           >
             <svg
-              width="86"
-              height="86"
+              width="82"
+              height="82"
               viewBox="0 0 100 100"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -685,10 +566,10 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               <defs>
                 {/* Molten Red Wax Lacquer Radial Gradient */}
                 <radialGradient id="waxLacquer" cx="38%" cy="32%" r="68%">
-                  <stop offset="0%" stopColor="#C92A34" />
-                  <stop offset="45%" stopColor="#8A131B" />
+                  <stop offset="0%" stopColor="#D22B36" />
+                  <stop offset="45%" stopColor="#8C141D" />
                   <stop offset="85%" stopColor="#550A0E" />
-                  <stop offset="100%" stopColor="#300407" />
+                  <stop offset="100%" stopColor="#2E0407" />
                 </radialGradient>
 
                 {/* Embossed Metallic Gold Foil Gradient */}
@@ -779,12 +660,12 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               startOpening();
             }}
             style={{
-              marginTop: '14px',
-              padding: '6px 20px',
+              marginTop: '10px',
+              padding: '6px 18px',
               borderRadius: '999px',
               background: 'rgba(255, 253, 249, 0.96)',
               border: '1.5px solid #C5A059',
-              boxShadow: '0 6px 20px rgba(0, 0, 0, 0.45)',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.55)',
               opacity: phase === 'idle' ? 1 : 0,
               transform: phase === 'idle' ? 'translateY(0)' : 'translateY(8px)',
               transition: 'all 0.35s ease',
@@ -798,7 +679,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 fontFamily: "'Be Vietnam Pro', sans-serif",
                 fontSize: '0.68rem',
                 fontWeight: 700,
-                letterSpacing: '0.14em',
+                letterSpacing: '0.12em',
                 textTransform: 'uppercase',
                 color: '#801D24',
                 display: 'flex',

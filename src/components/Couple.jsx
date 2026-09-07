@@ -122,38 +122,6 @@ function PersonCard({ person, side }) {
       >
         {person.quote}
       </p>
-
-      {/* Details List */}
-      <div
-        style={{
-          width: '100%',
-          backgroundColor: '#FFFFFF',
-          border: '1px solid rgba(197, 160, 89, 0.28)',
-          borderRadius: '12px',
-          padding: '12px 14px',
-          boxShadow: '0 4px 16px rgba(50, 30, 15, 0.04)',
-          textAlign: 'left',
-          boxSizing: 'border-box',
-        }}
-      >
-        {person.details?.map((det, i) => (
-          <div
-            key={i}
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '6px 0',
-              borderBottom: i < person.details.length - 1 ? '1px dashed rgba(197, 160, 89, 0.2)' : 'none',
-              fontSize: '0.76rem',
-              gap: '8px',
-            }}
-          >
-            <span style={{ color: '#801D24', fontWeight: 600, flexShrink: 0 }}>{det.label}:</span>
-            <span style={{ color: '#584A42', textAlign: 'right', wordBreak: 'break-word' }}>{det.value}</span>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
