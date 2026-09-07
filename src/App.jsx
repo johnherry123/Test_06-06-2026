@@ -11,8 +11,10 @@ import Hero from './components/Hero';
 import Invitation from './components/Invitation';
 import Story from './components/Story';
 import Couple from './components/Couple';
+import DressCode from './components/DressCode';
 import Events from './components/Events';
 import Gallery from './components/Gallery';
+import LoveQuiz from './components/LoveQuiz';
 import RSVP from './components/RSVP';
 import Gifts from './components/Gifts';
 import AudioPlayer from './components/AudioPlayer';
@@ -22,13 +24,15 @@ import { COUPLE, WEDDING } from './weddingData';
 gsap.registerPlugin(ScrollTrigger);
 
 const NAV_LINKS = [
-  { href: '#loi-ngo', label: 'Lời Ngỏ' },
-  { href: '#story',   label: 'Chuyện Tình Yêu' },
-  { href: '#couple',  label: 'Đôi Uyên Ương' },
-  { href: '#events',  label: 'Lịch Trình' },
-  { href: '#gallery', label: 'Album' },
-  { href: '#rsvp',    label: 'Xác Nhận' },
-  { href: '#gifts',   label: 'Mừng Cưới' },
+  { href: '#loi-ngo',   label: 'Lời Ngỏ' },
+  { href: '#story',     label: 'Chuyện Tình Yêu' },
+  { href: '#couple',    label: 'Đôi Uyên Ương' },
+  { href: '#dresscode', label: 'Dress Code' },
+  { href: '#events',    label: 'Lịch Trình' },
+  { href: '#gallery',   label: 'Album' },
+  { href: '#quiz',      label: 'Love Quiz' },
+  { href: '#rsvp',      label: 'Xác Nhận & Vé VIP' },
+  { href: '#gifts',     label: 'Mừng Cưới' },
 ];
 
 export default function App() {
@@ -438,8 +442,10 @@ export default function App() {
             <Invitation />
             <Story />
             <Couple />
+            <DressCode />
             <Events />
             <Gallery />
+            <LoveQuiz />
             <RSVP />
             <Gifts />
 
