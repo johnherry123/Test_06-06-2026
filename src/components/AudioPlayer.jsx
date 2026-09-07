@@ -135,14 +135,16 @@ const AudioPlayer = forwardRef(function AudioPlayer({ shouldPlay }, ref) {
           0%, 100% { height: 3px; }
           50% { height: 14px; }
         }
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
           .audio-player-container {
             bottom: 16px !important;
-            right: 14px !important;
+            left: 16px !important;
+            right: auto !important;
           }
           .audio-toggle-btn {
-            padding: 6px 12px !important;
+            padding: 7px 12px !important;
             gap: 6px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18) !important;
           }
         }
       `}</style>

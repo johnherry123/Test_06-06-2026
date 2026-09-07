@@ -283,11 +283,11 @@ export default function Gallery() {
 
           {/* Filter Pills */}
           <div
-            className="gsap-reveal"
+            className="gsap-reveal gallery-filter-bar"
             style={{
               display: 'flex',
               justifyContent: 'center',
-              gap: '6px',
+              gap: '8px',
               flexWrap: 'wrap',
               marginTop: '20px',
               width: '100%',
@@ -303,19 +303,21 @@ export default function Gallery() {
               <button
                 key={tab.key}
                 type="button"
+                className="gallery-filter-pill"
                 onClick={() => setFilter(tab.key)}
                 style={{
-                  padding: '5px 14px',
+                  padding: '6px 16px',
                   borderRadius: '999px',
                   border: filter === tab.key ? '1px solid #801D24' : '1px solid rgba(197, 160, 89, 0.35)',
-                  background: filter === tab.key ? '#801D24' : 'rgba(255, 255, 255, 0.8)',
+                  background: filter === tab.key ? '#801D24' : 'rgba(255, 255, 255, 0.85)',
                   color: filter === tab.key ? '#FFFFFF' : '#584A42',
                   fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: '0.70rem',
+                  fontSize: '0.72rem',
                   fontWeight: 600,
                   letterSpacing: '0.04em',
                   cursor: 'pointer',
                   transition: 'all 0.25s ease',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 {tab.label}
@@ -338,7 +340,7 @@ export default function Gallery() {
           {filteredPhotos.map((photo, idx) => (
             <div
               key={photo.id}
-              className="gsap-reveal"
+              className="gsap-reveal gallery-photo-card"
               onClick={() => setActiveIdx(idx)}
               style={{
                 position: 'relative',
@@ -373,8 +375,40 @@ export default function Gallery() {
                 }}
               />
 
-              {/* Hover Overlay with Title and Zoom Icon */}
+              {/* Mobile Permanent Subtle Caption */}
               <div
+                className="gallery-mobile-caption"
+                style={{
+                  display: 'none',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  padding: '24px 10px 8px',
+                  background: 'linear-gradient(to top, rgba(30, 10, 12, 0.75) 0%, transparent 100%)',
+                  color: '#FAF7F2',
+                  pointerEvents: 'none',
+                }}
+              >
+                <p
+                  style={{
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontSize: '0.88rem',
+                    fontStyle: 'italic',
+                    fontWeight: 600,
+                    margin: 0,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {photo.title}
+                </p>
+              </div>
+
+              {/* Desktop Hover Overlay with Title and Zoom Icon */}
+              <div
+                className="gallery-desktop-hover"
                 style={{
                   position: 'absolute',
                   inset: 0,
@@ -425,9 +459,34 @@ export default function Gallery() {
 
       <style>{`
         @media (max-width: 640px) {
+          .gallery-filter-bar {
+            justify-content: flex-start !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            padding: 4px 6px 12px !important;
+            -webkit-overflow-scrolling: touch !important;
+            scrollbar-width: none !important;
+          }
+          .gallery-filter-bar::-webkit-scrollbar {
+            display: none !important;
+          }
+          .gallery-filter-pill {
+            flex-shrink: 0 !important;
+            white-space: nowrap !important;
+          }
           .gallery-masonry-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
             gap: 10px !important;
+          }
+          .gallery-photo-card {
+            aspect-ratio: 4 / 5 !important;
+            border-radius: 12px !important;
+          }
+          .gallery-mobile-caption {
+            display: flex !important;
+          }
+          .gallery-desktop-hover {
+            display: none !important;
           }
         }
       `}</style>

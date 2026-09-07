@@ -161,6 +161,15 @@ export default function App() {
     setMobileMenu(false);
   }, []);
 
+  useEffect(() => {
+    if (mobileMenu) {
+      document.body.classList.add('mobile-menu-open');
+    } else {
+      document.body.classList.remove('mobile-menu-open');
+    }
+    return () => document.body.classList.remove('mobile-menu-open');
+  }, [mobileMenu]);
+
   const handleIntroComplete = useCallback(() => {
     setHasOpened(true);
     setTimeout(() => setIntroDone(true), 800);
@@ -203,13 +212,12 @@ export default function App() {
               width: '100%',
               maxWidth: '100vw',
               boxSizing: 'border-box',
-              overflowX: 'hidden',
-              zIndex: 8000,
-              backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.95)' : 'rgba(250, 247, 242, 0.85)',
+              zIndex: mobileMenu ? 99999 : 8000,
+              backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.95)' : 'rgba(250, 247, 242, 0.88)',
               backdropFilter: 'blur(16px)',
               borderBottom: scrolled ? '1px solid rgba(197, 160, 89, 0.28)' : '1px solid transparent',
               boxShadow: scrolled ? '0 4px 20px rgba(50, 30, 15, 0.05)' : 'none',
-              padding: scrolled ? '8px clamp(12px, 3vw, 24px)' : '10px clamp(12px, 3vw, 24px)',
+              padding: scrolled ? '8px clamp(14px, 3vw, 24px)' : '10px clamp(14px, 3vw, 24px)',
               transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
           >
@@ -229,20 +237,18 @@ export default function App() {
                 href="#hero"
                 onClick={(e) => {
                   e.preventDefault();
+                  setMobileMenu(false);
                   scrollTo('#hero');
                 }}
                 style={{
                   fontFamily: "'Alex Brush', cursive",
-                  fontSize: 'clamp(1.15rem, 4vw, 1.6rem)',
+                  fontSize: 'clamp(1.25rem, 4.5vw, 1.65rem)',
                   color: '#801D24',
                   textDecoration: 'none',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '5px',
+                  gap: '6px',
                   whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  maxWidth: 'calc(100% - 44px)',
                 }}
               >
                 <span>{COUPLE.groom.firstName}</span>
@@ -303,53 +309,124 @@ export default function App() {
                   border: 'none',
                   color: '#801D24',
                   cursor: 'pointer',
-                  padding: '6px',
+                  padding: '8px',
+                  borderRadius: '8px',
                 }}
               >
-                {mobileMenu ? <X size={24} /> : <Menu size={24} />}
+                {mobileMenu ? <X size={24} color="#801D24" /> : <Menu size={24} color="#801D24" />}
               </button>
             </div>
 
-            {/* Mobile Dropdown Menu */}
+            {/* Mobile Full-View Drawer Menu */}
             {mobileMenu && (
-              <nav
-                aria-label="Menu di động"
+              <div
                 style={{
-                  position: 'absolute',
-                  top: '100%',
+                  position: 'fixed',
+                  top: scrolled ? '48px' : '54px',
                   left: 0,
                   right: 0,
-                  backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                  backdropFilter: 'blur(20px)',
-                  borderBottom: '1px solid rgba(197, 160, 89, 0.3)',
-                  boxShadow: '0 12px 30px rgba(50, 30, 15, 0.1)',
-                  padding: '16px 28px 24px',
+                  bottom: 0,
+                  height: 'calc(100vh - 50px)',
+                  backgroundColor: 'rgba(255, 253, 249, 0.98)',
+                  backdropFilter: 'blur(24px)',
+                  WebkitBackdropFilter: 'blur(24px)',
+                  borderTop: '1px solid rgba(197, 160, 89, 0.3)',
+                  boxShadow: '0 20px 40px rgba(50, 30, 15, 0.15)',
+                  padding: '24px 24px 40px',
                   display: 'flex',
                   flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  zIndex: 99999,
+                  overflowY: 'auto',
+                  boxSizing: 'border-box',
+                  animation: 'fadeIn 0.25s ease-out',
                 }}
               >
-                {NAV_LINKS.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollTo(link.href);
-                    }}
+                <nav
+                  aria-label="Menu di động"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '100%',
+                  }}
+                >
+                  {NAV_LINKS.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setMobileMenu(false);
+                        scrollTo(link.href);
+                      }}
+                      style={{
+                        fontFamily: "'Be Vietnam Pro', sans-serif",
+                        fontSize: '0.96rem',
+                        fontWeight: 600,
+                        color: '#2C221C',
+                        textDecoration: 'none',
+                        padding: '14px 4px',
+                        borderBottom: '1px solid rgba(197, 160, 89, 0.2)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      <span>{link.label}</span>
+                      <span style={{ color: '#C5A059', fontSize: '0.85rem' }}>✦</span>
+                    </a>
+                  ))}
+                </nav>
+
+                {/* Mobile Drawer Bottom Action & Monogram */}
+                <div
+                  style={{
+                    marginTop: '28px',
+                    paddingTop: '20px',
+                    borderTop: '1px dashed rgba(197, 160, 89, 0.4)',
+                    textAlign: 'center',
+                  }}
+                >
+                  <p
                     style={{
-                      fontFamily: "'Be Vietnam Pro', sans-serif",
-                      fontSize: '0.88rem',
-                      fontWeight: 600,
-                      color: '#2C221C',
-                      textDecoration: 'none',
-                      padding: '12px 0',
-                      borderBottom: '1px solid rgba(197, 160, 89, 0.15)',
+                      fontFamily: "'Alex Brush', cursive",
+                      fontSize: '1.8rem',
+                      color: '#801D24',
+                      margin: '0 0 4px 0',
                     }}
                   >
-                    {link.label}
+                    {COUPLE.groom.firstName} &amp; {COUPLE.bride.firstName}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: "'Cinzel', serif",
+                      fontSize: '0.72rem',
+                      color: '#9A7836',
+                      letterSpacing: '0.12em',
+                      marginBottom: '16px',
+                    }}
+                  >
+                    20 · 10 · 2026 — TP. HỒ CHÍ MINH
+                  </p>
+                  <a
+                    href="#rsvp"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setMobileMenu(false);
+                      scrollTo('#rsvp');
+                    }}
+                    className="btn-luxury btn-luxury-primary"
+                    style={{
+                      width: '100%',
+                      padding: '12px 20px',
+                      fontSize: '0.78rem',
+                    }}
+                  >
+                    Xác Nhận Tham Dự
                   </a>
-                ))}
-              </nav>
+                </div>
+              </div>
             )}
           </header>
         )}
@@ -372,7 +449,7 @@ export default function App() {
               style={{
                 background: 'radial-gradient(ellipse at 50% 20%, #3D1016 0%, #24070B 55%, #140306 100%)',
                 color: '#FAF7F2',
-                padding: 'clamp(56px, 9vw, 90px) 20px 44px',
+                padding: 'clamp(56px, 9vw, 90px) 20px clamp(72px, 12vw, 96px)',
                 textAlign: 'center',
                 position: 'relative',
                 borderTop: '2px solid #C5A059',
@@ -585,6 +662,7 @@ export default function App() {
           <button
             type="button"
             onClick={scrollToTop}
+            className="scroll-to-top-btn"
             title="Lên đầu trang"
             aria-label="Lên đầu trang"
             style={{
@@ -612,9 +690,23 @@ export default function App() {
       </div>
 
       <style>{`
+        body.mobile-menu-open .audio-player-container,
+        body.mobile-menu-open .scroll-to-top-btn {
+          opacity: 0 !important;
+          pointer-events: none !important;
+          visibility: hidden !important;
+          transform: translateY(20px) !important;
+          transition: all 0.25s ease !important;
+        }
         @media (max-width: 768px) {
           .desktop-nav { display: none !important; }
           .mobile-hamburger { display: block !important; }
+          .scroll-to-top-btn {
+            bottom: 16px !important;
+            right: 16px !important;
+            width: 38px !important;
+            height: 38px !important;
+          }
         }
       `}</style>
     </div>

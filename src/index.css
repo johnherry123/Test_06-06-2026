@@ -91,6 +91,10 @@ main, section, header, footer {
   box-sizing: border-box !important;
 }
 
+section {
+  scroll-margin-top: 72px;
+}
+
 /* ── Typography Classes ── */
 .font-calligraphy {
   font-family: 'Alex Brush', cursive;
