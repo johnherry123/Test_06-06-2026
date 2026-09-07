@@ -157,8 +157,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
       <div
         style={{
           position: 'relative',
-          width: 'min(365px, 90vw)',
-          minHeight: 'min(545px, 83vh)',
+          width: 'min(350px, 88vw)',
           transformStyle: 'preserve-3d',
           transform: isOpen
             ? 'scale(1.18) translateZ(80px)'
@@ -177,7 +176,6 @@ export default function IntroShader({ onComplete, onStartMusic }) {
           style={{
             position: 'relative',
             width: '100%',
-            minHeight: 'min(545px, 83vh)',
             backgroundColor: '#FFFDF9',
             background: 'linear-gradient(165deg, #FFFFFF 0%, #FAF6EE 55%, #F4ECE0 100%)',
             borderRadius: '18px',
@@ -185,13 +183,12 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             boxShadow: isOpen
               ? '0 30px 80px rgba(0, 0, 0, 0.65), 0 0 45px rgba(197, 160, 89, 0.45)'
               : '0 25px 65px rgba(0, 0, 0, 0.60), 0 8px 25px rgba(0, 0, 0, 0.35)',
-            padding: 'clamp(20px, 3vh, 28px) clamp(16px, 4vw, 24px) clamp(18px, 2.6vh, 24px)',
+            padding: 'clamp(26px, 3.8vh, 34px) clamp(16px, 4vw, 24px) clamp(18px, 2.6vh, 24px)',
             boxSizing: 'border-box',
             textAlign: 'center',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'space-between',
             overflow: 'hidden',
           }}
         >
@@ -361,19 +358,32 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 letterSpacing: '0.24em',
                 textTransform: 'uppercase',
                 color: '#9A7836',
-                margin: '6px 0 0 0',
+                margin: '4px 0 0 0',
               }}
             >
               Thiệp Cưới Báo Hỷ
             </p>
+
+            {/* Noble lead-in invitation phrase */}
+            <p
+              style={{
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: 'clamp(0.92rem, 1.8vh, 1.05rem)',
+                fontStyle: 'italic',
+                color: '#584A42',
+                margin: '10px 0 6px 0',
+              }}
+            >
+              Trân trọng kính báo Lễ Thành Hôn
+            </p>
           </div>
 
           {/* ── SECTION 2: COUPLE NAMES & EVENT INFO ── */}
-          <div style={{ margin: 'clamp(6px, 1.8vh, 16px) 0', width: '100%' }}>
+          <div style={{ width: '100%', marginBottom: '14px' }}>
             <h1
               style={{
                 fontFamily: "'Alex Brush', cursive",
-                fontSize: 'clamp(1.75rem, 4.2vh, 2.45rem)',
+                fontSize: 'clamp(1.95rem, 4.4vh, 2.55rem)',
                 color: '#801D24',
                 lineHeight: 1.2,
                 margin: '0 0 3px 0',
@@ -394,11 +404,11 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             <p
               style={{
                 fontFamily: "'Be Vietnam Pro', sans-serif",
-                fontSize: 'clamp(0.74rem, 1.5vh, 0.86rem)',
+                fontSize: 'clamp(0.74rem, 1.5vh, 0.84rem)',
                 fontWeight: 500,
                 color: '#584A42',
                 letterSpacing: '0.02em',
-                margin: '0 0 6px 0',
+                margin: '0 0 8px 0',
               }}
             >
               ({COUPLE.groom.fullName} &amp; {COUPLE.bride.fullName})
@@ -412,7 +422,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 justifyContent: 'center',
                 gap: '8px',
                 width: '140px',
-                margin: 'clamp(6px, 1.2vh, 10px) auto',
+                margin: '0 auto 8px',
               }}
             >
               <span style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, #C5A059)' }} />
@@ -425,7 +435,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               <p
                 style={{
                   fontFamily: "'Cinzel', serif",
-                  fontSize: 'clamp(0.86rem, 1.8vh, 1.0rem)',
+                  fontSize: 'clamp(0.86rem, 1.8vh, 0.98rem)',
                   fontWeight: 700,
                   letterSpacing: '0.20em',
                   color: '#1E1612',
@@ -459,7 +469,6 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              marginTop: 'clamp(8px, 1.8vh, 16px)',
             }}
           >
             {/* Edge-to-Edge Silk Ribbon */}
