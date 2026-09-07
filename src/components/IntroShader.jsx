@@ -169,7 +169,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
         overflow: 'hidden',
         cursor: 'pointer',
         perspective: '1200px',
-        padding: 'clamp(8px, 1.5vh, 16px)',
+        padding: 'clamp(10px, 1.8vh, 20px)',
         boxSizing: 'border-box',
         touchAction: 'none',
         opacity: isOpen ? 0 : 1,
@@ -207,7 +207,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
       {/* ── TOP HEADER CALLOUT ── */}
       <div
         style={{
-          marginBottom: 'clamp(6px, 1.2vh, 12px)',
+          marginBottom: 'clamp(10px, 2vh, 18px)',
           textAlign: 'center',
           transition: 'all 0.4s ease',
           opacity: phase === 'idle' ? 1 : 0,
@@ -221,8 +221,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
         <p
           style={{
             fontFamily: "'Cinzel', serif",
-            fontSize: 'clamp(0.55rem, 2.2vw, 0.72rem)',
-            letterSpacing: 'clamp(0.08em, 0.35vw, 0.16em)',
+            fontSize: 'clamp(0.60rem, 2.2vw, 0.76rem)',
+            letterSpacing: 'clamp(0.10em, 0.35vw, 0.18em)',
             color: '#E6CA85',
             textTransform: 'uppercase',
             margin: 0,
@@ -241,8 +241,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
       <div
         style={{
           position: 'relative',
-          width: 'min(336px, 86vw)',
-          maxHeight: 'calc(100dvh - 30px)',
+          width: 'min(346px, 86vw)',
+          maxHeight: 'calc(100dvh - 38px)',
           transformStyle: 'preserve-3d',
           transform: isOpen
             ? 'scale(1.18) translateZ(80px)'
@@ -267,23 +267,25 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               : 'luxuryCardFloat3D 6.5s ease-in-out infinite',
           }}
         >
-          {/* MAIN LUXURY INVITATION CARD (Pearl Ivory with Double Gold Foil Borders) */}
+          {/* MAIN LUXURY INVITATION CARD (Pearl Ivory with Double Gold Foil Borders - Tall Slender Royal Ratio) */}
           <div
             style={{
               position: 'relative',
               width: '100%',
+              minHeight: 'clamp(470px, 71vh, 525px)',
               backgroundColor: '#FFFDF9',
               background: 'linear-gradient(165deg, #FFFFFF 0%, #FAF6EE 55%, #F4ECE0 100%)',
-              borderRadius: '16px',
+              borderRadius: '18px',
               border: '2px solid #C5A059',
               boxShadow: isOpen
                 ? '0 30px 80px rgba(0, 0, 0, 0.65), 0 0 45px rgba(197, 160, 89, 0.45)'
-                : '0 22px 60px rgba(0, 0, 0, 0.60), 0 8px 24px rgba(0, 0, 0, 0.35)',
-              padding: 'clamp(14px, 2.4vh, 26px) clamp(14px, 3.8vw, 22px) clamp(12px, 1.8vh, 18px)',
+                : '0 25px 65px rgba(0, 0, 0, 0.60), 0 8px 25px rgba(0, 0, 0, 0.35)',
+              padding: 'clamp(24px, 3.8vh, 32px) clamp(16px, 4vw, 24px) clamp(18px, 2.8vh, 24px)',
               boxSizing: 'border-box',
               textAlign: 'center',
               display: 'flex',
               flexDirection: 'column',
+              justifyContent: 'space-between',
               alignItems: 'center',
               overflow: 'hidden',
             }}
@@ -292,50 +294,50 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             <div
               style={{
                 position: 'absolute',
-                inset: '6px',
+                inset: '7px',
                 border: '1px solid rgba(197, 160, 89, 0.45)',
-                borderRadius: '11px',
+                borderRadius: '12px',
                 pointerEvents: 'none',
               }}
             />
 
             {/* Corner Floral Ornaments (SVG) */}
             <svg
-              width="20"
-              height="20"
+              width="22"
+              height="22"
               viewBox="0 0 28 28"
               fill="none"
-              style={{ position: 'absolute', top: '8px', left: '8px', opacity: 0.65 }}
+              style={{ position: 'absolute', top: '9px', left: '9px', opacity: 0.65 }}
             >
               <path d="M2 26V6C2 3.79086 3.79086 2 6 2H26" stroke="#C5A059" strokeWidth="1.2" />
               <circle cx="8" cy="8" r="2" fill="#C5A059" />
             </svg>
             <svg
-              width="20"
-              height="20"
+              width="22"
+              height="22"
               viewBox="0 0 28 28"
               fill="none"
-              style={{ position: 'absolute', top: '8px', right: '8px', opacity: 0.65 }}
+              style={{ position: 'absolute', top: '9px', right: '9px', opacity: 0.65 }}
             >
               <path d="M26 26V6C26 3.79086 24.2091 2 22 2H2" stroke="#C5A059" strokeWidth="1.2" />
               <circle cx="20" cy="8" r="2" fill="#C5A059" />
             </svg>
             <svg
-              width="20"
-              height="20"
+              width="22"
+              height="22"
               viewBox="0 0 28 28"
               fill="none"
-              style={{ position: 'absolute', bottom: '8px', left: '8px', opacity: 0.65 }}
+              style={{ position: 'absolute', bottom: '9px', left: '9px', opacity: 0.65 }}
             >
               <path d="M2 2V22C2 24.2091 3.79086 26 6 26H26" stroke="#C5A059" strokeWidth="1.2" />
               <circle cx="8" cy="20" r="2" fill="#C5A059" />
             </svg>
             <svg
-              width="20"
-              height="20"
+              width="22"
+              height="22"
               viewBox="0 0 28 28"
               fill="none"
-              style={{ position: 'absolute', bottom: '8px', right: '8px', opacity: 0.65 }}
+              style={{ position: 'absolute', bottom: '9px', right: '9px', opacity: 0.65 }}
             >
               <path d="M26 2V22C26 24.2091 24.2091 26 22 26H2" stroke="#C5A059" strokeWidth="1.2" />
               <circle cx="20" cy="20" r="2" fill="#C5A059" />
@@ -358,17 +360,14 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             />
 
             {/* ── SECTION 1: HEADER & LAUREL CREST ── */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
               {/* Royal Wedding Crest SVG (Complete Oval Laurel Wreath with Song Hỷ 囍) */}
               <svg
-                style={{
-                  width: 'clamp(48px, 7.5vh, 62px)',
-                  height: 'clamp(42px, 6.8vh, 55px)',
-                  filter: 'drop-shadow(0 2px 5px rgba(197, 160, 89, 0.35))',
-                  flexShrink: 0,
-                }}
+                width="68"
+                height="60"
                 viewBox="0 0 100 90"
                 fill="none"
+                style={{ filter: 'drop-shadow(0 2px 5px rgba(197, 160, 89, 0.35))', flexShrink: 0 }}
               >
                 <defs>
                   <linearGradient id="crestGold" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -452,12 +451,12 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               <p
                 style={{
                   fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: 'clamp(0.54rem, 1.2vh, 0.64rem)',
+                  fontSize: 'clamp(0.60rem, 1.3vh, 0.68rem)',
                   fontWeight: 700,
-                  letterSpacing: '0.20em',
+                  letterSpacing: '0.24em',
                   textTransform: 'uppercase',
                   color: '#9A7836',
-                  margin: '2px 0 0 0',
+                  margin: '6px 0 0 0',
                 }}
               >
                 Thiệp Cưới Báo Hỷ
@@ -467,10 +466,10 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               <p
                 style={{
                   fontFamily: "'Cormorant Garamond', Georgia, serif",
-                  fontSize: 'clamp(0.78rem, 1.5vh, 0.92rem)',
+                  fontSize: 'clamp(0.92rem, 1.8vh, 1.05rem)',
                   fontStyle: 'italic',
                   color: '#584A42',
-                  margin: 'clamp(3px, 0.7vh, 7px) 0 clamp(2px, 0.5vh, 4px) 0',
+                  margin: '8px 0 0 0',
                 }}
               >
                 Trân trọng kính báo Lễ Thành Hôn
@@ -478,14 +477,14 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             </div>
 
             {/* ── SECTION 2: COUPLE NAMES & EVENT INFO ── */}
-            <div style={{ width: '100%', marginBottom: 'clamp(6px, 1.2vh, 12px)' }}>
+            <div style={{ width: '100%', margin: 'clamp(10px, 1.8vh, 16px) 0' }}>
               <h1
                 style={{
                   fontFamily: "'Alex Brush', cursive",
-                  fontSize: 'clamp(1.65rem, 3.6vh, 2.3rem)',
+                  fontSize: 'clamp(2.05rem, 4.3vh, 2.65rem)',
                   color: '#801D24',
-                  lineHeight: 1.18,
-                  margin: '0 0 2px 0',
+                  lineHeight: 1.2,
+                  margin: '0 0 3px 0',
                   fontWeight: 400,
                   textShadow: '0 1px 4px rgba(128, 29, 36, 0.12)',
                   display: 'flex',
@@ -503,11 +502,11 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               <p
                 style={{
                   fontFamily: "'Be Vietnam Pro', sans-serif",
-                  fontSize: 'clamp(0.65rem, 1.3vh, 0.76rem)',
+                  fontSize: 'clamp(0.72rem, 1.4vh, 0.82rem)',
                   fontWeight: 500,
                   color: '#584A42',
                   letterSpacing: '0.02em',
-                  margin: '0 0 clamp(3px, 0.7vh, 6px) 0',
+                  margin: '0 0 8px 0',
                   whiteSpace: 'nowrap',
                 }}
               >
@@ -521,12 +520,12 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '8px',
-                  width: 'clamp(110px, 25vw, 136px)',
-                  margin: '0 auto clamp(3px, 0.7vh, 6px)',
+                  width: '140px',
+                  margin: '0 auto 8px',
                 }}
               >
                 <span style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, #C5A059)' }} />
-                <span style={{ color: '#C5A059', fontSize: '9px' }}>❦</span>
+                <span style={{ color: '#C5A059', fontSize: '10px' }}>❦</span>
                 <span style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, #C5A059)' }} />
               </div>
 
@@ -535,11 +534,11 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 <p
                   style={{
                     fontFamily: "'Cinzel', serif",
-                    fontSize: 'clamp(0.76rem, 1.5vh, 0.90rem)',
+                    fontSize: 'clamp(0.85rem, 1.7vh, 0.98rem)',
                     fontWeight: 700,
-                    letterSpacing: '0.18em',
+                    letterSpacing: '0.20em',
                     color: '#1E1612',
-                    margin: '0 0 2px 0',
+                    margin: '0 0 3px 0',
                   }}
                 >
                   20 · 10 · 2026
@@ -548,9 +547,9 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 <p
                   style={{
                     fontFamily: "'Be Vietnam Pro', sans-serif",
-                    fontSize: 'clamp(0.55rem, 1.1vh, 0.64rem)',
+                    fontSize: 'clamp(0.60rem, 1.2vh, 0.68rem)',
                     fontWeight: 600,
-                    letterSpacing: '0.12em',
+                    letterSpacing: '0.14em',
                     textTransform: 'uppercase',
                     color: '#801D24',
                     margin: 0,
@@ -574,16 +573,16 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               {/* Edge-to-Edge Silk Ribbon */}
               <div
                 style={{
-                  width: 'calc(100% + 28px)',
-                  margin: '0 -14px',
-                  height: 'clamp(30px, 4.4vh, 36px)',
+                  width: 'calc(100% + 36px)',
+                  margin: '0 -18px',
+                  height: '38px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   position: 'relative',
                   background:
                     'linear-gradient(90deg, #6B141A 0%, #8A1D25 25%, #A82C35 50%, #8A1D25 75%, #6B141A 100%)',
-                  boxShadow: '0 3px 10px rgba(0, 0, 0, 0.30)',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.32)',
                   borderTop: '1px solid rgba(225, 185, 100, 0.7)',
                   borderBottom: '1px solid rgba(225, 185, 100, 0.7)',
                   opacity: isOpen ? 0 : 1,
@@ -642,8 +641,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                     }}
                     style={{
                       position: 'relative',
-                      width: 'clamp(54px, 8.2vh, 64px)',
-                      height: 'clamp(54px, 8.2vh, 64px)',
+                      width: '68px',
+                      height: '68px',
                       border: 'none',
                       background: 'transparent',
                       cursor: 'pointer',
@@ -653,12 +652,13 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                       opacity: isOpen ? 0 : 1,
                       transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease',
                       filter:
-                        'drop-shadow(0 6px 16px rgba(0, 0, 0, 0.70)) drop-shadow(0 0 14px rgba(180, 30, 40, 0.40))',
+                        'drop-shadow(0 8px 20px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 16px rgba(180, 30, 40, 0.45))',
                       animation: phase === 'idle' ? 'waxSealPulse 3s ease-in-out infinite' : 'none',
                     }}
                   >
                     <svg
-                      style={{ width: '100%', height: '100%' }}
+                      width="68"
+                      height="68"
                       viewBox="0 0 100 100"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -742,12 +742,12 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                   startOpening();
                 }}
                 style={{
-                  marginTop: 'clamp(7px, 1.2vh, 12px)',
-                  padding: 'clamp(4px, 0.8vh, 6px) clamp(12px, 3vw, 18px)',
+                  marginTop: 'clamp(10px, 1.8vh, 16px)',
+                  padding: '7px 20px',
                   borderRadius: '999px',
                   background: 'rgba(255, 253, 249, 0.96)',
-                  border: '1.2px solid #C5A059',
-                  boxShadow: '0 3px 12px rgba(0, 0, 0, 0.28)',
+                  border: '1.4px solid #C5A059',
+                  boxShadow: '0 4px 14px rgba(0, 0, 0, 0.28)',
                   opacity: phase === 'idle' ? 1 : 0,
                   transform: phase === 'idle' ? 'translateY(0)' : 'translateY(6px)',
                   transition: 'all 0.35s ease',
@@ -759,14 +759,14 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                 <span
                   style={{
                     fontFamily: "'Be Vietnam Pro', sans-serif",
-                    fontSize: 'clamp(0.55rem, 1.1vh, 0.64rem)',
+                    fontSize: 'clamp(0.60rem, 1.3vh, 0.68rem)',
                     fontWeight: 700,
-                    letterSpacing: '0.10em',
+                    letterSpacing: '0.12em',
                     textTransform: 'uppercase',
                     color: '#801D24',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '5px',
+                    gap: '6px',
                   }}
                 >
                   ✉ Chạm để mở thiệp &amp; bật nhạc
@@ -781,39 +781,39 @@ export default function IntroShader({ onComplete, onStartMusic }) {
       <style>{`
         @keyframes luxuryCardFloat3D {
           0% {
-            transform: rotateX(4deg) rotateY(-5deg) translateZ(6px);
+            transform: rotateX(4.5deg) rotateY(-5.5deg) translateZ(8px);
           }
           25% {
-            transform: rotateX(-3deg) rotateY(-4deg) translateZ(10px);
+            transform: rotateX(-3.5deg) rotateY(-4deg) translateZ(12px);
           }
           50% {
-            transform: rotateX(-4deg) rotateY(5deg) translateZ(6px);
+            transform: rotateX(-4.5deg) rotateY(5.5deg) translateZ(8px);
           }
           75% {
-            transform: rotateX(3deg) rotateY(3.5deg) translateZ(10px);
+            transform: rotateX(3.5deg) rotateY(4deg) translateZ(12px);
           }
           100% {
-            transform: rotateX(4deg) rotateY(-5deg) translateZ(6px);
+            transform: rotateX(4.5deg) rotateY(-5.5deg) translateZ(8px);
           }
         }
         @keyframes waxSealPulse {
           0%, 100% {
             transform: scale(1);
-            filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.70)) drop-shadow(0 0 14px rgba(180, 30, 40, 0.35));
+            filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 16px rgba(180, 30, 40, 0.35));
           }
           50% {
-            transform: scale(1.06);
-            filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.80)) drop-shadow(0 0 20px rgba(220, 50, 60, 0.60));
+            transform: scale(1.08);
+            filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 24px rgba(220, 50, 60, 0.65));
           }
         }
         @keyframes pillPulse {
           0%, 100% {
             transform: translateY(0);
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
           }
           50% {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(197, 160, 89, 0.32);
+            box-shadow: 0 8px 22px rgba(197, 160, 89, 0.35);
           }
         }
         @keyframes cardShimmer {
