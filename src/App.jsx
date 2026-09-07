@@ -162,9 +162,8 @@ export default function App() {
   }, []);
 
   const handleIntroComplete = useCallback(() => {
-    window.scrollTo({ left: 0, top: 0, behavior: 'instant' });
     setHasOpened(true);
-    setTimeout(() => setIntroDone(true), 1200);
+    setTimeout(() => setIntroDone(true), 800);
   }, []);
 
   return (
@@ -185,7 +184,7 @@ export default function App() {
         aria-hidden={!hasOpened}
         style={{
           opacity: hasOpened ? 1 : 0,
-          transition: hasOpened ? 'opacity 0.6s ease 0.15s' : 'none',
+          transition: hasOpened ? 'opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1)' : 'none',
           pointerEvents: hasOpened ? 'auto' : 'none',
           width: '100%',
           maxWidth: '100vw',

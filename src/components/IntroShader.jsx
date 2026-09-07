@@ -39,33 +39,26 @@ export default function IntroShader({ onComplete, onStartMusic }) {
     // Immediately trigger music on user interaction
     onStartMusic?.();
 
-    // Step 1: Trigger opening sequence (seal bursts, ribbon slides, golden glow blooms)
+    // Trigger instant opening motion
     setPhase('opening');
 
-    // Step 2: Cinematic zoom into the invitation card
+    // Smoothly hand off to main wedding page during the cinematic zoom
     setTimeout(() => {
-      setPhase('zooming');
-    }, 1200);
+      onComplete?.();
+    }, 450);
 
-    // Step 3: Complete handoff to main wedding experience
+    // Complete transition
     setTimeout(() => {
       setPhase('done');
-      onComplete?.();
-    }, 1900);
+    }, 900);
   }, [phase, onComplete, onStartMusic]);
 
   // Click anywhere while opening to fast-forward into main page
   const handleCardClick = useCallback(() => {
     if (phase === 'idle') {
       startOpening();
-    } else if (phase === 'opening') {
-      setPhase('zooming');
-      setTimeout(() => {
-        setPhase('done');
-        onComplete?.();
-      }, 500);
     }
-  }, [phase, startOpening, onComplete]);
+  }, [phase, startOpening]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -78,8 +71,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleCardClick]);
 
-  const isOpen = phase === 'opening' || phase === 'zooming' || phase === 'done';
-  const isZooming = phase === 'zooming' || phase === 'done';
+  const isOpen = phase === 'opening' || phase === 'done';
 
   return (
     <div
@@ -102,8 +94,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
         cursor: 'pointer',
         perspective: '1400px',
         padding: '16px',
-        opacity: isZooming ? 0 : 1,
-        transition: isZooming ? 'opacity 0.75s ease-in 0.1s' : 'none',
+        opacity: isOpen ? 0 : 1,
+        transition: isOpen ? 'opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.1s' : 'none',
       }}
     >
       {/* ── AMBIENT GOLDEN BOKEH LIGHTS ── */}
@@ -139,8 +131,8 @@ export default function IntroShader({ onComplete, onStartMusic }) {
         style={{
           marginBottom: 'clamp(10px, 2.5vh, 22px)',
           textAlign: 'center',
-          transition: 'all 0.5s ease',
-          opacity: phase === 'idle' ? 1 : 0.4,
+          transition: 'all 0.4s ease',
+          opacity: phase === 'idle' ? 1 : 0,
           transform: phase === 'idle' ? 'translateY(0)' : 'translateY(-10px)',
         }}
       >
@@ -167,20 +159,16 @@ export default function IntroShader({ onComplete, onStartMusic }) {
           width: 'min(380px, 92vw)',
           height: 'min(550px, 80vh)',
           transformStyle: 'preserve-3d',
-          transform: isZooming
-            ? 'scale(1.32) translateZ(120px)'
-            : isOpen
-            ? 'scale(1.04) translateZ(30px)'
+          transform: isOpen
+            ? 'scale(1.20) translateZ(80px)'
             : phase === 'idle'
             ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(1)`
             : 'scale(1)',
-          transition: isZooming
-            ? 'transform 0.85s cubic-bezier(0.16, 1, 0.3, 1)'
-            : isOpen
-            ? 'transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)'
+          transition: isOpen
+            ? 'transform 0.75s cubic-bezier(0.22, 1, 0.36, 1)'
             : phase === 'idle'
             ? 'transform 0.15s ease-out'
-            : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+            : 'transform 0.4s ease',
         }}
       >
         {/* MAIN LUXURY INVITATION CARD (Pearl Ivory with Double Gold Foil Borders) */}
@@ -275,72 +263,91 @@ export default function IntroShader({ onComplete, onStartMusic }) {
 
           {/* ── CARD HEADER: MONOGRAM CREST ── */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {/* Royal Wedding Crest SVG (Intertwined Golden Rings with Diamond & Laurel Wreath) */}
+            {/* Royal Wedding Crest SVG (Complete Oval Laurel Wreath with Song Hỷ 囍) */}
             <svg
-              width="74"
-              height="66"
+              width="80"
+              height="72"
               viewBox="0 0 100 90"
               fill="none"
               style={{ filter: 'drop-shadow(0 2px 5px rgba(197, 160, 89, 0.35))' }}
             >
               <defs>
                 <linearGradient id="crestGold" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#DFC37C" />
-                  <stop offset="50%" stopColor="#B38734" />
-                  <stop offset="100%" stopColor="#DFC37C" />
-                </linearGradient>
-                <linearGradient id="ringGoldLight" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#FFF2D4" />
-                  <stop offset="50%" stopColor="#DFC37C" />
-                  <stop offset="100%" stopColor="#B38734" />
+                  <stop offset="30%" stopColor="#DFC37C" />
+                  <stop offset="70%" stopColor="#B38734" />
+                  <stop offset="100%" stopColor="#DFC37C" />
                 </linearGradient>
               </defs>
 
-              {/* Classical Laurel Wreath */}
+              {/* Apex Star Accent */}
               <path
-                d="M26 38C22 47 24 60 33 68C37 72 43 75 50 75"
+                d="M50 8 L51.5 13 L56 14 L52 17 L53 21.5 L50 19 L47 21.5 L48 17 L44 14 L48.5 13 Z"
+                fill="url(#crestGold)"
+              />
+
+              {/* Complete Oval Laurel Branches (Left and Right) */}
+              <path
+                d="M48 76 C26 74 16 60 16 46 C16 32 26 18 47 16"
                 stroke="url(#crestGold)"
                 strokeWidth="1.6"
                 strokeLinecap="round"
                 fill="none"
               />
               <path
-                d="M74 38C78 47 76 60 67 68C63 72 57 75 50 75"
+                d="M52 76 C74 74 84 60 84 46 C84 32 74 18 53 16"
                 stroke="url(#crestGold)"
                 strokeWidth="1.6"
                 strokeLinecap="round"
                 fill="none"
               />
 
-              {/* Laurel Leaf Sprigs */}
-              <path d="M22 44C20 42 17 43 17 45C17 47 21 47 22 44Z" fill="url(#crestGold)" />
-              <path d="M24 53C21 52 18 54 18 56C19 58 23 57 24 53Z" fill="url(#crestGold)" />
-              <path d="M29 62C26 62 24 65 25 67C26 69 30 67 29 62Z" fill="url(#crestGold)" />
-              <path d="M78 44C80 42 83 43 83 45C83 47 79 47 78 44Z" fill="url(#crestGold)" />
-              <path d="M76 53C79 52 82 54 82 56C81 58 77 57 76 53Z" fill="url(#crestGold)" />
-              <path d="M71 62C74 62 76 65 75 67C74 69 70 67 71 62Z" fill="url(#crestGold)" />
+              {/* Left Laurel Leaves */}
+              <path d="M16 58 C13 56 11 53 14 51 C16 53 18 56 16 58 Z" fill="url(#crestGold)" />
+              <path d="M14 47 C11 45 10 42 13 40 C15 42 17 45 14 47 Z" fill="url(#crestGold)" />
+              <path d="M17 36 C15 34 16 31 19 30 C20 32 20 35 17 36 Z" fill="url(#crestGold)" />
+              <path d="M26 26 C24 24 26 21 29 21 C30 23 29 26 26 26 Z" fill="url(#crestGold)" />
+              <path d="M37 19 C36 17 39 15 41 16 C41 18 40 20 37 19 Z" fill="url(#crestGold)" />
+              <path d="M24 67 C21 66 21 63 24 62 C26 63 26 66 24 67 Z" fill="url(#crestGold)" />
 
-              {/* Traditional Song Hỷ (囍) in Metallic Gold inside Laurel Wreath */}
+              {/* Right Laurel Leaves */}
+              <path d="M84 58 C87 56 89 53 86 51 C84 53 82 56 84 58 Z" fill="url(#crestGold)" />
+              <path d="M86 47 C89 45 90 42 87 40 C85 42 83 45 86 47 Z" fill="url(#crestGold)" />
+              <path d="M83 36 C85 34 84 31 81 30 C80 32 80 35 83 36 Z" fill="url(#crestGold)" />
+              <path d="M74 26 C76 24 74 21 71 21 C70 23 71 26 74 26 Z" fill="url(#crestGold)" />
+              <path d="M63 19 C64 17 61 15 59 16 C59 18 60 20 63 19 Z" fill="url(#crestGold)" />
+              <path d="M76 67 C79 66 79 63 76 62 C74 63 74 66 76 67 Z" fill="url(#crestGold)" />
+
+              {/* Bottom Ribbon Knot and Tails */}
+              <circle cx="50" cy="76" r="2.5" fill="url(#crestGold)" />
+              <path
+                d="M48 77 C43 83 36 85 30 84"
+                stroke="url(#crestGold)"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                fill="none"
+              />
+              <path
+                d="M52 77 C57 83 64 85 70 84"
+                stroke="url(#crestGold)"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                fill="none"
+              />
+
+              {/* Traditional Song Hỷ (囍) in Exact Center of Wreath */}
               <text
                 x="50"
-                y="56"
+                y="53"
                 fontFamily="'Playfair Display', 'Cinzel', 'Songti SC', serif"
-                fontSize="24"
+                fontSize="22"
                 fontWeight="700"
                 fill="url(#crestGold)"
                 textAnchor="middle"
-                style={{ filter: 'drop-shadow(0 1px 2px rgba(197, 160, 89, 0.45))' }}
+                style={{ filter: 'drop-shadow(0 1px 3px rgba(197, 160, 89, 0.45))' }}
               >
                 囍
               </text>
-
-              {/* Bottom Ribbon */}
-              <path
-                d="M36 72C44 75 56 75 64 72M45 78L50 81L55 78"
-                stroke="url(#crestGold)"
-                strokeWidth="1.3"
-                strokeLinecap="round"
-              />
             </svg>
 
             <p
