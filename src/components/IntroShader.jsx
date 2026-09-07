@@ -275,7 +275,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
 
           {/* ── CARD HEADER: MONOGRAM CREST ── */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {/* Royal Monogram Crest SVG (Đ & N with Laurel Wreath & Rings) */}
+            {/* Royal Wedding Crest SVG (Intertwined Golden Rings with Diamond & Laurel Wreath) */}
             <svg
               width="74"
               height="66"
@@ -289,16 +289,12 @@ export default function IntroShader({ onComplete, onStartMusic }) {
                   <stop offset="50%" stopColor="#B38734" />
                   <stop offset="100%" stopColor="#DFC37C" />
                 </linearGradient>
-                <linearGradient id="crestWine" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#9C242C" />
-                  <stop offset="100%" stopColor="#661016" />
+                <linearGradient id="ringGoldLight" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#FFF2D4" />
+                  <stop offset="50%" stopColor="#DFC37C" />
+                  <stop offset="100%" stopColor="#B38734" />
                 </linearGradient>
               </defs>
-
-              {/* Intertwined Wedding Rings Crown */}
-              <circle cx="45" cy="15" r="9" stroke="url(#crestGold)" strokeWidth="1.8" fill="none" />
-              <circle cx="55" cy="15" r="9" stroke="url(#crestGold)" strokeWidth="1.8" fill="none" />
-              <path d="M49 8L50 6L51 8Z" fill="#C5A059" />
 
               {/* Classical Laurel Wreath */}
               <path
@@ -324,43 +320,12 @@ export default function IntroShader({ onComplete, onStartMusic }) {
               <path d="M76 53C79 52 82 54 82 56C81 58 77 57 76 53Z" fill="url(#crestGold)" />
               <path d="M71 62C74 62 76 65 75 67C74 69 70 67 71 62Z" fill="url(#crestGold)" />
 
-              {/* Monogram Letters: Đ & N */}
-              <text
-                x="37"
-                y="52"
-                fontFamily="'Playfair Display', Georgia, serif"
-                fontStyle="italic"
-                fontSize="24"
-                fontWeight="700"
-                fill="url(#crestWine)"
-                textAnchor="middle"
-              >
-                Đ
-              </text>
-              <text
-                x="50"
-                y="50"
-                fontFamily="'Cormorant Garamond', Georgia, serif"
-                fontStyle="italic"
-                fontSize="15"
-                fontWeight="300"
-                fill="url(#crestGold)"
-                textAnchor="middle"
-              >
-                &amp;
-              </text>
-              <text
-                x="63"
-                y="52"
-                fontFamily="'Playfair Display', Georgia, serif"
-                fontStyle="italic"
-                fontSize="24"
-                fontWeight="700"
-                fill="url(#crestWine)"
-                textAnchor="middle"
-              >
-                N
-              </text>
+              {/* Centered Intertwined Wedding Rings with Solitaire Diamond */}
+              <circle cx="43" cy="49" r="14" stroke="url(#ringGoldLight)" strokeWidth="2.2" fill="none" />
+              <circle cx="57" cy="49" r="14" stroke="url(#crestGold)" strokeWidth="2.2" fill="none" />
+              {/* Diamond Solitaire Accent on Left Ring */}
+              <path d="M43 31L46.5 35.5L43 38L39.5 35.5L43 31Z" fill="#FFF9E6" stroke="#C5A059" strokeWidth="0.8" />
+              <circle cx="43" cy="35" r="1.5" fill="#FFFFFF" />
 
               {/* Bottom Ribbon */}
               <path

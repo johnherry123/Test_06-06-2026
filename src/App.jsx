@@ -425,18 +425,12 @@ export default function App() {
                     boxShadow: '0 0 25px rgba(197, 160, 89, 0.35)',
                   }}
                 >
-                  <span
-                    style={{
-                      fontFamily: "'Cormorant Garamond', serif",
-                      fontSize: '1.45rem',
-                      fontStyle: 'italic',
-                      fontWeight: 700,
-                      color: '#F3DEC2',
-                      letterSpacing: '0.04em',
-                    }}
-                  >
-                    Đ &amp; N
-                  </span>
+                  <svg width="34" height="34" viewBox="0 0 40 40" fill="none">
+                    <circle cx="15" cy="23" r="10" stroke="#F3DEC2" strokeWidth="2.2" fill="none" />
+                    <circle cx="25" cy="23" r="10" stroke="#C5A059" strokeWidth="2.2" fill="none" />
+                    <path d="M15 9L18 13L15 15.5L12 13L15 9Z" fill="#FFF2D4" stroke="#C5A059" strokeWidth="0.8" />
+                    <circle cx="15" cy="12.5" r="1.5" fill="#FFFFFF" />
+                  </svg>
                 </div>
 
                 {/* Calligraphy Names */}
