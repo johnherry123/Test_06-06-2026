@@ -49,12 +49,7 @@ export const WEDDING = {
   dateISO:     '2026-10-20',
   dateDisplay: 'Thứ Ba, 20 tháng 10, 2026',
   lunarDate:   'Ngày 10 tháng 09 năm Bính Ngọ (Âm Lịch)',
-  venue:       'Trung Tâm Sự Kiện Gem Center',
-  venueAddress:'8 Nguyễn Bỉnh Khiêm, Phường Đa Kao, Quận 1, TP. Hồ Chí Minh',
-  venueHall:   'Grand Ballroom Castor · Tầng 5',
-  receptionTime: '17:30',
-  banquetTime:   '19:00',
-  calendarTarget: '2026-10-20T17:30:00+07:00',
+  calendarTarget: '2026-10-20T07:30:00+07:00',
 };
 
 /* ── Family ── */
@@ -62,54 +57,60 @@ export const FAMILY = {
   groom: {
     father:  'Ông Trần Văn Hùng',
     mother:  'Bà Nguyễn Thị Mai',
-    address: '48 Trường Chinh, Phường 14, Tân Bình, TP. HCM',
+    role:    'Trưởng Nam',
+    address: '48 Trường Chinh, Phường 14, Quận Tân Bình, TP. HCM',
+    locationName: 'Tư Gia Nhà Trai',
+    eventTitle: 'Lễ Thành Hôn & Tiệc Mừng',
+    time: '10:30',
+    banquetTime: '11:30',
+    mapUrl: 'https://maps.google.com/?q=48+Truong+Chinh+Tan+Binh+TP+HCM',
   },
   bride: {
     father:  'Ông Trịnh Văn Thành',
     mother:  'Bà Phạm Thị Lan',
-    address: '125 Nam Kỳ Khởi Nghĩa, Võ Thị Sáu, Quận 3, TP. HCM',
+    role:    'Út Nữ',
+    address: '125 Nam Kỳ Khởi Nghĩa, Phường Võ Thị Sáu, Quận 3, TP. HCM',
+    locationName: 'Tư Gia Nhà Gái',
+    eventTitle: 'Lễ Vu Quy & Tiệc Mừng',
+    time: '07:30',
+    banquetTime: '11:00',
+    mapUrl: 'https://maps.google.com/?q=125+Nam+Ky+Khoi+Nghia+Quan+3+TP+HCM',
   },
 };
 
-/* ── Events ── */
-export const EVENTS = [
-  {
-    id:          'vu-quy',
-    time:        '07:30',
-    period:      'Sáng',
-    title:       'Lễ Vu Quy',
-    subtitle:    'Nghi thức xuất giá tại Tư Gia Nhà Gái',
-    description: 'Nghi lễ gia tiên truyền thống trang trọng, dâng hương kính báo tổ tiên và đón nhận lời chúc phúc thiêng liêng từ gia đình họ nhà gái.',
-    locationName:'Tư Gia Nhà Gái',
-    address:     '125 Nam Kỳ Khởi Nghĩa, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh',
-    mapUrl:      'https://maps.google.com/?q=125+Nam+Ky+Khoi+Nghia+Quan+3+TP+HCM',
-    isMain:      false,
+/* ── Traditional Events ── */
+export const TRADITIONAL_PARTIES = {
+  nhaGai: {
+    id: 'nha-gai',
+    tabLabel: '🌸 Tiệc Nhà Gái (Lễ Vu Quy)',
+    badge: 'Tư Gia Nhà Gái',
+    title: 'LỄ VU QUY & TIỆC MỪNG',
+    subtitle: 'Nghi thức xuất giá tại Tư Gia Họ Nhà Gái',
+    parents: 'Ông Trịnh Văn Thành & Bà Phạm Thị Lan',
+    brideGroomLine: 'Hôn lễ của con gái Trịnh Thị Nhung (Út Nữ)',
+    timeCeremony: '07:30',
+    timeBanquet: '11:00',
+    labelCeremony: 'LỄ VU QUY XUẤT GIÁ',
+    labelBanquet: 'TIỆC MỪNG THÂN MẬT',
+    address: '125 Nam Kỳ Khởi Nghĩa, Phường Võ Thị Sáu, Quận 3, TP. Hồ Chí Minh',
+    mapUrl: 'https://maps.google.com/?q=125+Nam+Ky+Khoi+Nghia+Quan+3+TP+HCM',
   },
-  {
-    id:          'thanh-hon',
-    time:        '10:30',
-    period:      'Sáng',
-    title:       'Lễ Thành Hôn',
-    subtitle:    'Nghi thức đón dâu tại Tư Gia Nhà Trai',
-    description: 'Thời khắc đón cô dâu về dinh, cử hành lễ gia tiên báo hỷ và ra mắt quan viên hai họ trong niềm hân hoan chúc phúc.',
-    locationName:'Tư Gia Nhà Trai',
-    address:     '48 Trường Chinh, Phường 14, Quận Tân Bình, TP. Hồ Chí Minh',
-    mapUrl:      'https://maps.google.com/?q=48+Truong+Chinh+Tan+Binh+TP+HCM',
-    isMain:      false,
+  nhaTrai: {
+    id: 'nha-trai',
+    tabLabel: '🎩 Tiệc Nhà Trai (Lễ Thành Hôn)',
+    badge: 'Tư Gia Nhà Trai',
+    title: 'LỄ THÀNH HÔN & TIỆC MỪNG',
+    subtitle: 'Nghi thức rước dâu tại Tư Gia Họ Nhà Trai',
+    parents: 'Ông Trần Văn Hùng & Bà Nguyễn Thị Mai',
+    brideGroomLine: 'Hôn lễ của con trai Trần Đại Nghĩa (Trưởng Nam)',
+    timeCeremony: '10:30',
+    timeBanquet: '11:30',
+    labelCeremony: 'LỄ THÀNH HÔN RƯỚC DÂU',
+    labelBanquet: 'TIỆC MỪNG BÁO HỶ',
+    address: '48 Trường Chinh, Phường 14, Quận Tân Bình, TP. Hồ Chí Minh',
+    mapUrl: 'https://maps.google.com/?q=48+Truong+Chinh+Tan+Binh+TP+HCM',
   },
-  {
-    id:          'tiec-cuoi',
-    time:        '17:30',
-    period:      'Tối',
-    title:       'Tiệc Cưới & Mừng Hạnh Phúc',
-    subtitle:    'Đón Khách: 17:30 · Khai Tiệc: 19:00',
-    description: 'Đêm tiệc thân mật — cùng nâng ly chúc mừng, hòa mình vào không gian âm nhạc lãng mạn, thưởng thức ẩm thực tinh hoa và lưu lại những khoảnh khắc đáng nhớ nhất.',
-    locationName:'Sảnh Castor (Tầng 5) · Gem Center',
-    address:     '8 Nguyễn Bỉnh Khiêm, Phường Đa Kao, Quận 1, TP. Hồ Chí Minh',
-    mapUrl:      'https://maps.google.com/?q=Gem+Center+8+Nguyễn+Bỉnh+Khiêm+Quận+1+TP+HCM',
-    isMain:      true,
-  },
-];
+};
 
 /* ── Story timeline ── */
 export const STORY = [

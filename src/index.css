@@ -319,71 +319,170 @@ section {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
-   ROYAL FLATLAY STATIONERY SUITE — 3D & TACTILE UTILITIES
+   ONE-FOLIO MASTERPIECE — LUXURY STATIONERY STYLING (tes_...)
    ══════════════════════════════════════════════════════════════════════ */
 
-.perspective-container {
-  perspective: 1200px;
-  -webkit-perspective: 1200px;
-}
-
-.preserve-3d {
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
-}
-
-.backface-hidden {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-.rotate-y-180 {
-  transform: rotateY(180deg);
-}
-
-.flatlay-card-paper {
-  background: #FFFDF9;
-  border-radius: 20px;
-  border: 1px solid rgba(197, 160, 89, 0.4);
+.tes_masterpiece_card {
+  width: 100%;
+  max-width: 580px;
+  background-color: #FFFDF9;
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.9) 0%, rgba(250, 247, 242, 0.6) 100%),
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(197, 160, 89, 0.015) 2px, rgba(197, 160, 89, 0.015) 4px);
+  border-radius: 24px;
+  border: 1px solid rgba(197, 160, 89, 0.45);
   box-shadow: 
-    0 4px 12px rgba(45, 30, 15, 0.05),
-    0 16px 36px -6px rgba(45, 30, 15, 0.12),
-    0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+    0 4px 20px rgba(40, 25, 15, 0.04),
+    0 24px 60px -8px rgba(45, 28, 18, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.95) inset,
+    0 0 0 4px rgba(197, 160, 89, 0.12) inset;
+  padding: clamp(28px, 6vw, 44px) clamp(18px, 4.5vw, 36px);
+  box-sizing: border-box;
+  position: relative;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.flatlay-card-paper:hover {
+.tes_curated_photo_container {
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 4 / 4.8;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid #C5A059;
   box-shadow: 
-    0 8px 20px rgba(45, 30, 15, 0.08),
-    0 24px 50px -8px rgba(128, 29, 36, 0.18),
-    0 0 0 1px rgba(212, 175, 55, 0.5) inset;
+    0 12px 32px rgba(45, 25, 15, 0.14),
+    0 0 0 4px rgba(255, 253, 249, 0.8) inset;
+  margin: 12px auto 20px auto;
+  background-color: #1A120E;
 }
 
-.gold-foil-badge {
-  background: linear-gradient(135deg, rgba(197, 160, 89, 0.18) 0%, rgba(229, 205, 148, 0.3) 50%, rgba(197, 160, 89, 0.18) 100%);
-  border: 1px solid rgba(197, 160, 89, 0.5);
-  color: #801D24;
+.tes_curated_photo_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.6s ease-in-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes ticketShimmer {
-  0% { transform: translateX(-100%) rotate(25deg); }
-  100% { transform: translateX(250%) rotate(25deg); }
+.tes_curated_photo_container:hover .tes_curated_photo_img {
+  transform: scale(1.03);
 }
 
-.ticket-shimmer-effect::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    60deg,
-    transparent 35%,
-    rgba(255, 255, 255, 0.4) 50%,
-    transparent 65%
-  );
-  animation: ticketShimmer 3.5s infinite;
-  pointer-events: none;
+.tes_countdown_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 2vw, 14px);
+  background: rgba(250, 245, 238, 0.85);
+  border: 1px solid rgba(197, 160, 89, 0.35);
+  border-radius: 16px;
+  padding: 10px 18px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 22px auto;
+  box-sizing: border-box;
 }
+
+.tes_event_box {
+  width: 100%;
+  background: #FAF5EE;
+  border-radius: 18px;
+  border: 1.5px solid rgba(197, 160, 89, 0.4);
+  padding: clamp(18px, 4vw, 24px) clamp(14px, 3vw, 20px);
+  box-sizing: border-box;
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+.tes_btn_pill_primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #82202B 0%, #A32936 100%);
+  color: #FAF7F2;
+  border: 1.5px solid #C5A059;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(130, 32, 43, 0.28);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tes_btn_pill_primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(130, 32, 43, 0.38);
+  background: linear-gradient(135deg, #942532 0%, #B8303E 100%);
+}
+
+.tes_btn_pill_secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
+  border-radius: 999px;
+  background-color: #FFFFFF;
+  color: #82202B;
+  border: 1.5px solid rgba(197, 160, 89, 0.65);
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(45, 25, 15, 0.06);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tes_btn_pill_secondary:hover {
+  transform: translateY(-2px);
+  border-color: #C5A059;
+  box-shadow: 0 8px 22px rgba(197, 160, 89, 0.25);
+  background-color: #FFFDF9;
+}
+
+.tes_modal_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(18, 12, 10, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: tes_fadeIn 0.25s ease-out;
+}
+
+.tes_modal_card {
+  width: 100%;
+  max-width: 480px;
+  background-color: #FFFDF9;
+  border-radius: 24px;
+  border: 1.5px solid rgba(197, 160, 89, 0.5);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  padding: clamp(22px, 5vw, 30px) clamp(16px, 4vw, 26px);
+  position: relative;
+  box-sizing: border-box;
+  animation: tes_scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@keyframes tes_fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes tes_scaleUp {
+  from { transform: scale(0.94); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
 
