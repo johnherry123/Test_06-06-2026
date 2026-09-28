@@ -233,66 +233,141 @@ export default function StationerySuite() {
             width: '100%',
           }}
         >
-          {/* Royal Gilded Monogram Crest */}
+          {/* Royal Gilded Monogram Crest (Authentic Gold Foil Debossing) */}
           <div
             id="tes_royal_crest"
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '12px',
+              gap: '16px',
               width: '100%',
-              marginBottom: '10px',
+              marginBottom: '12px',
             }}
           >
+            {/* Left flourish line with star pip */}
             <div
               style={{
-                width: 'clamp(30px, 8vw, 55px)',
-                height: '1px',
-                background: 'linear-gradient(to right, transparent, #C5A059)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                flex: '0 1 70px',
               }}
-            />
+            >
+              <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(197, 160, 89, 0.7))' }} />
+              <span style={{ color: '#C5A059', fontSize: '8px' }}>✦</span>
+            </div>
             
+            {/* Pure Gold Foil Laurel & Song Hy Crest */}
             <div
               id="tes_monogram_badge"
-              title="Đôi nhẫn ước hẹn — Nghĩa & Nhung"
+              title="Khánh Hỷ Hoàng Gia — Đại Nghĩa & Trịnh Nhung"
               style={{
-                width: '52px',
-                height: '52px',
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #FFFFFF 0%, #FAF5EE 100%)',
-                border: '1.5px solid #C5A059',
-                boxShadow: '0 6px 18px rgba(197, 160, 89, 0.28), 0 0 0 3px rgba(197, 160, 89, 0.12) inset',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                position: 'relative',
+                padding: '2px',
               }}
             >
               <svg
-                width="32"
-                height="32"
-                viewBox="0 0 32 32"
+                width="62"
+                height="54"
+                viewBox="0 0 100 90"
                 fill="none"
-                style={{ filter: 'drop-shadow(0 1px 3px rgba(130, 32, 43, 0.2))' }}
+                style={{ filter: 'drop-shadow(0 2px 6px rgba(197, 160, 89, 0.35))' }}
               >
-                {/* Left Ring (Gold) */}
-                <circle cx="12" cy="17" r="7" stroke="#C5A059" strokeWidth="2" fill="none" />
-                {/* Right Ring (Bordeaux) */}
-                <circle cx="20" cy="17" r="7" stroke="#82202B" strokeWidth="2" fill="none" opacity="0.9" />
-                {/* Diamond Solitaire Accent */}
-                <path d="M12 9 L14 11.5 L10 11.5 Z" fill="#C5A059" />
-                <circle cx="12" cy="7.5" r="1.5" fill="#FFFDF9" stroke="#C5A059" strokeWidth="0.9" />
+                <defs>
+                  <linearGradient id="crestGoldFoiled" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#FFF2D4" />
+                    <stop offset="30%" stopColor="#DFC37C" />
+                    <stop offset="70%" stopColor="#B38734" />
+                    <stop offset="100%" stopColor="#DFC37C" />
+                  </linearGradient>
+                </defs>
+
+                {/* Apex Star Accent */}
+                <path
+                  d="M50 8 L51.5 13 L56 14 L52 17 L53 21.5 L50 19 L47 21.5 L48 17 L44 14 L48.5 13 Z"
+                  fill="url(#crestGoldFoiled)"
+                />
+
+                {/* Oval Laurel Branches (Left and Right) */}
+                <path
+                  d="M48 76 C26 74 16 60 16 46 C16 32 26 18 47 16"
+                  stroke="url(#crestGoldFoiled)"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+                <path
+                  d="M52 76 C74 74 84 60 84 46 C84 32 74 18 53 16"
+                  stroke="url(#crestGoldFoiled)"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+
+                {/* Left Laurel Leaves */}
+                <path d="M16 58 C13 56 11 53 14 51 C16 53 18 56 16 58 Z" fill="url(#crestGoldFoiled)" />
+                <path d="M14 47 C11 45 10 42 13 40 C15 42 17 45 14 47 Z" fill="url(#crestGoldFoiled)" />
+                <path d="M17 36 C15 34 16 31 19 30 C20 32 20 35 17 36 Z" fill="url(#crestGoldFoiled)" />
+                <path d="M26 26 C24 24 26 21 29 21 C30 23 29 26 26 26 Z" fill="url(#crestGoldFoiled)" />
+                <path d="M37 19 C36 17 39 15 41 16 C41 18 40 20 37 19 Z" fill="url(#crestGoldFoiled)" />
+                <path d="M24 67 C21 66 21 63 24 62 C26 63 26 66 24 67 Z" fill="url(#crestGoldFoiled)" />
+
+                {/* Right Laurel Leaves */}
+                <path d="M84 58 C87 56 89 53 86 51 C84 53 82 56 84 58 Z" fill="url(#crestGoldFoiled)" />
+                <path d="M86 47 C89 45 90 42 87 40 C85 42 83 45 86 47 Z" fill="url(#crestGoldFoiled)" />
+                <path d="M83 36 C85 34 84 31 81 30 C80 32 80 35 83 36 Z" fill="url(#crestGoldFoiled)" />
+                <path d="M74 26 C76 24 74 21 71 21 C70 23 71 26 74 26 Z" fill="url(#crestGoldFoiled)" />
+                <path d="M63 19 C64 17 61 15 59 16 C59 18 60 20 63 19 Z" fill="url(#crestGoldFoiled)" />
+                <path d="M76 67 C79 66 79 63 76 62 C74 63 74 66 76 67 Z" fill="url(#crestGoldFoiled)" />
+
+                {/* Bottom Ribbon Knot and Tails */}
+                <circle cx="50" cy="76" r="2.5" fill="url(#crestGoldFoiled)" />
+                <path
+                  d="M48 77 C43 83 36 85 30 84"
+                  stroke="url(#crestGoldFoiled)"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+                <path
+                  d="M52 77 C57 83 64 85 70 84"
+                  stroke="url(#crestGoldFoiled)"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+
+                {/* Traditional Song Hy (囍) in Exact Center of Wreath */}
+                <text
+                  x="50"
+                  y="53"
+                  fontFamily="'Playfair Display', 'Cinzel', 'Songti SC', serif"
+                  fontSize="22"
+                  fontWeight="700"
+                  fill="url(#crestGoldFoiled)"
+                  textAnchor="middle"
+                  style={{ filter: 'drop-shadow(0 1px 3px rgba(197, 160, 89, 0.45))' }}
+                >
+                  囍
+                </text>
               </svg>
             </div>
 
+            {/* Right flourish line with star pip */}
             <div
               style={{
-                width: 'clamp(30px, 8vw, 55px)',
-                height: '1px',
-                background: 'linear-gradient(to left, transparent, #C5A059)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                flex: '0 1 70px',
               }}
-            />
+            >
+              <span style={{ color: '#C5A059', fontSize: '8px' }}>✦</span>
+              <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(197, 160, 89, 0.7))' }} />
+            </div>
           </div>
 
           {/* Elegant Guest Salute Ribbon (Clean, Prestigious, Centered) */}
