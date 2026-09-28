@@ -169,7 +169,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#160508',
-        background: 'radial-gradient(circle at 50% 45%, #340F16 0%, #1C060A 60%, #0C0204 100%)',
+        background: 'radial-gradient(circle at 50% 50%, #340F16 0%, #1C060A 60%, #0C0204 100%)',
         userSelect: 'none',
         WebkitUserSelect: 'none',
         WebkitTouchCallout: 'none',
@@ -199,7 +199,7 @@ export default function IntroShader({ onComplete, onStartMusic }) {
         aria-hidden="true"
         style={{
           position: 'absolute',
-          top: '40%',
+          top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
           width: 'min(640px, 115vw)',
@@ -210,39 +210,6 @@ export default function IntroShader({ onComplete, onStartMusic }) {
           pointerEvents: 'none',
         }}
       />
-
-      {/* ── TOP HEADER CALLOUT ── */}
-      <div
-        style={{
-          marginBottom: 'clamp(10px, 2vh, 18px)',
-          textAlign: 'center',
-          transition: 'all 0.4s ease',
-          opacity: phase === 'idle' ? 1 : 0,
-          transform: phase === 'idle' ? 'translateY(0)' : 'translateY(-10px)',
-          maxWidth: 'calc(100vw - 28px)',
-          padding: '0 8px',
-          boxSizing: 'border-box',
-          flexShrink: 0,
-        }}
-      >
-        <p
-          style={{
-            fontFamily: "'Cinzel', serif",
-            fontSize: 'clamp(0.60rem, 2.2vw, 0.76rem)',
-            letterSpacing: 'clamp(0.10em, 0.35vw, 0.18em)',
-            color: '#E6CA85',
-            textTransform: 'uppercase',
-            margin: 0,
-            textShadow: '0 2px 10px rgba(0, 0, 0, 0.7)',
-            fontWeight: 600,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          ✦ Wedding Invitation · Lễ Thành Hôn ✦
-        </p>
-      </div>
 
       {/* ── 3D LUXURY INVITATION FOLIO CARD (Interaction Tilt Wrapper) ── */}
       <div
@@ -263,6 +230,40 @@ export default function IntroShader({ onComplete, onStartMusic }) {
             : 'transform 0.35s ease-out',
         }}
       >
+        {/* ── TOP HEADER CALLOUT (Positioned gracefully above the card, keeping the card strictly centered) ── */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 'calc(100% + 14px)',
+            left: '50%',
+            transform: phase === 'idle' ? 'translateX(-50%) translateY(0)' : 'translateX(-50%) translateY(-10px)',
+            width: 'max-content',
+            maxWidth: 'calc(100vw - 28px)',
+            textAlign: 'center',
+            transition: 'all 0.4s ease',
+            opacity: phase === 'idle' ? 1 : 0,
+            pointerEvents: 'none',
+            zIndex: 10,
+          }}
+        >
+          <p
+            style={{
+              fontFamily: "'Cinzel', serif",
+              fontSize: 'clamp(0.60rem, 2.2vw, 0.76rem)',
+              letterSpacing: 'clamp(0.10em, 0.35vw, 0.18em)',
+              color: '#E6CA85',
+              textTransform: 'uppercase',
+              margin: 0,
+              textShadow: '0 2px 10px rgba(0, 0, 0, 0.7)',
+              fontWeight: 600,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            ✦ Wedding Invitation · Lễ Thành Hôn ✦
+          </p>
+        </div>
         {/* Ambient 3D Floating Sub-wrapper (Ensures tactile 3D floating presence on mobile before interaction) */}
         <div
           style={{
