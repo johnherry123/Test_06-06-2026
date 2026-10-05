@@ -260,3 +260,36 @@ export const INTRO_PHOTO = {
   fallback: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=80',
   alt:      'Đại Nghĩa & Trịnh Nhung',
 };
+
+/* ══════════════════════════════════════════════════════════════════════
+   THIÊN VĂN ĐỊNH MỆNH — Celestial theme configuration
+══════════════════════════════════════════════════════════════════════ */
+
+/* ── The sky of the wedding night ── */
+export const SKY = {
+  city:               'TP. Hồ Chí Minh',
+  coords:             '10°46′N · 106°42′E',
+  observedAt:         '19:30 · 20.10.2026',
+  catalogueNo:        'HN-201026',
+  constellation:      'Chòm sao Nhẫn Cưới',
+  constellationLatin: 'Annulus Amoris',
+};
+
+/* ── Moon phase for each chapter of STORY (0 = new moon, 0.5 = full moon) ── */
+export const STORY_MOONS = [
+  { phase: 0.035, name: 'Trăng non' },
+  { phase: 0.16,  name: 'Trăng lưỡi liềm' },
+  { phase: 0.25,  name: 'Trăng thượng huyền' },
+  { phase: 0.5,   name: 'Trăng rằm' },
+];
+
+/* ── Seed wishes shown in the "sky of wishes" ── */
+export const WISHES_SEED = [
+  { id: 's1', name: 'Minh Anh',     side: 'Nhà gái', message: 'Chúc hai bạn luôn rực rỡ như ngày đầu, cùng nhau đi qua mọi mùa trăng.', ts: 1759000000000 },
+  { id: 's2', name: 'Hoàng Long',   side: 'Nhà trai', message: 'Trăm năm hạnh phúc nhé người anh em! Quỹ đạo này là mãi mãi.', ts: 1759100000000 },
+  { id: 's3', name: 'Cô Hạnh',      side: 'Nhà gái', message: 'Chúc con gái út luôn được yêu thương, mái ấm ngập tràn tiếng cười.', ts: 1759200000000 },
+  { id: 's4', name: 'Team Design',  side: 'Nhà gái', message: 'Cô dâu xinh nhất vũ trụ! Chúc hai bạn bách niên giai lão.', ts: 1759300000000 },
+  { id: 's5', name: 'Quốc Bảo',     side: 'Nhà trai', message: 'Từ hai vì sao thành một chòm sao. Chúc mừng hai bạn!', ts: 1759400000000 },
+  { id: 's6', name: 'Thu Trang',    side: 'Nhà gái', message: 'Mong hai bạn mãi giữ lửa, như những vì sao chẳng bao giờ tắt.', ts: 1759500000000 },
+  { id: 's7', name: 'Anh Tuấn',     side: 'Nhà trai', message: 'Chúc vợ chồng em sớm có thêm những ngôi sao nhỏ!', ts: 1759600000000 },
+];

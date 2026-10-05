@@ -1,153 +1,71 @@
-import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
-import { Volume2, VolumeX, Music } from 'lucide-react';
+import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
+import { Music2 } from 'lucide-react';
 
 const AUDIO_LOCAL = `${import.meta.env.BASE_URL}wedding-music.mp3`;
 const AUDIO_FALLBACK = 'https://archive.org/download/westlifebeautifulinwhite_201911/Westlife%20-%20Beautiful%20in%20White.mp3';
 
-const AudioPlayer = forwardRef(function AudioPlayer({ shouldPlay }, ref) {
+/** Brass "orbit" music toggle. Exposes play / pause / toggle through ref. */
+const AudioPlayer = forwardRef(function AudioPlayer({ visible = true }, ref) {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
 
-  const startPlay = () => {
-    if (!audioRef.current) return;
-    audioRef.current.volume = 0.65;
-    audioRef.current
-      .play()
-      .then(() => {
-        setIsPlaying(true);
-      })
-      .catch(() => {
-        // Autoplay policy prevented playback, user can tap the button manually
-        setIsPlaying(false);
-      });
+  const play = () => {
+    const a = audioRef.current;
+    if (!a) return;
+    a.volume = 0.6;
+    a.play()
+      .then(() => setIsPlaying(true))
+      .catch(() => setIsPlaying(false)); // autoplay blocked — user can tap the button
   };
 
-  const pausePlay = () => {
-    if (!audioRef.current) return;
-    audioRef.current.pause();
+  const pause = () => {
+    audioRef.current?.pause();
     setIsPlaying(false);
   };
 
-  const togglePlay = () => {
-    if (isPlaying) {
-      pausePlay();
-    } else {
-      startPlay();
-    }
-  };
+  const toggle = () => (audioRef.current && !audioRef.current.paused ? pause() : play());
 
-  useImperativeHandle(ref, () => ({
-    play: startPlay,
-    pause: pausePlay,
-    toggle: togglePlay,
-  }));
-
-  useEffect(() => {
-    if (shouldPlay) {
-      startPlay();
-    }
-  }, [shouldPlay]);
+  useImperativeHandle(ref, () => ({ play, pause, toggle }));
 
   return (
-    <div
-      className="audio-player-container"
-      style={{
-        position: 'fixed',
-        bottom: '24px',
-        right: '24px',
-        zIndex: 9000,
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-      }}
-    >
-      {/* Hidden HTML5 Audio Element */}
+    <div className={`audio${isPlaying ? ' is-playing' : ''}${visible ? ' is-visible' : ''}`}>
       <audio
         ref={audioRef}
+        src={AUDIO_LOCAL}
         loop
         preload="auto"
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onError={(e) => {
-          // If local fails, switch to fallback
-          if (e.currentTarget.src !== AUDIO_FALLBACK) {
-            e.currentTarget.src = AUDIO_FALLBACK;
-            e.currentTarget.play().catch(() => {});
+          const el = e.currentTarget;
+          if (!el.dataset.fallback) {
+            el.dataset.fallback = '1';
+            el.src = AUDIO_FALLBACK;
+            el.play().catch(() => {});
           }
         }}
-      >
-        <source src={AUDIO_LOCAL} type="audio/mp3" />
-        <source src={AUDIO_FALLBACK} type="audio/mp3" />
-      </audio>
-
-      {/* Floating Animated Music Badge */}
+      />
+      <span className="audio__label mono">{isPlaying ? 'Beautiful in White' : 'Bật nhạc nền'}</span>
       <button
+        id="audio-toggle"
         type="button"
-        onClick={togglePlay}
-        className="audio-toggle-btn"
-        title={isPlaying ? 'Tạm dừng nhạc nền' : 'Bật nhạc nền lãng mạn (Beautiful in White)'}
-        aria-label={isPlaying ? 'Tạm dừng nhạc nền' : 'Bật nhạc nền lãng mạn'}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '8px 16px',
-          borderRadius: '999px',
-          background: isPlaying
-            ? 'linear-gradient(135deg, #801D24 0%, #5A1217 100%)'
-            : 'rgba(255, 255, 255, 0.95)',
-          color: isPlaying ? '#FFFFFF' : '#801D24',
-          border: '1.5px solid #C5A059',
-          boxShadow: '0 8px 25px rgba(50, 30, 15, 0.18)',
-          cursor: 'pointer',
-          backdropFilter: 'blur(10px)',
-          transition: 'all 0.3s ease',
-        }}
+        className="audio__btn"
+        onClick={toggle}
+        aria-pressed={isPlaying}
+        aria-label={isPlaying ? 'Tạm dừng nhạc nền' : 'Bật nhạc nền'}
       >
-        {/* Animated Soundwave Equalizer Bars */}
+        <span className="audio__orbit" aria-hidden="true" />
         {isPlaying ? (
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', height: '14px' }}>
-            <span style={{ width: '2.5px', backgroundColor: '#E6CA85', borderRadius: '2px', animation: 'barWave 1.0s ease-in-out infinite' }} />
-            <span style={{ width: '2.5px', backgroundColor: '#E6CA85', borderRadius: '2px', animation: 'barWave 0.7s ease-in-out infinite 0.2s' }} />
-            <span style={{ width: '2.5px', backgroundColor: '#E6CA85', borderRadius: '2px', animation: 'barWave 1.2s ease-in-out infinite 0.4s' }} />
-          </div>
+          <span className="audio__bars" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+            <i />
+          </span>
         ) : (
-          <Music size={15} color="#801D24" />
+          <Music2 size={18} strokeWidth={1.5} />
         )}
-
-        <span
-          style={{
-            fontFamily: "'Be Vietnam Pro', sans-serif",
-            fontSize: '0.70rem',
-            fontWeight: 600,
-            letterSpacing: '0.04em',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {isPlaying ? 'Beautiful in White' : 'Bật Nhạc'}
-        </span>
-
-        {isPlaying ? <Volume2 size={15} /> : <VolumeX size={15} />}
       </button>
-
-      <style>{`
-        @keyframes barWave {
-          0%, 100% { height: 3px; }
-          50% { height: 14px; }
-        }
-        @media (max-width: 768px) {
-          .audio-player-container {
-            bottom: 16px !important;
-            left: 16px !important;
-            right: auto !important;
-          }
-          .audio-toggle-btn {
-            padding: 7px 12px !important;
-            gap: 6px !important;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18) !important;
-          }
-        }
-      `}</style>
     </div>
   );
 });
